@@ -130,6 +130,7 @@ GameObject:
   - component: {fileID: 257504978}
   - component: {fileID: 257504977}
   - component: {fileID: 257504979}
+  - component: {fileID: 257504980}
   m_Layer: 0
   m_Name: Dummy
   m_TagString: Untagged
@@ -160,7 +161,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d8c37df251e45a742b226c693ba25732, type: 2}
+  - {fileID: 2100000, guid: b4fd0e44745275b4a92bc32b828f26d4, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -220,6 +221,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 10
+--- !u!114 &257504980
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 257504976}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3834701d395f3fb4f9415b7789ba40b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  temperature: 0
+  fresnelPower: 0.5
+  brightnessInfluence: 0.08
+  infraredMaterial: {fileID: 2100000, guid: b4fd0e44745275b4a92bc32b828f26d4, type: 2}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -451,6 +468,7 @@ GameObject:
   m_Component:
   - component: {fileID: 985559186}
   - component: {fileID: 985559185}
+  - component: {fileID: 985559187}
   m_Layer: 0
   m_Name: Dummy2
   m_TagString: Untagged
@@ -481,7 +499,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: d8c37df251e45a742b226c693ba25732, type: 2}
+  - {fileID: 2100000, guid: b4fd0e44745275b4a92bc32b828f26d4, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -507,7 +525,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.16, y: 0.16}
+  m_Size: {x: 2, y: 2}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -528,6 +546,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &985559187
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 985559184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3834701d395f3fb4f9415b7789ba40b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  temperature: 0
+  fresnelPower: 0.5
+  brightnessInfluence: 0.08
+  infraredMaterial: {fileID: 2100000, guid: b4fd0e44745275b4a92bc32b828f26d4, type: 2}
 --- !u!1 &1405883112
 GameObject:
   m_ObjectHideFlags: 0
@@ -558,7 +592,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab0a93b64210db54a88890c995708358, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  infraredMaterial: {fileID: 0}
 --- !u!4 &1405883114
 Transform:
   m_ObjectHideFlags: 0
@@ -586,7 +619,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab0a93b64210db54a88890c995708358, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  infraredMaterial: {fileID: 2100000, guid: d8c37df251e45a742b226c693ba25732, type: 2}
 --- !u!1 &1446427775
 GameObject:
   m_ObjectHideFlags: 0
