@@ -4,9 +4,10 @@ using UnityEngine;
 public class ThermalObject : MonoBehaviour
 {
     [Header("Thermal Vision Parameters")]
-    [SerializeField, Range(0f, 100f)] private float temperature = 0f;
+    [SerializeField, Range(0f, 100f)] private float temperature = 0f;          // target temperature
     [SerializeField, Range(0f, 1f)] private float fresnelPower = 0.5f;
     [SerializeField, Range(0f, 1f)] private float brightnessInfluence = 0.08f;
+    [SerializeField, Range(0.5f, 20f)] private float temperatureLerpSpeed = 5f; // units per second
 
     [Header("Temperature Pulse (Beating Heart)")]
     [SerializeField] private bool enablePulse = false;
@@ -20,6 +21,7 @@ public class ThermalObject : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private Material uniqueMaterial;
     private float phaseOffset = 0f;
+    private float currentTemperature;   // actual smoothed value sent to shader
 
     private static readonly int TemperatureProperty = Shader.PropertyToID("_Temperature");
     private static readonly int FresnelPowerProperty = Shader.PropertyToID("_FresnelPower");
@@ -35,32 +37,33 @@ public class ThermalObject : MonoBehaviour
             uniqueMaterial = new Material(spriteRenderer.sharedMaterial);
 
         spriteRenderer.material = uniqueMaterial;
-
         uniqueMaterial.DisableKeyword("THERMAL_ON");
 
         if (useRandomPhase)
             phaseOffset = Random.Range(0f, Mathf.PI * 2f);
+
+        currentTemperature = temperature; // start at target
     }
 
     void Start()
     {
         ApplyParameters();
-        // Force initial keyword state based on ThermalManager
         if (ThermalManager.Instance != null)
             OnThermalToggled(ThermalManager.Instance.IsThermalEnabled());
         else
-            OnThermalToggled(false); 
+            OnThermalToggled(false);
     }
 
     void Update()
     {
+        // Smoothly move current temperature toward the target (temperature field)
+        currentTemperature = Mathf.MoveTowards(currentTemperature, temperature, temperatureLerpSpeed * Time.deltaTime);
         ApplyParameters();
     }
 
     void OnEnable()
     {
         ThermalManager.OnThermalToggled += OnThermalToggled;
-        // Immediate sync in case ThermalManager already exists
         if (ThermalManager.Instance != null)
             OnThermalToggled(ThermalManager.Instance.IsThermalEnabled());
     }
@@ -74,20 +77,33 @@ public class ThermalObject : MonoBehaviour
     {
         if (uniqueMaterial == null) return;
 
-        float currentTemp = temperature;
+        // Start with smoothed current temperature
+        float finalTemp = currentTemperature;
+
+        // Add pulse oscillation (if enabled)
         if (enablePulse)
         {
             float pulse = Mathf.Sin((Time.time + phaseOffset) * pulseSpeed * Mathf.PI * 2f);
             float variation = pulse * pulseAmplitude;
-            currentTemp = Mathf.Clamp(temperature + variation, 0f, 100f);
+            finalTemp = Mathf.Clamp(finalTemp + variation, 0f, 100f);
         }
 
-        uniqueMaterial.SetFloat(TemperatureProperty, currentTemp);
+        uniqueMaterial.SetFloat(TemperatureProperty, finalTemp);
         uniqueMaterial.SetFloat(FresnelPowerProperty, fresnelPower);
         uniqueMaterial.SetFloat(BrightnessInfluenceProperty, brightnessInfluence);
     }
 
-    public void SetTemperature(float newTemp) => temperature = Mathf.Clamp(newTemp, 0f, 100f);
+    // --------------------------------- Public API
+
+    public void SetTemperature(float newTarget)
+    {
+        temperature = Mathf.Clamp(newTarget, 0f, 100f);
+    }
+
+    public float GetTemperature() => currentTemperature;   // returns displayed (smoothed) value
+
+    public void SetTemperatureLerpSpeed(float speed) => temperatureLerpSpeed = Mathf.Max(0.1f, speed);
+
     public void SetFresnelPower(float newPower) => fresnelPower = Mathf.Clamp01(newPower);
     public void SetBrightnessInfluence(float newInfluence) => brightnessInfluence = Mathf.Clamp01(newInfluence);
     public void SetPulse(bool enabled, float speed = 1f, float amplitude = 20f)
@@ -96,6 +112,8 @@ public class ThermalObject : MonoBehaviour
         pulseSpeed = speed;
         pulseAmplitude = amplitude;
     }
+
+    // --------------------------------- Thermal Manager Toggle
 
     private void OnThermalToggled(bool enabled)
     {
