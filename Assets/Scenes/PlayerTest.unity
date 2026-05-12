@@ -486,12 +486,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3834701d395f3fb4f9415b7789ba40b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  temperature: 36.2
-  fresnelPower: 0.5
-  brightnessInfluence: 0.279
+  temperature: 78.7
+  fresnelPower: 0.382
+  brightnessInfluence: 0.552
   temperatureLerpSpeed: 5
   enablePulse: 1
-  pulseSpeed: 0.11
+  pulseSpeed: 0.23
   pulseAmplitude: 8.8
   useRandomPhase: 1
   infraredMaterial: {fileID: 2100000, guid: b4fd0e44745275b4a92bc32b828f26d4, type: 2}
@@ -788,7 +788,7 @@ MonoBehaviour:
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
   m_VolumeFrameworkUpdateModeOption: 2
-  m_RenderPostProcessing: 0
+  m_RenderPostProcessing: 1
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
   m_StopNaN: 0
