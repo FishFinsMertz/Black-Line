@@ -432,7 +432,7 @@ MonoBehaviour:
   temperature: 78.7
   fresnelPower: 0.183
   brightnessInfluence: 0.88
-  temperatureLerpSpeed: 5
+  temperatureLerpSpeed: 20
   enablePulse: 1
   pulseSpeed: 0.23
   pulseAmplitude: 8
@@ -598,7 +598,7 @@ MonoBehaviour:
   temperature: 78.7
   fresnelPower: 0.382
   brightnessInfluence: 0.552
-  temperatureLerpSpeed: 5
+  temperatureLerpSpeed: 20
   enablePulse: 1
   pulseSpeed: 0.23
   pulseAmplitude: 8.8
@@ -948,7 +948,7 @@ MonoBehaviour:
   temperature: 78.7
   fresnelPower: 0.183
   brightnessInfluence: 0.88
-  temperatureLerpSpeed: 5
+  temperatureLerpSpeed: 20
   enablePulse: 1
   pulseSpeed: 0.23
   pulseAmplitude: 8

@@ -4,10 +4,11 @@ using UnityEngine;
 public class ThermalObject : MonoBehaviour
 {
     [Header("Thermal Vision Parameters")]
-    [SerializeField, Range(0f, 100f)] private float temperature = 0f;          // target temperature
+    [SerializeField, Range(0f, 100f)] private float temperature = 0f; // Base temp
+    [SerializeField] private float currentTemperature;   // actual temp
     [SerializeField, Range(0f, 1f)] private float fresnelPower = 0.5f;
     [SerializeField, Range(0f, 1f)] private float brightnessInfluence = 0.08f;
-    [SerializeField, Range(0.5f, 20f)] private float temperatureLerpSpeed = 5f; // units per second
+    [SerializeField, Range(0.5f, 20f)] private float temperatureLerpSpeed = 5f; 
 
     [Header("Temperature Pulse (Beating Heart)")]
     [SerializeField] private bool enablePulse = false;
@@ -21,7 +22,6 @@ public class ThermalObject : MonoBehaviour
     private SpriteRenderer spriteRenderer;
     private Material uniqueMaterial;
     private float phaseOffset = 0f;
-    private float currentTemperature;   // actual smoothed value sent to shader
 
     private static readonly int TemperatureProperty = Shader.PropertyToID("_Temperature");
     private static readonly int FresnelPowerProperty = Shader.PropertyToID("_FresnelPower");
@@ -93,11 +93,11 @@ public class ThermalObject : MonoBehaviour
         uniqueMaterial.SetFloat(BrightnessInfluenceProperty, brightnessInfluence);
     }
 
-    // --------------------------------- Public API
+    // Public API
 
-    public void SetTemperature(float newTarget)
+    public void SetCurrentTemperature(float newTarget)
     {
-        temperature = Mathf.Clamp(newTarget, 0f, 100f);
+        currentTemperature = Mathf.Clamp(newTarget, 0f, 100f);
     }
 
     public float GetTemperature() => currentTemperature;   // returns displayed (smoothed) value
@@ -113,7 +113,7 @@ public class ThermalObject : MonoBehaviour
         pulseAmplitude = amplitude;
     }
 
-    // --------------------------------- Thermal Manager Toggle
+    // Thermal Manager Toggle
 
     private void OnThermalToggled(bool enabled)
     {

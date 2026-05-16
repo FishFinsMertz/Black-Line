@@ -13,9 +13,9 @@ public class ThermalTestController : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(increaseKey))
-            thermal.SetTemperature(thermal.GetTemperature() + stepAmount);
-        else if (Input.GetKeyDown(decreaseKey))
-            thermal.SetTemperature(thermal.GetTemperature() - stepAmount);
+        //if (Input.GetKeyDown(increaseKey))
+            //thermal.SetTemperature(thermal.GetTemperature() + stepAmount);
+        //else if (Input.GetKeyDown(decreaseKey))
+            //thermal.SetTemperature(thermal.GetTemperature() - stepAmount);
     }
 }
