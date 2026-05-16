@@ -3,8 +3,12 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public float walkSpeed = 5f;
+    public bool isFacingRight = true;
+
     [HideInInspector] public Rigidbody2D rb { get; private set; }
+
     private PlayerState currentState;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -12,7 +16,6 @@ public class PlayerController : MonoBehaviour
         currentState.Enter();
     }
 
-    // Update is called once per frame
     void Update()
     {
         currentState?.Update();
@@ -25,9 +28,11 @@ public class PlayerController : MonoBehaviour
 
     public void Flip()
     {
-        Vector3 localScale = transform.localScale;
-        localScale.x *= -1f;
-        transform.localScale = localScale;
+        isFacingRight = !isFacingRight;
+
+        Vector3 scale = transform.localScale;
+        scale.x *= -1f;
+        transform.localScale = scale;
     }
 
     public void ChangeState(PlayerState newState)

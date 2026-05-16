@@ -6,7 +6,7 @@ public class PlayerWalkState : PlayerState
 
     public override void Enter()
     {
-        Debug.Log("Entered Walk State");
+        //Debug.Log("Entered Walk State");
     }
 
     public override void FixedUpdate()

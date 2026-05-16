@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: e087b63d9cfbab642adca2090cc732e8
+guid: dd080d096e91826458bc04ed34a63bce
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 7648128650684761585
-    second: PlayerArm-Aim-Gun_0
+      213: 3545329600261086155
+    second: PlayerArm-Aim-Gun 1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,7 +113,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: PlayerArm-Aim-Gun_0
+      name: PlayerArm-Aim-Gun 1_0
       rect:
         serializedVersion: 2
         x: 0
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 1f58d8c7c7c932a60800000000000000
-      internalID: 7648128650684761585
+      spriteID: bcb5d3bcc7a833130800000000000000
+      internalID: 3545329600261086155
       vertices: []
       indices: 
       edges: []
@@ -138,7 +138,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 23fa109e8ced7a042b3012450ccee62e
+    spriteID: 58f74fa0d9c996748a6a0c9de98225a9
     internalID: 0
     vertices: []
     indices: 
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      PlayerArm-Aim-Gun_0: 7648128650684761585
+      PlayerArm-Aim-Gun 1_0: 3545329600261086155
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

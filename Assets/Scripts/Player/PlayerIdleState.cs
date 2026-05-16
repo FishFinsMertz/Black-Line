@@ -6,7 +6,7 @@ public class PlayerIdleState : PlayerState
 
     public override void Enter()
     {
-        Debug.Log("Entered Idle State");
+        //Debug.Log("Entered Idle State");
         // Stop all movement when entering idle
         player.rb.linearVelocity = Vector2.zero;
     }
