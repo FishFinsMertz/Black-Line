@@ -11,8 +11,12 @@ public class ArmGunController : MonoBehaviour
     [SerializeField] private PlayerController player;
     [SerializeField] private float flipThreshold = 0.1f;
 
-    [Header("Fire Point (Testing)")]
-    [SerializeField] private Transform firePoint;   // drag the fire point child here
+    [Header("Shooting")]
+    [SerializeField] private Transform firePoint;
+    [SerializeField] private Transform directionIndicator;
+    [SerializeField] private GameObject bulletPrefab;
+
+
 
     private void Start()
     {
@@ -51,11 +55,18 @@ public class ArmGunController : MonoBehaviour
             transform.localRotation = Quaternion.Euler(0f, 0f, -angle);
         }
 
-        // ----- TEST: Draw line from firePoint to mouse on left click -----
-        if (Input.GetMouseButtonDown(0) && firePoint != null)
+        // Shoot
+        if (Input.GetMouseButtonDown(0) && bulletPrefab != null && firePoint != null)
         {
-            // Draw a red line that stays visible for 0.5 seconds
-            Debug.DrawLine(firePoint.position, mousePos, Color.red, 0.5f);
+            Vector2 direction = (firePoint.position - directionIndicator.position).normalized;
+
+            // Instantiate bullet at firePoint position, with no rotation
+            GameObject bullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
+            
+            // Get the GunBullet component and initialize it with direction
+            GunBullet bulletScript = bullet.GetComponent<GunBullet>();
+            if (bulletScript != null)
+                bulletScript.Initialize(direction);
         }
     }
 }
