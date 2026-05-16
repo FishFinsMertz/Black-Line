@@ -8,6 +8,7 @@ public class ThermalObject : MonoBehaviour
     [SerializeField] private float currentTemperature;   // actual temp
     [SerializeField, Range(0f, 1f)] private float fresnelPower = 0.5f;
     [SerializeField, Range(0f, 1f)] private float brightnessInfluence = 0.08f;
+    [SerializeField] private Vector2 fresnelCenter = new Vector2(0.5f, 0.5f); // NEW
     [SerializeField, Range(0.5f, 20f)] private float temperatureLerpSpeed = 5f; 
 
     [Header("Temperature Pulse (Beating Heart)")]
@@ -26,6 +27,7 @@ public class ThermalObject : MonoBehaviour
     private static readonly int TemperatureProperty = Shader.PropertyToID("_Temperature");
     private static readonly int FresnelPowerProperty = Shader.PropertyToID("_FresnelPower");
     private static readonly int BrightnessInfluenceProperty = Shader.PropertyToID("_BrightnessInfluence");
+    private static readonly int FresnelCenterProperty = Shader.PropertyToID("_FresnelCenter"); // NEW
 
     void Awake()
     {
@@ -56,7 +58,6 @@ public class ThermalObject : MonoBehaviour
 
     void Update()
     {
-        // Smoothly move current temperature toward the target (temperature field)
         currentTemperature = Mathf.MoveTowards(currentTemperature, temperature, temperatureLerpSpeed * Time.deltaTime);
         ApplyParameters();
     }
@@ -77,10 +78,7 @@ public class ThermalObject : MonoBehaviour
     {
         if (uniqueMaterial == null) return;
 
-        // Start with smoothed current temperature
         float finalTemp = currentTemperature;
-
-        // Add pulse oscillation (if enabled)
         if (enablePulse)
         {
             float pulse = Mathf.Sin((Time.time + phaseOffset) * pulseSpeed * Mathf.PI * 2f);
@@ -91,21 +89,19 @@ public class ThermalObject : MonoBehaviour
         uniqueMaterial.SetFloat(TemperatureProperty, finalTemp);
         uniqueMaterial.SetFloat(FresnelPowerProperty, fresnelPower);
         uniqueMaterial.SetFloat(BrightnessInfluenceProperty, brightnessInfluence);
+        uniqueMaterial.SetVector(FresnelCenterProperty, fresnelCenter); // NEW
     }
 
     // Public API
 
-    public void SetCurrentTemperature(float newTarget)
-    {
-        currentTemperature = Mathf.Clamp(newTarget, 0f, 100f);
-    }
-
-    public float GetTemperature() => currentTemperature;   // returns displayed (smoothed) value
-
+    public void SetCurrentTemperature(float newTarget) => currentTemperature = Mathf.Clamp(newTarget, 0f, 100f);
+    public void changeCurrentTemperature(float delta) => currentTemperature = Mathf.Clamp(currentTemperature + delta, 0f, 100f);
+    public float GetTemperature() => currentTemperature;
     public void SetTemperatureLerpSpeed(float speed) => temperatureLerpSpeed = Mathf.Max(0.1f, speed);
-
     public void SetFresnelPower(float newPower) => fresnelPower = Mathf.Clamp01(newPower);
     public void SetBrightnessInfluence(float newInfluence) => brightnessInfluence = Mathf.Clamp01(newInfluence);
+    public void SetFresnelCenter(Vector2 center) => fresnelCenter = center; // NEW
+
     public void SetPulse(bool enabled, float speed = 1f, float amplitude = 20f)
     {
         enablePulse = enabled;

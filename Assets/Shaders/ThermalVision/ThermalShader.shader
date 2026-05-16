@@ -9,6 +9,7 @@ Shader "Shaders/ThermalVision_Sprite_NoGhost"
         _Temperature ("Temperature", Range(0.0, 100.0)) = 100.0
         _FresnelPower ("Fresnel Power", Range(0.0, 1.0)) = 0.5
         _BrightnessInfluence ("Brightness Influence", Range(0.0, 1.0)) = 0.08
+        _FresnelCenter ("Fresnel Center", Vector) = (0.5, 0.5, 0, 0)
     }
     SubShader
     {
@@ -54,6 +55,7 @@ Shader "Shaders/ThermalVision_Sprite_NoGhost"
             float _Temperature;
             float _FresnelPower;
             float _BrightnessInfluence;
+            float2 _FresnelCenter;
 
             v2f vert(appdata_t IN)
             {
@@ -70,22 +72,16 @@ Shader "Shaders/ThermalVision_Sprite_NoGhost"
                 clip(originalColor.a - 0.05);
 
 #ifdef THERMAL_ON
-                // Normalize temperature to 0-1 multiplier
                 float tempNorm = clamp(_Temperature / 100.0, 0.0, 1.0);
-
-                // Luminance (brightness) contribution
                 float grayValue = dot(originalColor.rgb, float3(0.3, 0.59, 0.11));
 
-                // Fresnel heat based on distance from UV center
-                float2 centeredUV = IN.texcoord - float2(0.5, 0.5);
+                // Fresnel with custom center
+                float2 centeredUV = IN.texcoord - _FresnelCenter;
                 float dist = length(centeredUV) * 2.0;
                 dist = clamp(dist, 0.0, 1.0);
                 float fresnelHeat = 1.0 - pow(dist, _FresnelPower);
 
-                // Combine contributions (without temperature scaling)
                 float rampValueUnscaled = clamp(fresnelHeat + grayValue * _BrightnessInfluence, 0.0, 1.0);
-
-                // Apply temperature multiplier: 0 = fully dark (cold), 1 = full effect
                 float rampValue = rampValueUnscaled * tempNorm;
 
                 fixed4 thermalColor = tex2D(_RampTex, float2(rampValue, 0.5));

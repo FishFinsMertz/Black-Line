@@ -16,7 +16,8 @@ public class ArmGunController : MonoBehaviour
     [SerializeField] private Transform directionIndicator;
     [SerializeField] private GameObject bulletPrefab;
 
-
+    [Header("Thermal Vision")]
+    [SerializeField] private ThermalObject thermalObject;
 
     private void Start()
     {
@@ -67,6 +68,10 @@ public class ArmGunController : MonoBehaviour
             GunBullet bulletScript = bullet.GetComponent<GunBullet>();
             if (bulletScript != null)
                 bulletScript.Initialize(direction);
+
+            // Increase temperature
+            if (thermalObject != null)
+                thermalObject.changeCurrentTemperature(20f); // Increase temp by 20 units per shot
         }
     }
 }

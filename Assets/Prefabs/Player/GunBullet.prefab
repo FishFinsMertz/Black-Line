@@ -49,7 +49,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05d2fd4d61e5059429ca641cf010791a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 20
+  speed: 40
   lifetime: 2
 --- !u!61 &6976849298409263502
 BoxCollider2D:
@@ -281,8 +281,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   temperature: 100
+  currentTemperature: 0
   fresnelPower: 1
   brightnessInfluence: 1
+  fresnelCenter: {x: 0.5, y: 0.5}
   temperatureLerpSpeed: 5
   enablePulse: 1
   pulseSpeed: 1

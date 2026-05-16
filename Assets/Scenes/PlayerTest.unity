@@ -151,8 +151,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   temperature: 74.7
+  currentTemperature: 0
   fresnelPower: 0.131
   brightnessInfluence: 0.36
+  fresnelCenter: {x: 0.5, y: 0.5}
   temperatureLerpSpeed: 5
   enablePulse: 0
   pulseSpeed: 0.23
@@ -306,8 +308,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   temperature: 66.7
+  currentTemperature: 0
   fresnelPower: 0
   brightnessInfluence: 0.395
+  fresnelCenter: {x: 0.5, y: 0.5}
   temperatureLerpSpeed: 5
   enablePulse: 0
   pulseSpeed: 0
@@ -429,13 +433,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3834701d395f3fb4f9415b7789ba40b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  temperature: 78.7
-  fresnelPower: 0.183
+  temperature: 53.5
+  currentTemperature: 0
+  fresnelPower: 0.465
   brightnessInfluence: 0.88
+  fresnelCenter: {x: 0.7, y: 0.59}
   temperatureLerpSpeed: 20
   enablePulse: 1
-  pulseSpeed: 0.23
-  pulseAmplitude: 8
+  pulseSpeed: 0.08
+  pulseAmplitude: 4.7
   useRandomPhase: 1
   infraredMaterial: {fileID: 2100000, guid: b4fd0e44745275b4a92bc32b828f26d4, type: 2}
 --- !u!212 &183456023
@@ -596,8 +602,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   temperature: 78.7
+  currentTemperature: 0
   fresnelPower: 0.382
   brightnessInfluence: 0.552
+  fresnelCenter: {x: 0.5, y: 0.5}
   temperatureLerpSpeed: 20
   enablePulse: 1
   pulseSpeed: 0.23
@@ -946,8 +954,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   temperature: 78.7
+  currentTemperature: 0
   fresnelPower: 0.183
   brightnessInfluence: 0.88
+  fresnelCenter: {x: 0.5, y: 0.5}
   temperatureLerpSpeed: 20
   enablePulse: 1
   pulseSpeed: 0.23
@@ -1161,6 +1171,7 @@ MonoBehaviour:
   firePoint: {fileID: 1824993234}
   directionIndicator: {fileID: 1592607983}
   bulletPrefab: {fileID: 132753738356837407, guid: 4ffda103b120de64cba3cb8826825267, type: 3}
+  thermalObject: {fileID: 183456022}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
