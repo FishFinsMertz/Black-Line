@@ -903,7 +903,7 @@ MonoBehaviour:
   playerThermal: {fileID: 1560653340}
   maxColdWeight: 1
   minColdWeight: 0
-  warmThreshold: 70
+  warmThreshold: 50
 --- !u!1 &1824993233
 GameObject:
   m_ObjectHideFlags: 0
@@ -1198,6 +1198,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   smoothSpeed: 5
   offset: {x: 0, y: 0, z: -10}
+  enableWobble: 1
+  maxWobbleIntensity: 0.15
+  wobbleFrequency: 1
+  wobbleLerpSpeed: 0.1
+  enableTilt: 1
+  maxTiltAngle: 6
+  tiltFrequency: 1
+  tiltLerpSpeed: 0.3
+  wobbleStartTemp: 30
+  wobbleMaxAtTemp: 0
+  wobblePower: 2
+  playerThermal: {fileID: 1560653340}
 --- !u!1 &2011353405
 GameObject:
   m_ObjectHideFlags: 0
