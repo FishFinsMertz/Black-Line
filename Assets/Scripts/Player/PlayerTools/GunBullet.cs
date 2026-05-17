@@ -18,17 +18,15 @@ public class GunBullet : MonoBehaviour
 
     private void Start()
     {
-        // If Initialize wasn't called (e.g., bullet placed manually), set a default direction
+        // If Initialize wasn't called, use default direction
         if (direction == Vector2.zero)
             direction = Vector2.right;
     }
 
     private void Update()
     {
-        // Move the bullet
         transform.Translate(direction * speed * Time.deltaTime, Space.World);
 
-        // Destroy after lifetime
         if (Time.time - spawnTime >= lifetime)
             Destroy(gameObject);
     }
@@ -38,8 +36,7 @@ public class GunBullet : MonoBehaviour
         // Destroy bullet when it hits anything
         Destroy(gameObject);
         
-        // Optional: add damage logic here
-        // e.g., collision.gameObject.GetComponent<Enemy>()?.TakeDamage(1);
+        // Damage logic here
     }
 
     private void OnTriggerEnter2D(Collider2D other)

@@ -14,8 +14,8 @@ public class CameraController : MonoBehaviour
     
     [Header("Rotational Wobble (Drunk Tilt)")]
     [SerializeField] private bool enableTilt = true;
-    [SerializeField] private float maxTiltAngle = 5f;           // maximum tilt in degrees
-    [SerializeField] private float tiltFrequency = 3f;          // slower rotation than wobble
+    [SerializeField] private float maxTiltAngle = 5f;           
+    [SerializeField] private float tiltFrequency = 3f;          
     [SerializeField] private float tiltLerpSpeed = 3f;
     
     [Header("Temperature Threshold")]
