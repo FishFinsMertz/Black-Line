@@ -20,7 +20,7 @@ public class Inventory : MonoBehaviour, ISaveable
         // But we need default values if no save exists.
         if (!ownedItems.Contains("None"))
             ownedItems.Add("None");
-        Equip(EquipmentType.None);
+        //Equip(EquipmentType.None);
     }
 
     // Called by SaveManager when loading
@@ -36,6 +36,7 @@ public class Inventory : MonoBehaviour, ISaveable
         if (!ownedItems.Contains("None"))
             ownedItems.Add("None");
         
+        Debug.Log($"Inventory loaded. Owned items: {string.Join(", ", ownedItems)}. Current equip: {loadedEquip}");
         Equip(loadedEquip);
     }
 
@@ -83,7 +84,7 @@ public class Inventory : MonoBehaviour, ISaveable
         {
             ownedItems.Add("Gun");
             Equip(EquipmentType.Gun);
-            // Notify SaveManager to save (optional: auto-save after pickup)
+            // Notify SaveManager to save
             SaveManager.Instance?.RequestSave();
         }
     }

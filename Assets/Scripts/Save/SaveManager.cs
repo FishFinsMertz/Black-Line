@@ -7,6 +7,8 @@ public class SaveManager : MonoBehaviour
     public static SaveManager Instance { get; private set; }
 
     private List<ISaveable> saveableObjects = new List<ISaveable>();
+    private GameData cachedSaveData;
+    private bool hasLoadedSave = false;
 
     private string SavePath => Application.persistentDataPath + "/game_save.json";
 
@@ -19,23 +21,27 @@ public class SaveManager : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(gameObject);
+
+        LoadSaveFileIntoCache();
     }
 
     private void Update()
     {
-        //Testing purposes
         if (Input.GetKeyDown(KeyCode.F5)) SaveGame();
-        if (Input.GetKeyDown(KeyCode.F9)) LoadGame();
+        if (Input.GetKeyDown(KeyCode.F9)) ReloadAndApplyToAll();
     }
 
-    // Register a saveable component (called from each saveable object's Start)
     public void Register(ISaveable saveable)
     {
+        if (saveable == null) return;
         if (!saveableObjects.Contains(saveable))
             saveableObjects.Add(saveable);
+
+        // Auto‑apply cached save data to this new object
+        if (hasLoadedSave && cachedSaveData != null)
+            saveable.Load(cachedSaveData);
     }
 
-    // Unregister if needed (e.g., destroyed object)
     public void Unregister(ISaveable saveable)
     {
         saveableObjects.Remove(saveable);
@@ -43,35 +49,46 @@ public class SaveManager : MonoBehaviour
 
     public void SaveGame()
     {
+        saveableObjects.RemoveAll(item => item == null);
+
         GameData data = new GameData();
         foreach (var saveable in saveableObjects)
             saveable.Save(data);
-        
+
         string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(SavePath, json);
+        cachedSaveData = data;
+        hasLoadedSave = true;
         Debug.Log("Game saved.");
-    }
-
-    public void LoadGame()
-    {
-        if (!File.Exists(SavePath))
-        {
-            Debug.Log("No save file found.");
-            return;
-        }
-
-        string json = File.ReadAllText(SavePath);
-        GameData data = JsonUtility.FromJson<GameData>(json);
-        
-        foreach (var saveable in saveableObjects)
-            saveable.Load(data);
-        
-        Debug.Log("Game loaded.");
     }
 
     public void RequestSave()
     {
-        // Optional: delayed save or cooldown
-        SaveGame();
+        SaveGame(); // for compatibility with Inventory
+    }
+
+    private void LoadSaveFileIntoCache()
+    {
+        if (!File.Exists(SavePath))
+        {
+            cachedSaveData = new GameData();
+            hasLoadedSave = true;
+            Debug.Log("No save file found, starting fresh.");
+            return;
+        }
+
+        string json = File.ReadAllText(SavePath);
+        cachedSaveData = JsonUtility.FromJson<GameData>(json);
+        hasLoadedSave = true;
+        Debug.Log("Save file loaded into cache.");
+    }
+
+    public void ReloadAndApplyToAll()
+    {
+        if (cachedSaveData == null) return;
+        saveableObjects.RemoveAll(item => item == null);
+        foreach (var saveable in saveableObjects)
+            saveable.Load(cachedSaveData);
+        Debug.Log("Reloaded save data to all objects.");
     }
 }
