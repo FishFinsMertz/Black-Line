@@ -6,41 +6,65 @@ public class GunBullet : MonoBehaviour
     [SerializeField] private float speed = 20f;
     [SerializeField] private float lifetime = 2f;
 
+    [Header("Hit Effect")]
+    [SerializeField] private GameObject hitEffectPrefab; // assign your particle system prefab here
+
     private Vector2 direction;
     private float spawnTime;
+    private Rigidbody2D rb;
 
-    // Called by ArmGunController after instantiation
     public void Initialize(Vector2 fireDirection)
     {
         direction = fireDirection.normalized;
         spawnTime = Time.time;
+
+        rb = GetComponent<Rigidbody2D>();
+        if (rb == null) rb = gameObject.AddComponent<Rigidbody2D>();
+        rb.gravityScale = 0f;
+        rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+        rb.linearVelocity = direction * speed;
     }
 
     private void Start()
     {
-        // If Initialize wasn't called, use default direction
-        if (direction == Vector2.zero)
-            direction = Vector2.right;
+        if (direction == Vector2.zero) direction = Vector2.right;
     }
 
     private void Update()
     {
-        transform.Translate(direction * speed * Time.deltaTime, Space.World);
-
-        if (Time.time - spawnTime >= lifetime)
-            Destroy(gameObject);
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        // Destroy bullet when it hits anything
-        Destroy(gameObject);
-        
-        // Damage logic here
+        if (Time.time - spawnTime >= lifetime) Destroy(gameObject);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        OnHit(other.gameObject);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        OnHit(collision.gameObject);
+    }
+
+    private void OnHit(GameObject hitObject)
+    {
+        // Instantiate hit effect at bullet position, NOT as child
+        if (hitEffectPrefab != null)
+        {
+            GameObject effect = Instantiate(hitEffectPrefab, transform.position, Quaternion.identity);
+            // Optional: destroy effect after its duration
+            ParticleSystem ps = effect.GetComponent<ParticleSystem>();
+            if (ps != null)
+            {
+                float duration = ps.main.duration;
+                Destroy(effect, duration);
+            }
+            else
+            {
+                Destroy(effect, 1f); // fallback
+            }
+        }
+
+        Debug.Log($"Bullet hit: {hitObject.name}");
         Destroy(gameObject);
     }
 }
