@@ -6,7 +6,7 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float smoothSpeed = 5f;     
     [SerializeField] private Vector3 offset = new Vector3(0f, 0f, -10f); 
 
-    [Header("Positional Wobble (Shake)")]
+    [Header("Positional Wobble (Temperature Based)")]
     [SerializeField] private bool enableWobble = true;
     [SerializeField] private float maxWobbleIntensity = 0.15f;
     [SerializeField] private float wobbleFrequency = 8f;
@@ -23,17 +23,30 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float wobbleMaxAtTemp = 0f;
     [SerializeField] private float wobblePower = 2f;
 
-    private ThermalObject playerThermal;
+    [Header("Camera Shake (External)")]
+    [SerializeField] private float shakeDecaySpeed = 5f;   // how fast shake fades (units per second)
 
+    private ThermalObject playerThermal;
     private Transform target;      
     private string defaultTargetTag = "Player"; 
     private float currentWobbleIntensity = 0f;
     private float currentTiltIntensity = 0f;
     private Quaternion initialRotation;
 
+    // Shake state
+    private float currentShakeStrength = 0f;
+    private float shakeRemainingTime = 0f;
+    private float currentShakeRoughness = 0.5f;  // default roughness
+
+    // Random seeds for erratic shake
+    private float randomSeedX;
+    private float randomSeedY;
+
     private void Start()
     {
         initialRotation = transform.rotation;
+        randomSeedX = Random.Range(0f, 100f);
+        randomSeedY = Random.Range(0f, 100f);
         FindAndAssignPlayer();
     }
 
@@ -45,9 +58,7 @@ public class CameraController : MonoBehaviour
             Debug.LogWarning($"No GameObject with tag '{defaultTargetTag}' found.");
             return;
         }
-
-        target = playerObj.transform;  // camera follows the Player root
-
+        target = playerObj.transform;
         Transform bodyTransform = playerObj.transform.Find("Body");
         if (bodyTransform != null)
             playerThermal = bodyTransform.GetComponent<ThermalObject>();
@@ -57,9 +68,23 @@ public class CameraController : MonoBehaviour
     {
         if (target == null) return;
         
+        // --- Update shake timer and intensity ---
+        if (shakeRemainingTime > 0f)
+        {
+            shakeRemainingTime -= Time.deltaTime;
+            currentShakeStrength = Mathf.MoveTowards(currentShakeStrength, 0f, shakeDecaySpeed * Time.deltaTime);
+            if (shakeRemainingTime <= 0f) currentShakeStrength = 0f;
+        }
+        else
+        {
+            currentShakeStrength = 0f;
+        }
+
+        // --- Base desired position (player follow) ---
         Vector3 desiredPosition = target.position + offset;
         Vector3 smoothedPos = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed * Time.deltaTime);
         
+        // --- Temperature intensity ---
         float targetIntensity = 0f;
         if (playerThermal != null)
         {
@@ -73,22 +98,34 @@ public class CameraController : MonoBehaviour
             }
         }
         
+        // --- Smooth wobble intensities ---
         if (enableWobble)
             currentWobbleIntensity = Mathf.Lerp(currentWobbleIntensity, targetIntensity * maxWobbleIntensity, wobbleLerpSpeed * Time.deltaTime);
         if (enableTilt)
             currentTiltIntensity = Mathf.Lerp(currentTiltIntensity, targetIntensity * maxTiltAngle, tiltLerpSpeed * Time.deltaTime);
         
+        // --- Add temperature‑based wobble offset ---
         if (currentWobbleIntensity > 0.001f)
         {
             float time = Time.time * wobbleFrequency;
             float wobbleX = Mathf.Sin(time) * currentWobbleIntensity;
             float wobbleY = Mathf.Cos(time * 1.3f) * currentWobbleIntensity;
             desiredPosition += new Vector3(wobbleX, wobbleY, 0f);
-            smoothedPos = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed * Time.deltaTime);
         }
         
+        // --- Add external shake offset with current roughness ---
+        if (currentShakeStrength > 0.001f)
+        {
+            Vector2 shakeOffset = GetShakeOffset(currentShakeStrength, currentShakeRoughness);
+            desiredPosition += new Vector3(shakeOffset.x, shakeOffset.y, 0f);
+        }
+        
+        // --- Smooth follow again (now includes both wobble and shake) ---
+        smoothedPos = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed * Time.deltaTime);
+        
+        // --- Rotational tilt (temperature based only) ---
         Quaternion targetRotation = initialRotation;
-        if (currentTiltIntensity > 0.001f)
+        if (currentTiltIntensity > 0.001f && enableTilt)
         {
             float tiltTime = Time.time * tiltFrequency;
             float tiltZ = Mathf.Sin(tiltTime) * currentTiltIntensity;
@@ -99,17 +136,46 @@ public class CameraController : MonoBehaviour
         transform.position = smoothedPos;
         transform.rotation = targetRotation;
     }
+
+    // Generate shake offset based on strength and roughness (0 = smooth, 1 = erratic)
+    private Vector2 GetShakeOffset(float strength, float roughness)
+    {
+        float time = Time.time;
+        float rough = Mathf.Clamp01(roughness);
+        float smoothPart = 1f - rough;
+        
+        // Smooth component (original sine waves)
+        float smoothX = Mathf.Sin(time * 25f) * strength;
+        smoothX += Mathf.Sin(time * 13f) * (strength * 0.6f);
+        float smoothY = Mathf.Cos(time * 22f) * strength;
+        smoothY += Mathf.Sin(time * 17f) * (strength * 0.5f);
+        
+        // Rough component (Perlin noise for erratic movement)
+        float noiseX = Mathf.PerlinNoise(randomSeedX + time * 30f, 0f) * 2f - 1f;
+        float noiseY = Mathf.PerlinNoise(randomSeedY + time * 25f, 0f) * 2f - 1f;
+        noiseX *= strength * rough;
+        noiseY *= strength * rough;
+        
+        // Blend
+        float finalX = (smoothX * (1f - rough)) + noiseX;
+        float finalY = (smoothY * (1f - rough)) + noiseY;
+        
+        return new Vector2(finalX, finalY);
+    }
+    
+    // --- Public method to trigger a camera shake with smoothness parameter ---
+    public void TriggerShake(float intensity, float duration, float smoothness = 0.5f)
+    {
+        currentShakeStrength = Mathf.Max(currentShakeStrength, intensity);
+        shakeRemainingTime = Mathf.Max(shakeRemainingTime, duration);
+        currentShakeRoughness = Mathf.Clamp01(smoothness);
+    }
     
     public void SetTarget(Transform newTarget)
     {
         target = newTarget;
         if (newTarget != null)
-        {
-            // Attempt to find ThermalObject in the same way
             playerThermal = newTarget.GetComponentInChildren<ThermalObject>();
-            if (playerThermal == null)
-                playerThermal = newTarget.GetComponent<ThermalObject>();
-        }
     }
     
     public void ResetToPlayer()

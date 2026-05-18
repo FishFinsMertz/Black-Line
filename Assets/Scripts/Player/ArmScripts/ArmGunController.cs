@@ -20,10 +20,13 @@ public class ArmGunController : MonoBehaviour
     [SerializeField] private ThermalObject armThermalObject;
     [SerializeField] private ThermalObject bodyThermalObject;
 
+    private CameraController cam;
+
     private void Start()
     {
         if (player == null)
             player = GetComponentInParent<PlayerController>();
+        cam = Camera.main.GetComponent<CameraController>();
     }
 
     private void Update()
@@ -68,6 +71,8 @@ public class ArmGunController : MonoBehaviour
             // Get the GunBullet component and initialize it with direction
             GunBullet bulletScript = bullet.GetComponent<GunBullet>();
             if (bulletScript != null)
+                // Camera Shake
+                cam.TriggerShake(0.5f, 0.3f, 1f);
                 bulletScript.Initialize(direction);
 
             // Increase temperature
