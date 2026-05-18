@@ -1,7 +1,8 @@
 using UnityEngine;
 
 [RequireComponent(typeof(SpriteRenderer))]
-public class ThermalObject : MonoBehaviour
+public class ThermalObject : MonoBehaviour, IHasThermal
+// Thermal objects for individual sprites
 {
     [Header("Thermal Vision Parameters")]
     [SerializeField, Range(0f, 100f)] private float temperature = 0f; // Base temp
@@ -93,10 +94,11 @@ public class ThermalObject : MonoBehaviour
     }
 
     // Public API
-
+    public void SetBaseTemperature(float newTarget) => temperature = Mathf.Clamp(newTarget, 0f, 100f);
+    public void ChangeBaseTemperature(float delta) => temperature = Mathf.Clamp(temperature + delta, 0f, 100f);
     public void SetCurrentTemperature(float newTarget) => currentTemperature = Mathf.Clamp(newTarget, 0f, 100f);
-    public void changeCurrentTemperature(float delta) => currentTemperature = Mathf.Clamp(currentTemperature + delta, 0f, 100f);
-    public float GetTemperature() => currentTemperature;
+    public void ChangeCurrentTemperature(float delta) => currentTemperature = Mathf.Clamp(currentTemperature + delta, 0f, 100f);
+    public float GetTemperature() => temperature;
     public void SetTemperatureLerpSpeed(float speed) => temperatureLerpSpeed = Mathf.Max(0.1f, speed);
     public void SetFresnelPower(float newPower) => fresnelPower = Mathf.Clamp01(newPower);
     public void SetBrightnessInfluence(float newInfluence) => brightnessInfluence = Mathf.Clamp01(newInfluence);
