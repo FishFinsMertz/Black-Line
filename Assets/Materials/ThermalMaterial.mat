@@ -51,8 +51,8 @@ Material:
     - _EnableExternalAlpha: 0
     - _FluctuationAmount: 0.069
     - _FluctuationSpeed: 0.82
-    - _FresnelPower: 0.553
-    - _Temperature: 95.8
+    - _FresnelPower: 0
+    - _Temperature: 100
     - _ThermalEnabled: 1
     - _ZWrite: 0
     m_Colors:

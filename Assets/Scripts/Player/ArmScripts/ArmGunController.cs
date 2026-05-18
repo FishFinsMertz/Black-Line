@@ -83,7 +83,7 @@ public class ArmGunController : MonoBehaviour
 
             // Increase temperature
             if (armThermalObject != null)
-                armThermalObject.ChangeCurrentTemperature(20f);
+                armThermalObject.ChangeCurrentTemperature(15f);
             if (bodyThermalObject != null)
                 bodyThermalObject.ChangeCurrentTemperature(10f);
         }

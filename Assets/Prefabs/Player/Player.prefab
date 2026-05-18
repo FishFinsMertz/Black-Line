@@ -136,7 +136,7 @@ Transform:
   m_GameObject: {fileID: 4070062582235551253}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.612, y: -0.101, z: 0}
+  m_LocalPosition: {x: 0.657, y: -0.101, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -269,7 +269,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &3374192485560622825
 Transform:
   m_ObjectHideFlags: 0
@@ -301,7 +301,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   aimEnabled: 1
-  minAngle: -20
+  minAngle: -16
   maxAngle: 89
   flipThreshold: 0.1
   firePoint: {fileID: 1339711541712771895}
