@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Volume))]
 public class ColdEffectsController : MonoBehaviour
@@ -19,20 +20,40 @@ public class ColdEffectsController : MonoBehaviour
         FindPlayerThermal();
     }
 
+    private void OnEnable()
+    {
+        // Subscribe to scene load events
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // Re‑find the player after every scene load
+        FindPlayerThermal();
+        // Also reset volume weight to avoid sudden jumps (optional)
+        // coldVolume.weight = 0;
+    }
+
     private void FindPlayerThermal()
     {
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj == null)
         {
             Debug.LogWarning("No GameObject with tag 'Player' found. Cold effects won't work.");
+            playerThermal = null;
             return;
         }
 
-        // Try to find ThermalObject on the "Body" child first
         Transform bodyTransform = playerObj.transform.Find("Body");
         if (bodyTransform != null)
-            //Debug.Log("Found 'Body' child. Looking for ThermalObject there.");
             playerThermal = bodyTransform.GetComponent<ThermalObject>();
+        else
+            playerThermal = playerObj.GetComponent<ThermalObject>();
     }
 
     private void Update()
@@ -44,7 +65,6 @@ public class ColdEffectsController : MonoBehaviour
 
         if (temp < warmThreshold)
         {
-            // weight = 1 at temp=0, weight = 0 at temp=warmThreshold
             weight = 1f - (temp / warmThreshold);
             weight = Mathf.Clamp01(weight);
             weight = weight * maxColdWeight;

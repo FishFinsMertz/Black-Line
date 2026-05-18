@@ -8,9 +8,9 @@ public class GameData
     public List<string> ownedItems = new List<string>();
     public string currentEquipment;
 
+    public float playerBaseTemperature = 70f;
+
     // Future expansions (example)
-    // public float playerHealth;
-    // public float playerTemperature;
     // public string currentScene;
     // public Vector3 playerPosition;
     // public List<string> unlockedDoors;
