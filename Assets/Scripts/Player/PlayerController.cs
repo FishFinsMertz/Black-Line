@@ -2,10 +2,6 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [Header("General Heat")]
-    public float coreTemperature = 70f;
-    public float currentTemperature;
-
 
     [Header("Settings")]
     public float walkSpeed = 5f;
