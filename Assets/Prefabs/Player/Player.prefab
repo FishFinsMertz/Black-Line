@@ -303,11 +303,11 @@ MonoBehaviour:
   aimEnabled: 1
   minAngle: -20
   maxAngle: 89
-  player: {fileID: 5427079165002162839}
   flipThreshold: 0.1
   firePoint: {fileID: 1339711541712771895}
   directionIndicator: {fileID: 8106077944697287082}
   bulletPrefab: {fileID: 132753738356837407, guid: 4ffda103b120de64cba3cb8826825267, type: 3}
+  fireRate: 2
   armThermalObject: {fileID: 2051003976633089647}
   bodyThermalObject: {fileID: 1826829146766602594}
 --- !u!1 &7433923514042709585

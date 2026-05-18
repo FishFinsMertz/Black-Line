@@ -8,19 +8,21 @@ public class ArmGunController : MonoBehaviour
     [SerializeField] private float maxAngle = 80f;
 
     [Header("Flip")]
-    [SerializeField] private PlayerController player;
     [SerializeField] private float flipThreshold = 0.1f;
 
-    [Header("Shooting")]
+    [Header("Gun Details")]
     [SerializeField] private Transform firePoint;
     [SerializeField] private Transform directionIndicator;
     [SerializeField] private GameObject bulletPrefab;
+    [SerializeField] private float fireRate = 5f; // Shots per second (higher = faster)
 
     [Header("Thermal Vision")]
     [SerializeField] private ThermalObject armThermalObject;
     [SerializeField] private ThermalObject bodyThermalObject;
 
     private CameraController cam;
+    private PlayerController player;
+    private float nextFireTime = 0f;
 
     private void Start()
     {
@@ -60,26 +62,30 @@ public class ArmGunController : MonoBehaviour
             transform.localRotation = Quaternion.Euler(0f, 0f, -angle);
         }
 
-        // Shoot
-        if (Input.GetMouseButtonDown(0) && bulletPrefab != null && firePoint != null)
+        // SHOOT with fire rate limit
+        if (Input.GetMouseButtonDown(0) && bulletPrefab != null && firePoint != null && Time.time >= nextFireTime)
         {
+            // Calculate next allowed shot time
+            float fireDelay = fireRate > 0 ? 1f / fireRate : 0f;
+            nextFireTime = Time.time + fireDelay;
+
             Vector2 direction = (firePoint.position - directionIndicator.position).normalized;
 
-            // Instantiate bullet at firePoint position, with no rotation
+            // Instantiate bullet
             GameObject bullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
-            
-            // Get the GunBullet component and initialize it with direction
             GunBullet bulletScript = bullet.GetComponent<GunBullet>();
             if (bulletScript != null)
-                // Camera Shake
+            {
+                // Camera shake
                 cam.TriggerShake(0.5f, 0.3f, 1f);
                 bulletScript.Initialize(direction);
+            }
 
             // Increase temperature
             if (armThermalObject != null)
                 armThermalObject.ChangeCurrentTemperature(20f);
             if (bodyThermalObject != null)
-                bodyThermalObject.ChangeCurrentTemperature(10f); 
+                bodyThermalObject.ChangeCurrentTemperature(10f);
         }
     }
 }
