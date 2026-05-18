@@ -52,7 +52,7 @@ Material:
     - _FluctuationAmount: 0.069
     - _FluctuationSpeed: 0.82
     - _FresnelPower: 0
-    - _Temperature: 96.7
+    - _Temperature: 73.3
     - _ThermalEnabled: 1
     - _ZWrite: 0
     m_Colors:
