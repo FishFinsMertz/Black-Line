@@ -36,7 +36,7 @@ public class Inventory : MonoBehaviour, ISaveable
         if (!ownedItems.Contains("None"))
             ownedItems.Add("None");
         
-        Debug.Log($"Inventory loaded. Owned items: {string.Join(", ", ownedItems)}. Current equip: {loadedEquip}");
+        //Debug.Log($"Inventory loaded. Owned items: {string.Join(", ", ownedItems)}. Current equip: {loadedEquip}");
         Equip(loadedEquip);
     }
 

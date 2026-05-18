@@ -1238,7 +1238,6 @@ MonoBehaviour:
   wobbleStartTemp: 30
   wobbleMaxAtTemp: 0
   wobblePower: 2
-  playerThermal: {fileID: 1560653340}
 --- !u!1 &2011353405
 GameObject:
   m_ObjectHideFlags: 0
@@ -1288,7 +1287,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   aimEnabled: 1
   minAngle: -20
-  maxAngle: 80
+  maxAngle: 89
   player: {fileID: 1608860204}
   flipThreshold: 0.1
   firePoint: {fileID: 1824993234}

@@ -80,7 +80,7 @@ public class SaveManager : MonoBehaviour
         string json = File.ReadAllText(SavePath);
         cachedSaveData = JsonUtility.FromJson<GameData>(json);
         hasLoadedSave = true;
-        Debug.Log("Save file loaded into cache.");
+        //Debug.Log("Save file loaded into cache.");
     }
 
     public void ReloadAndApplyToAll()

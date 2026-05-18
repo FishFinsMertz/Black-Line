@@ -23,8 +23,7 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float wobbleMaxAtTemp = 0f;
     [SerializeField] private float wobblePower = 2f;
 
-    [Header("Temperature Reference")]
-    [SerializeField] private ThermalObject playerThermal;
+    private ThermalObject playerThermal;
 
     private Transform target;      
     private string defaultTargetTag = "Player"; 
@@ -34,32 +33,33 @@ public class CameraController : MonoBehaviour
 
     private void Start()
     {
-        // Store camera's original rotation
         initialRotation = transform.rotation;
+        FindAndAssignPlayer();
+    }
 
-        if (target == null)
+    private void FindAndAssignPlayer()
+    {
+        GameObject playerObj = GameObject.FindGameObjectWithTag(defaultTargetTag);
+        if (playerObj == null)
         {
-            GameObject player = GameObject.FindGameObjectWithTag(defaultTargetTag);
-            if (player != null)
-            {
-                target = player.transform;
-                if (playerThermal == null)
-                    playerThermal = player.GetComponent<ThermalObject>();
-            }
-            else
-                Debug.LogWarning($"No object with tag '{defaultTargetTag}' found.");
+            Debug.LogWarning($"No GameObject with tag '{defaultTargetTag}' found.");
+            return;
         }
+
+        target = playerObj.transform;  // camera follows the Player root
+
+        Transform bodyTransform = playerObj.transform.Find("Body");
+        if (bodyTransform != null)
+            playerThermal = bodyTransform.GetComponent<ThermalObject>();
     }
     
     private void LateUpdate()
     {
         if (target == null) return;
         
-        // Base follow (smooth position)
         Vector3 desiredPosition = target.position + offset;
         Vector3 smoothedPos = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed * Time.deltaTime);
         
-        // Calculate intensity based on temperature (same for both wobbles)
         float targetIntensity = 0f;
         if (playerThermal != null)
         {
@@ -73,13 +73,11 @@ public class CameraController : MonoBehaviour
             }
         }
         
-        // Smooth intensity updates
         if (enableWobble)
             currentWobbleIntensity = Mathf.Lerp(currentWobbleIntensity, targetIntensity * maxWobbleIntensity, wobbleLerpSpeed * Time.deltaTime);
         if (enableTilt)
             currentTiltIntensity = Mathf.Lerp(currentTiltIntensity, targetIntensity * maxTiltAngle, tiltLerpSpeed * Time.deltaTime);
         
-        // Apply positional wobble (shake)
         if (currentWobbleIntensity > 0.001f)
         {
             float time = Time.time * wobbleFrequency;
@@ -89,18 +87,15 @@ public class CameraController : MonoBehaviour
             smoothedPos = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed * Time.deltaTime);
         }
         
-        // Apply rotational wobble (drunk tilt)
         Quaternion targetRotation = initialRotation;
         if (currentTiltIntensity > 0.001f)
         {
             float tiltTime = Time.time * tiltFrequency;
             float tiltZ = Mathf.Sin(tiltTime) * currentTiltIntensity;
-            // Also add a second harmonic for more erratic feel
             tiltZ += Mathf.Sin(tiltTime * 2.3f) * (currentTiltIntensity * 0.5f);
             targetRotation = initialRotation * Quaternion.Euler(0f, 0f, tiltZ);
         }
         
-        // Apply position and rotation
         transform.position = smoothedPos;
         transform.rotation = targetRotation;
     }
@@ -109,17 +104,16 @@ public class CameraController : MonoBehaviour
     {
         target = newTarget;
         if (newTarget != null)
-            playerThermal = newTarget.GetComponent<ThermalObject>();
+        {
+            // Attempt to find ThermalObject in the same way
+            playerThermal = newTarget.GetComponentInChildren<ThermalObject>();
+            if (playerThermal == null)
+                playerThermal = newTarget.GetComponent<ThermalObject>();
+        }
     }
     
     public void ResetToPlayer()
     {
-        GameObject player = GameObject.FindGameObjectWithTag(defaultTargetTag);
-        if (player != null)
-        {
-            target = player.transform;
-            if (playerThermal == null)
-                playerThermal = player.GetComponent<ThermalObject>();
-        }
+        FindAndAssignPlayer();
     }
 }

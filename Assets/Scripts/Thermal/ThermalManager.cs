@@ -41,7 +41,7 @@ public class ThermalManager : MonoBehaviour
         if (isThermalEnabled == enabled) return;
         isThermalEnabled = enabled;
         OnThermalToggled?.Invoke(isThermalEnabled);
-        Debug.Log($"Thermal vision {(isThermalEnabled ? "ON" : "OFF")}");
+        //Debug.Log($"Thermal vision {(isThermalEnabled ? "ON" : "OFF")}");
     }
 
     public bool IsThermalEnabled() => isThermalEnabled;
