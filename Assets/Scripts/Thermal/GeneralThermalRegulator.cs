@@ -3,57 +3,60 @@ using UnityEngine;
 public class GeneralThermalRegulator : MonoBehaviour, ISaveable
 {
     [Header("Thermal Settings")]
-    [SerializeField, Range(0f, 100f)] private float baseTemperature = 70f;
+    [SerializeField, Range(0f, 100f)] private float baseTemperature = 70f; // target
+    private float currentTemperature; // actual smoothed temperature
+
+    [Header("Smoothing")]
+    [SerializeField, Range(1f, 20f)] private float smoothSpeed = 5f; // units per second
 
     private void Start()
     {
-        // Register with the save system
         SaveManager.Instance?.Register(this);
-        
-        // Apply initial temperature to all existing thermal objects
+        currentTemperature = baseTemperature;
         ApplyToAllThermalObjects();
     }
 
     public void ChangeGlobalBaseTemperature(float delta)
     {
-        // Update the central base temperature
+        // Update the target base temperature
         baseTemperature = Mathf.Clamp(baseTemperature + delta, 0f, 100f);
-        // Apply the new base temperature to all active thermal objects
+    }
+
+    private void Update()
+    {
+        // Smoothly move current temperature toward base temperature
+        currentTemperature = Mathf.MoveTowards(currentTemperature, baseTemperature, smoothSpeed * Time.deltaTime);
+        // Apply the smoothed temperature to all thermal objects
         ApplyToAllThermalObjects();
+
+        // Testing input
+        if (Input.GetKeyDown(KeyCode.J))
+            ChangeGlobalBaseTemperature(5f);
+        if (Input.GetKeyDown(KeyCode.K))
+            ChangeGlobalBaseTemperature(-5f);
     }
 
     private void ApplyToAllThermalObjects()
     {
-        // Find all active IHasThermal components in the entire hierarchy
         var allThermals = GetComponentsInChildren<IHasThermal>();
         foreach (var thermal in allThermals)
         {
             if (thermal is ThermalObject to)
             {
-                to.SetBaseTemperature(baseTemperature);
+                to.SetBaseTemperature(currentTemperature); // send smoothed value
             }
         }
     }
 
-    // Testing – modify temperature with J/K
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.J))
-            ChangeGlobalBaseTemperature(10f);
-        if (Input.GetKeyDown(KeyCode.K))
-            ChangeGlobalBaseTemperature(-10f);
-    }
-
-    // --- ISaveable implementation ---
     public void Save(GameData data)
     {
-        data.playerBaseTemperature = baseTemperature;
+        data.playerBaseTemperature = baseTemperature; // save target, not current
     }
 
     public void Load(GameData data)
     {
         baseTemperature = data.playerBaseTemperature;
-        // Sync with all children after loading
+        currentTemperature = baseTemperature; // instant set on load
         ApplyToAllThermalObjects();
     }
 

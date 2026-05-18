@@ -71,6 +71,6 @@ public class ColdEffectsController : MonoBehaviour
         }
 
         // Smooth transition
-        coldVolume.weight = Mathf.Lerp(coldVolume.weight, weight, 10f * Time.deltaTime);
+        coldVolume.weight = weight;
     }
 }

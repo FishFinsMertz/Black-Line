@@ -947,6 +947,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   baseTemperature: 70
+  smoothSpeed: 20
 --- !u!1 &1824993233
 GameObject:
   m_ObjectHideFlags: 0
