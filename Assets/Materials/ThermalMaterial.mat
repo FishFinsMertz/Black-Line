@@ -46,17 +46,18 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _BrightnessInfluence: 0.637
+    - _BrightnessInfluence: 1
     - _EdgeIntensity: 1
     - _EnableExternalAlpha: 0
     - _FluctuationAmount: 0.069
     - _FluctuationSpeed: 0.82
-    - _FresnelPower: 0.397
-    - _Temperature: 66
+    - _FresnelPower: 0.553
+    - _Temperature: 95.8
     - _ThermalEnabled: 1
     - _ZWrite: 0
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _FresnelCenter: {r: 0.5, g: 0.5, b: 0, a: 0}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
