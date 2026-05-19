@@ -4,36 +4,30 @@ public class PlayerWalkState : PlayerState
 {
     public PlayerWalkState(PlayerController player) : base(player) { }
 
-    public override void Enter()
-    {
-        //Debug.Log("Entered Walk State");
-    }
+    public override void Enter() { }
 
     public override void FixedUpdate()
     {
         float moveInput = Input.GetAxis("Horizontal");
         Vector2 velocity = player.rb.linearVelocity;
         velocity.x = moveInput * player.walkSpeed;
-        //Flip
-        if (moveInput > 0 && player.transform.localScale.x < 0)
-        {
-            player.Flip();
-        }
-        else if (moveInput < 0 && player.transform.localScale.x > 0)
-        {
-            player.Flip();
-        }
         player.rb.linearVelocity = velocity;
 
-        // Transition back to idle if velocity is approximately zero
-        if (Mathf.Approximately(velocity.x, 0f))
+        // No flip logic here – the gun controller (ArmGunController) handles flipping based on mouse position.
+
+        // Calculate relative speed for blend tree:
+        bool isFacingRight = player.transform.localScale.x > 0;
+        float relativeSpeed = (moveInput > 0 && isFacingRight || moveInput < 0 && !isFacingRight)
+            ? Mathf.Abs(moveInput)
+            : -Mathf.Abs(moveInput);
+        player.bodyAnimator.SetFloat("SpeedX", relativeSpeed);
+
+        // Transition to idle when no input
+        if (Mathf.Approximately(moveInput, 0f))
         {
             player.ChangeState(new PlayerIdleState(player));
         }
     }
 
-    public override void Exit()
-    {
-        // Optional: reset velocity when leaving walk state? Idle will handle it.
-    }
+    public override void Exit() { }
 }

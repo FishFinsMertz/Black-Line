@@ -6,9 +6,8 @@ public class PlayerIdleState : PlayerState
 
     public override void Enter()
     {
-        //Debug.Log("Entered Idle State");
-        // Stop all movement when entering idle
         player.rb.linearVelocity = Vector2.zero;
+        player.bodyAnimator.SetFloat("SpeedX", 0.0f);
     }
 
     public override void Update()
@@ -20,10 +19,6 @@ public class PlayerIdleState : PlayerState
         }
     }
 
-    public override void FixedUpdate()
-    {
-        // No physics changes needed – velocity already zero from Enter
-    }
-
+    public override void FixedUpdate() { }
     public override void Exit() { }
 }

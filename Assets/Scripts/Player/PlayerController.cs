@@ -7,6 +7,9 @@ public class PlayerController : MonoBehaviour
     public float walkSpeed = 5f;
     public bool isFacingRight = true;
 
+    [Header("Animators")]
+    public Animator bodyAnimator;
+
     [HideInInspector] public Rigidbody2D rb { get; private set; }
 
     private PlayerState currentState;
