@@ -64,7 +64,7 @@ public class GunBullet : MonoBehaviour
             }
         }
 
-        Debug.Log($"Bullet hit: {hitObject.name}");
+        //Debug.Log($"Bullet hit: {hitObject.name}");
         Destroy(gameObject);
     }
 }

@@ -399,7 +399,7 @@ GameObject:
   - component: {fileID: 242132144}
   - component: {fileID: 242132145}
   - component: {fileID: 242132143}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: SceneTeleporter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -690,6 +690,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1608731299875015705, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7205983957010132467, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8330259796792489906, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
