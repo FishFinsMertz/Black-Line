@@ -12,6 +12,9 @@ public class ArmGunController : ArmController
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private float fireRate = 5f; // shots per second
 
+    [Header("Muzzle Flash")]
+    [SerializeField] private Animator muzzleFlashAnimator;
+
     [Header("Thermal")]
     [SerializeField] private ThermalObject armThermalObject;
     [SerializeField] private ThermalObject bodyThermalObject;
@@ -80,5 +83,9 @@ public class ArmGunController : ArmController
             armThermalObject.ChangeCurrentTemperature(25f);
         if (bodyThermalObject != null)
             bodyThermalObject.ChangeCurrentTemperature(20f);
+
+        // Trigger muzzle flash animation
+        if (muzzleFlashAnimator != null)
+            muzzleFlashAnimator.SetTrigger("Shoot");
     }
 }

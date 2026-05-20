@@ -480,47 +480,11 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!1 &1931592861 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7433923514042709585, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
+--- !u!95 &919944609 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 4658165770266886540, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
   m_PrefabInstance: {fileID: 336386366199253394}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1931592865
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1931592861}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1efe1eddb9201b24e8484a4f81f21cc9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  armEnabled: 1
-  flipThreshold: 0.1
---- !u!95 &1931592869
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1931592861}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 7a02cae4a4551f54aa31a66418a55feb, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &2003924538
 GameObject:
   m_ObjectHideFlags: 0
@@ -693,6 +657,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 927296276545873791, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
+      propertyPath: fresnelPower
+      value: 0.876
+      objectReference: {fileID: 0}
     - target: {fileID: 1608731299875015705, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.0707362
@@ -733,30 +701,34 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1826829146766602594, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
-      propertyPath: pulseAmplitude
-      value: 1.23
-      objectReference: {fileID: 0}
-    - target: {fileID: 1826829146766602594, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
-      propertyPath: brightnessInfluence
-      value: 0.928
-      objectReference: {fileID: 0}
-    - target: {fileID: 2051003976633089647, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
-      propertyPath: temperature
-      value: 70
-      objectReference: {fileID: 0}
-    - target: {fileID: 2051003976633089647, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
-      propertyPath: fresnelPower
-      value: 0.287
-      objectReference: {fileID: 0}
-    - target: {fileID: 2051003976633089647, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
-      propertyPath: brightnessInfluence
-      value: 0.82
-      objectReference: {fileID: 0}
-    - target: {fileID: 5427079165002162839, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
-      propertyPath: currentArm
+    - target: {fileID: 6602669560062932297, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
+      propertyPath: muzzleFlashAnimator
       value: 
+      objectReference: {fileID: 919944609}
+    - target: {fileID: 7205983957010132467, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7483931928737666453, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
+      propertyPath: m_Size.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7483931928737666453, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
+      propertyPath: m_Size.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7483931928737666453, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -86536063, guid: b1fb484c86c97a9489df987818d1570b, type: 3}
+    - target: {fileID: 7483931928737666453, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
+      propertyPath: m_WasSpriteAssigned
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7483931928737666453, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
     - target: {fileID: 8330259796792489906, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
       propertyPath: m_Name
       value: Player
@@ -764,13 +736,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 7433923514042709585, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1931592865}
-    - targetCorrespondingSourceObject: {fileID: 7433923514042709585, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1931592869}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
 --- !u!1001 &2410981151704392758
 PrefabInstance:
