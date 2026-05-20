@@ -13,11 +13,13 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public Rigidbody2D rb { get; private set; }
 
     private PlayerState currentState;
+    [HideInInspector] public Inventory inventory;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         currentState = new PlayerIdleState(this);
+        inventory = GetComponent<Inventory>();
         currentState.Enter();
     }
 

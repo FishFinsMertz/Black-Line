@@ -11,9 +11,11 @@ public class Inventory : MonoBehaviour, ISaveable
 
     private EquipmentType currentEquipment = EquipmentType.None;
     private HashSet<string> ownedItems = new HashSet<string>();
+    private PlayerController playerController;
 
     private void Start()
     {
+        playerController = GetComponent<PlayerController>();
         SaveManager.Instance?.Register(this);
         // Inventory does NOT load itself anymore.
         // The SaveManager will call Load() after this object is registered.
@@ -75,7 +77,9 @@ public class Inventory : MonoBehaviour, ISaveable
                 currentEquipment = EquipmentType.Gun;
                 break;
         }
-        // No auto-save here – SaveManager will be called externally when needed.
+        
+        // Reset animation on current player state to reflect equipment change
+        playerController.bodyAnimator.Play(0);
     }
 
     private void GiveGun()
