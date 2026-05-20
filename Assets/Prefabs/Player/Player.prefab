@@ -153,6 +153,7 @@ GameObject:
   - component: {fileID: 1919313892370810473}
   - component: {fileID: 7855263243631786048}
   - component: {fileID: 1826829146766602594}
+  - component: {fileID: 1050252505090677471}
   m_Layer: 3
   m_Name: Body
   m_TagString: Untagged
@@ -242,10 +243,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3834701d395f3fb4f9415b7789ba40b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  temperature: 78.7
-  currentTemperature: 0
-  fresnelPower: 0.382
-  brightnessInfluence: 0.552
+  temperature: 70
+  currentTemperature: 70
+  fresnelPower: 0.128
+  brightnessInfluence: 0.835
   fresnelCenter: {x: 0.5, y: 0.5}
   temperatureLerpSpeed: 20
   enablePulse: 1
@@ -253,6 +254,28 @@ MonoBehaviour:
   pulseAmplitude: 8.8
   useRandomPhase: 1
   infraredMaterial: {fileID: 2100000, guid: b4fd0e44745275b4a92bc32b828f26d4, type: 2}
+--- !u!95 &1050252505090677471
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5965597034865106041}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: e47c27fb72496fe44aaf5a94a4ae69c1, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &7205983957010132467
 GameObject:
   m_ObjectHideFlags: 0
@@ -269,7 +292,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3374192485560622825
 Transform:
   m_ObjectHideFlags: 0
@@ -410,10 +433,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3834701d395f3fb4f9415b7789ba40b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  temperature: 78.7
+  temperature: 70
   currentTemperature: 0
   fresnelPower: 0.183
-  brightnessInfluence: 0.88
+  brightnessInfluence: 0.402
   fresnelCenter: {x: 0.5, y: 0.5}
   temperatureLerpSpeed: 20
   enablePulse: 1
@@ -547,6 +570,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   walkSpeed: 2.5
   isFacingRight: 1
+  bodyAnimator: {fileID: 1050252505090677471}
 --- !u!114 &2181627742840537855
 MonoBehaviour:
   m_ObjectHideFlags: 0

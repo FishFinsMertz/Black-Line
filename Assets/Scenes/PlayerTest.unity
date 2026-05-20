@@ -150,15 +150,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3834701d395f3fb4f9415b7789ba40b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  temperature: 74.7
+  temperature: 70
   currentTemperature: 0
   fresnelPower: 0.131
-  brightnessInfluence: 0.36
+  brightnessInfluence: 0.835
   fresnelCenter: {x: 0.5, y: 0.5}
   temperatureLerpSpeed: 5
-  enablePulse: 0
+  enablePulse: 1
   pulseSpeed: 0.23
-  pulseAmplitude: 20
+  pulseAmplitude: 11.3
   useRandomPhase: 1
   infraredMaterial: {fileID: 2100000, guid: b4fd0e44745275b4a92bc32b828f26d4, type: 2}
 --- !u!212 &139263949
@@ -692,13 +692,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 5427079165002162839, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
-      propertyPath: bodyAnimator
-      value: 
-      objectReference: {fileID: 336386366199253396}
-    - target: {fileID: 7205983957010132467, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
-      propertyPath: m_IsActive
-      value: 0
+    - target: {fileID: 1826829146766602594, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
+      propertyPath: pulseAmplitude
+      value: 1.23
+      objectReference: {fileID: 0}
+    - target: {fileID: 1826829146766602594, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
+      propertyPath: brightnessInfluence
+      value: 0.928
+      objectReference: {fileID: 0}
+    - target: {fileID: 2051003976633089647, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
+      propertyPath: temperature
+      value: 70
+      objectReference: {fileID: 0}
+    - target: {fileID: 2051003976633089647, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
+      propertyPath: fresnelPower
+      value: 0.287
+      objectReference: {fileID: 0}
+    - target: {fileID: 2051003976633089647, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
+      propertyPath: brightnessInfluence
+      value: 0.82
       objectReference: {fileID: 0}
     - target: {fileID: 8330259796792489906, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
       propertyPath: m_Name
@@ -707,38 +719,8 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 5965597034865106041, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 336386366199253396}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
---- !u!1 &336386366199253395 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5965597034865106041, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
-  m_PrefabInstance: {fileID: 336386366199253394}
-  m_PrefabAsset: {fileID: 0}
---- !u!95 &336386366199253396
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 336386366199253395}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: e47c27fb72496fe44aaf5a94a4ae69c1, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &2410981151704392758
 PrefabInstance:
   m_ObjectHideFlags: 0
