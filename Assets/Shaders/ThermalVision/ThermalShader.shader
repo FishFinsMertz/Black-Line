@@ -47,6 +47,7 @@ Shader "Shaders/ThermalVision_Sprite_NoGhost"
                 float4 vertex   : SV_POSITION;
                 fixed4 color    : COLOR;
                 float2 texcoord : TEXCOORD0;
+                float2 localPos : TEXCOORD1;
             };
 
             sampler2D _MainTex;
@@ -62,6 +63,7 @@ Shader "Shaders/ThermalVision_Sprite_NoGhost"
                 v2f OUT;
                 OUT.vertex = UnityObjectToClipPos(IN.vertex);
                 OUT.texcoord = IN.texcoord;
+                OUT.localPos = IN.vertex.xy;
                 OUT.color = IN.color * _Color;
                 return OUT;
             }
@@ -75,9 +77,9 @@ Shader "Shaders/ThermalVision_Sprite_NoGhost"
                 float tempNorm = clamp(_Temperature / 100.0, 0.0, 1.0);
                 float grayValue = dot(originalColor.rgb, float3(0.3, 0.59, 0.11));
 
-                // Fresnel with custom center
-                float2 centeredUV = IN.texcoord - _FresnelCenter;
-                float dist = length(centeredUV) * 2.0;
+                // Use sprite-local quad coordinates so animation UVs don't shift the fresnel.
+                float2 centeredPos = IN.localPos;
+                float dist = length(centeredPos) * 2.0;
                 dist = clamp(dist, 0.0, 1.0);
                 float fresnelHeat = 1.0 - pow(dist, _FresnelPower);
 

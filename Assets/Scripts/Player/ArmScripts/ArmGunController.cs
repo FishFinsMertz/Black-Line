@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class ArmGunController : ArmController
 {
@@ -12,6 +13,10 @@ public class ArmGunController : ArmController
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private float fireRate = 5f; // shots per second
 
+    [Header("Recoil")]
+    [SerializeField] private float recoilStrength = 0.2f; // how far the arm moves back (units)
+    [SerializeField] private float recoilDuration = 0.1f; // total duration (back + return)
+
     [Header("Muzzle Flash")]
     [SerializeField] private Animator muzzleFlashAnimator;
 
@@ -21,11 +26,24 @@ public class ArmGunController : ArmController
 
     private CameraController camController;
     private float nextFireTime = 0f;
+    private Vector3 originalLocalPosition;
+    private bool isRecoiling = false;
 
     protected override void Start()
     {
         base.Start();
         camController = Camera.main.GetComponent<CameraController>();
+        originalLocalPosition = transform.localPosition;
+    }
+
+    private void OnDisable()
+    {
+        if (isRecoiling)
+        {
+            StopAllCoroutines();
+            transform.localPosition = originalLocalPosition;
+            isRecoiling = false;
+        }
     }
 
     protected override void Update()
@@ -68,6 +86,7 @@ public class ArmGunController : ArmController
         float fireDelay = fireRate > 0 ? 1f / fireRate : 0f;
         nextFireTime = Time.time + fireDelay;
 
+        // Spawn bullet
         Vector2 direction = (firePoint.position - directionIndicator.position).normalized;
         GameObject bullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
         GunBullet bulletScript = bullet.GetComponent<GunBullet>();
@@ -78,14 +97,52 @@ public class ArmGunController : ArmController
             bulletScript.Initialize(direction);
         }
 
-        // Increase temperature on heat‑generating objects
+        // Increase temperature
         if (armThermalObject != null)
             armThermalObject.ChangeCurrentTemperature(25f);
         if (bodyThermalObject != null)
             bodyThermalObject.ChangeCurrentTemperature(20f);
 
-        // Trigger muzzle flash animation
+        // Trigger muzzle flash
         if (muzzleFlashAnimator != null)
             muzzleFlashAnimator.SetTrigger("Shoot");
+
+        // Apply recoil (only if not already recoiling)
+        if (!isRecoiling && recoilStrength > 0f)
+            StartCoroutine(Recoil());
+    }
+
+    private IEnumerator Recoil()
+    {
+        isRecoiling = true;
+
+        float elapsed = 0f;
+        float halfDuration = recoilDuration / 2f;
+
+        // Phase 1: move backward (negative local X) - assumes gun's forward is local X
+        Vector3 startPos = originalLocalPosition;
+        Vector3 recoilPos = startPos + Vector3.left * recoilStrength;
+
+        while (elapsed < halfDuration)
+        {
+            float t = elapsed / halfDuration;
+            transform.localPosition = Vector3.Lerp(startPos, recoilPos, t);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        transform.localPosition = recoilPos;
+
+        // Phase 2: return to original
+        elapsed = 0f;
+        while (elapsed < halfDuration)
+        {
+            float t = elapsed / halfDuration;
+            transform.localPosition = Vector3.Lerp(recoilPos, startPos, t);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+        transform.localPosition = startPos;
+
+        isRecoiling = false;
     }
 }

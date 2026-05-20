@@ -701,13 +701,49 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1826829146766602594, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
+      propertyPath: fresnelPower
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1826829146766602594, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
+      propertyPath: useRandomPhase
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1826829146766602594, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
+      propertyPath: brightnessInfluence
+      value: 0.687
+      objectReference: {fileID: 0}
+    - target: {fileID: 2051003976633089647, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
+      propertyPath: useRandomPhase
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2051003976633089647, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
+      propertyPath: brightnessInfluence
+      value: 0.687
+      objectReference: {fileID: 0}
+    - target: {fileID: 2242229410501056500, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
+      propertyPath: useRandomPhase
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2242229410501056500, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
+      propertyPath: brightnessInfluence
+      value: 0.687
+      objectReference: {fileID: 0}
+    - target: {fileID: 3667457769765169290, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6602669560062932297, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
+      propertyPath: recoilStrength
+      value: 0.05
+      objectReference: {fileID: 0}
     - target: {fileID: 6602669560062932297, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
       propertyPath: muzzleFlashAnimator
       value: 
       objectReference: {fileID: 919944609}
     - target: {fileID: 7205983957010132467, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7483931928737666453, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
       propertyPath: m_Size.x
