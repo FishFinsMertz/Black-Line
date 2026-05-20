@@ -1,51 +1,44 @@
 using UnityEngine;
 
-public class ArmGunController : MonoBehaviour
+public class ArmGunController : ArmController
 {
-    [Header("Settings")]
-    [SerializeField] private bool aimEnabled = true;
+    [Header("Gun Settings")]
     [SerializeField] private float minAngle = -20f;
     [SerializeField] private float maxAngle = 80f;
-
-    [Header("Flip")]
-    [SerializeField] private float flipThreshold = 0.1f;
 
     [Header("Gun Details")]
     [SerializeField] private Transform firePoint;
     [SerializeField] private Transform directionIndicator;
     [SerializeField] private GameObject bulletPrefab;
-    [SerializeField] private float fireRate = 5f; // Shots per second (higher = faster)
+    [SerializeField] private float fireRate = 5f; // shots per second
 
-    [Header("Thermal Vision")]
+    [Header("Thermal")]
     [SerializeField] private ThermalObject armThermalObject;
     [SerializeField] private ThermalObject bodyThermalObject;
 
-    private CameraController cam;
-    private PlayerController player;
+    private CameraController camController;
     private float nextFireTime = 0f;
 
-    private void Start()
+    protected override void Start()
     {
-        if (player == null)
-            player = GetComponentInParent<PlayerController>();
-        cam = Camera.main.GetComponent<CameraController>();
+        base.Start();
+        camController = Camera.main.GetComponent<CameraController>();
     }
 
-    private void Update()
+    protected override void Update()
     {
-        if (!aimEnabled) return;
+        base.Update(); // handles flip and armEnabled check
+        if (!armEnabled) return;
 
-        Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        AimAtMouse();
+        HandleShooting();
+    }
+
+    private void AimAtMouse()
+    {
+        Vector3 mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
         mousePos.z = 0f;
 
-        // FLIP LOGIC
-        float dx = mousePos.x - player.transform.position.x;
-        if (dx > flipThreshold && !player.isFacingRight)
-            player.Flip();
-        else if (dx < -flipThreshold && player.isFacingRight)
-            player.Flip();
-
-        // AIM LOGIC
         Vector2 dir = mousePos - transform.position;
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
 
@@ -61,31 +54,31 @@ public class ArmGunController : MonoBehaviour
             angle = Mathf.Clamp(angle, -maxAngle, -minAngle);
             transform.localRotation = Quaternion.Euler(0f, 0f, -angle);
         }
+    }
 
-        // SHOOT with fire rate limit
-        if (Input.GetMouseButtonDown(0) && bulletPrefab != null && firePoint != null && Time.time >= nextFireTime)
+    private void HandleShooting()
+    {
+        if (!Input.GetMouseButtonDown(0)) return;
+        if (bulletPrefab == null || firePoint == null) return;
+        if (Time.time < nextFireTime) return;
+
+        float fireDelay = fireRate > 0 ? 1f / fireRate : 0f;
+        nextFireTime = Time.time + fireDelay;
+
+        Vector2 direction = (firePoint.position - directionIndicator.position).normalized;
+        GameObject bullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
+        GunBullet bulletScript = bullet.GetComponent<GunBullet>();
+        if (bulletScript != null)
         {
-            // Calculate next allowed shot time
-            float fireDelay = fireRate > 0 ? 1f / fireRate : 0f;
-            nextFireTime = Time.time + fireDelay;
-
-            Vector2 direction = (firePoint.position - directionIndicator.position).normalized;
-
-            // Instantiate bullet
-            GameObject bullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
-            GunBullet bulletScript = bullet.GetComponent<GunBullet>();
-            if (bulletScript != null)
-            {
-                // Camera shake
-                cam.TriggerShake(0.5f, 0.3f, 1f);
-                bulletScript.Initialize(direction);
-            }
-
-            // Increase temperature
-            if (armThermalObject != null)
-                armThermalObject.ChangeCurrentTemperature(25f);
-            if (bodyThermalObject != null)
-                bodyThermalObject.ChangeCurrentTemperature(20f);
+            if (camController != null)
+                camController.TriggerShake(0.5f, 0.3f, 1f);
+            bulletScript.Initialize(direction);
         }
+
+        // Increase temperature on heat‑generating objects
+        if (armThermalObject != null)
+            armThermalObject.ChangeCurrentTemperature(25f);
+        if (bodyThermalObject != null)
+            bodyThermalObject.ChangeCurrentTemperature(20f);
     }
 }

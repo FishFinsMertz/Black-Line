@@ -480,6 +480,25 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!1 &1931592861 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7433923514042709585, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
+  m_PrefabInstance: {fileID: 336386366199253394}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1931592865
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1931592861}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1efe1eddb9201b24e8484a4f81f21cc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  armEnabled: 1
+  flipThreshold: 0.1
 --- !u!1 &2003924538
 GameObject:
   m_ObjectHideFlags: 0
@@ -712,6 +731,10 @@ PrefabInstance:
       propertyPath: brightnessInfluence
       value: 0.82
       objectReference: {fileID: 0}
+    - target: {fileID: 5427079165002162839, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
+      propertyPath: currentArm
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 8330259796792489906, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
       propertyPath: m_Name
       value: Player
@@ -719,7 +742,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7433923514042709585, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1931592865}
   m_SourcePrefab: {fileID: 100100000, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
 --- !u!1001 &2410981151704392758
 PrefabInstance:
