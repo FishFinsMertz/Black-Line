@@ -99,9 +99,9 @@ public class ArmGunController : ArmController
 
         // Increase temperature
         if (armThermalObject != null)
-            armThermalObject.ChangeCurrentTemperature(25f);
+            armThermalObject.ChangeCurrentTemperature(20f);
         if (bodyThermalObject != null)
-            bodyThermalObject.ChangeCurrentTemperature(20f);
+            bodyThermalObject.ChangeCurrentTemperature(15f);
 
         // Trigger muzzle flash
         if (muzzleFlashAnimator != null)

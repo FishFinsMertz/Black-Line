@@ -78,8 +78,10 @@ Shader "Shaders/ThermalVision_Sprite_NoGhost"
                 float grayValue = dot(originalColor.rgb, float3(0.3, 0.59, 0.11));
 
                 // Use sprite-local quad coordinates so animation UVs don't shift the fresnel.
-                float2 centeredPos = IN.localPos;
-                float dist = length(centeredPos) * 2.0;
+                float2 spritePos = IN.localPos * 2.0;
+                float2 centerOffset = _FresnelCenter * 2.0 - 1.0;
+                float2 centeredPos = spritePos - centerOffset;
+                float dist = length(centeredPos);
                 dist = clamp(dist, 0.0, 1.0);
                 float fresnelHeat = 1.0 - pow(dist, _FresnelPower);
 

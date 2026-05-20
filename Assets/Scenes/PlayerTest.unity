@@ -702,8 +702,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1826829146766602594, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
+      propertyPath: pulseSpeed
+      value: 0.21
+      objectReference: {fileID: 0}
+    - target: {fileID: 1826829146766602594, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
       propertyPath: fresnelPower
       value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1826829146766602594, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
+      propertyPath: pulseAmplitude
+      value: 10.2
       objectReference: {fileID: 0}
     - target: {fileID: 1826829146766602594, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
       propertyPath: useRandomPhase
@@ -743,7 +751,7 @@ PrefabInstance:
       objectReference: {fileID: 919944609}
     - target: {fileID: 7205983957010132467, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7483931928737666453, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
       propertyPath: m_Size.x
