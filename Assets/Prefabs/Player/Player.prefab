@@ -730,7 +730,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.64, y: 0.98}
+  m_Size: {x: 0.64, y: 0.95}
   m_EdgeRadius: 0
 --- !u!114 &5427079165002162839
 MonoBehaviour:
@@ -744,7 +744,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 769ba768d5cfd644c9ab3628834bff53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  walkSpeed: 2.5
+  walkSpeed: 2
   isFacingRight: 1
   bodyAnimator: {fileID: 1050252505090677471}
   inventory: {fileID: 0}

@@ -59,7 +59,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2301126729919090981}
   - component: {fileID: 5252347464817028447}
-  - component: {fileID: 840517070161549179}
   m_Layer: 0
   m_Name: ColdEffectPPr
   m_TagString: Untagged
@@ -99,21 +98,6 @@ MonoBehaviour:
   blendDistance: 0
   weight: 0
   sharedProfile: {fileID: 11400000, guid: c44f15d7e7bac984aa28b8ee53301483, type: 2}
---- !u!114 &840517070161549179
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4047305916158315591}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f9809c4840dc614193fc516313fcabd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxColdWeight: 1
-  minColdWeight: 0
-  warmThreshold: 50
 --- !u!1 &4419232350363945829
 GameObject:
   m_ObjectHideFlags: 0
@@ -124,6 +108,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4836232460415569554}
   - component: {fileID: 81326716679314901}
+  - component: {fileID: 6324483685064592401}
+  - component: {fileID: 4216547621254958396}
   m_Layer: 0
   m_Name: PPVolumes
   m_TagString: Untagged
@@ -147,6 +133,7 @@ Transform:
   - {fileID: 5504209683414134153}
   - {fileID: 4041776408329072920}
   - {fileID: 2301126729919090981}
+  - {fileID: 6188338234042880315}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &81326716679314901
@@ -163,6 +150,91 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   toggleKey: 116
   startEnabled: 0
+--- !u!114 &6324483685064592401
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4419232350363945829}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 1
+  priority: 0
+  blendDistance: 0
+  weight: 1
+  sharedProfile: {fileID: 0}
+--- !u!114 &4216547621254958396
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4419232350363945829}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f9809c4840dc614193fc516313fcabd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  coldVolume: {fileID: 5252347464817028447}
+  maxColdWeight: 1
+  minColdWeight: 0
+  warmThreshold: 70
+  overheatVolume: {fileID: 6969594621403123540}
+  maxOverheatWeight: 1
+  overheatThreshold: 80
+--- !u!1 &6373389084517428033
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6188338234042880315}
+  - component: {fileID: 6969594621403123540}
+  m_Layer: 0
+  m_Name: OverheatEffectPPr
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6188338234042880315
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6373389084517428033}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4836232460415569554}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6969594621403123540
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6373389084517428033}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 1
+  priority: 2
+  blendDistance: 0
+  weight: 0
+  sharedProfile: {fileID: 11400000, guid: 27773b3125dbb3e47bfd3e1c376afe59, type: 2}
 --- !u!1 &7216587994503861891
 GameObject:
   m_ObjectHideFlags: 0
