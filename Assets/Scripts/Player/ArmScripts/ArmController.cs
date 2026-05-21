@@ -7,6 +7,7 @@ public abstract class ArmController : MonoBehaviour
     [SerializeField] protected float flipThreshold = 0.1f;
 
     protected PlayerController player;
+    protected PlayerState currentPlayerState;
     protected Camera cam;
 
     protected virtual void Start()
@@ -19,6 +20,7 @@ public abstract class ArmController : MonoBehaviour
     {
         if (!armEnabled) return;
         HandleFlip();
+        currentPlayerState = player.GetCurrentState();
     }
 
     // Flip the player based on mouse position relative to player's pivot

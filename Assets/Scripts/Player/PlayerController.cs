@@ -48,4 +48,9 @@ public class PlayerController : MonoBehaviour
         currentState = newState;
         currentState?.Enter();
     }
+
+    public PlayerState GetCurrentState()
+    {
+        return currentState;
+    }
 }
