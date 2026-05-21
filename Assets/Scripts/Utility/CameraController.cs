@@ -6,6 +6,12 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float smoothSpeed = 5f;     
     [SerializeField] private Vector3 offset = new Vector3(0f, 0f, -10f); 
 
+    [Header("Mouse Follow (Cursor) – Right Click Only")]
+    [SerializeField] private bool enableMouseFollow = true;
+    [SerializeField] private float minFollowDistance = 1f;
+    [SerializeField] private float maxFollowDistance = 3f;
+    [SerializeField] private float mouseFollowSmoothing = 8f;
+
     [Header("Positional Wobble (Temperature Based)")]
     [SerializeField] private bool enableWobble = true;
     [SerializeField] private float maxWobbleIntensity = 0.15f;
@@ -24,7 +30,7 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float wobblePower = 2f;
 
     [Header("Camera Shake (External)")]
-    [SerializeField] private float shakeDecaySpeed = 5f;   // how fast shake fades (units per second)
+    [SerializeField] private float shakeDecaySpeed = 5f;
 
     private ThermalObject playerThermal;
     private Transform target;      
@@ -36,11 +42,13 @@ public class CameraController : MonoBehaviour
     // Shake state
     private float currentShakeStrength = 0f;
     private float shakeRemainingTime = 0f;
-    private float currentShakeRoughness = 0.5f;  // default roughness
+    private float currentShakeRoughness = 0.5f;
 
-    // Random seeds for erratic shake
-    private float randomSeedX;
-    private float randomSeedY;
+    // Mouse follow offset (smoothed)
+    private Vector3 currentMouseOffset = Vector3.zero;
+    private Vector3 targetMouseOffset = Vector3.zero;
+
+    private float randomSeedX, randomSeedY;
 
     private void Start()
     {
@@ -68,23 +76,49 @@ public class CameraController : MonoBehaviour
     {
         if (target == null) return;
         
-        // --- Update shake timer and intensity ---
+        // Update shake
         if (shakeRemainingTime > 0f)
         {
             shakeRemainingTime -= Time.deltaTime;
             currentShakeStrength = Mathf.MoveTowards(currentShakeStrength, 0f, shakeDecaySpeed * Time.deltaTime);
             if (shakeRemainingTime <= 0f) currentShakeStrength = 0f;
         }
+        else currentShakeStrength = 0f;
+
+        // Base desired position
+        Vector3 desiredPosition = target.position + offset;
+        
+        // --- Mouse follow offset – only when right click is held ---
+        if (enableMouseFollow && Input.GetMouseButton(1)) // 1 = right mouse button
+        {
+            Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            mouseWorldPos.z = 0f;
+            
+            Vector2 playerPos = target.position;
+            Vector2 mouseDir = (mouseWorldPos - (Vector3)playerPos).normalized;
+            float mouseDistance = Vector2.Distance(mouseWorldPos, playerPos);
+            
+            if (mouseDistance > minFollowDistance)
+            {
+                float offsetMagnitude = Mathf.Clamp(mouseDistance - minFollowDistance, 0f, maxFollowDistance);
+                targetMouseOffset = (Vector3)mouseDir * offsetMagnitude;
+            }
+            else
+            {
+                targetMouseOffset = Vector3.zero;
+            }
+        }
         else
         {
-            currentShakeStrength = 0f;
+            targetMouseOffset = Vector3.zero;
         }
-
-        // --- Base desired position (player follow) ---
-        Vector3 desiredPosition = target.position + offset;
+        
+        currentMouseOffset = Vector3.Lerp(currentMouseOffset, targetMouseOffset, mouseFollowSmoothing * Time.deltaTime);
+        desiredPosition += currentMouseOffset;
+        
         Vector3 smoothedPos = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed * Time.deltaTime);
         
-        // --- Temperature intensity ---
+        // Temperature intensity for wobble/tilt
         float targetIntensity = 0f;
         if (playerThermal != null)
         {
@@ -98,13 +132,12 @@ public class CameraController : MonoBehaviour
             }
         }
         
-        // --- Smooth wobble intensities ---
         if (enableWobble)
             currentWobbleIntensity = Mathf.Lerp(currentWobbleIntensity, targetIntensity * maxWobbleIntensity, wobbleLerpSpeed * Time.deltaTime);
         if (enableTilt)
             currentTiltIntensity = Mathf.Lerp(currentTiltIntensity, targetIntensity * maxTiltAngle, tiltLerpSpeed * Time.deltaTime);
         
-        // --- Add temperature‑based wobble offset ---
+        // Temperature wobble offset
         if (currentWobbleIntensity > 0.001f)
         {
             float time = Time.time * wobbleFrequency;
@@ -113,17 +146,16 @@ public class CameraController : MonoBehaviour
             desiredPosition += new Vector3(wobbleX, wobbleY, 0f);
         }
         
-        // --- Add external shake offset with current roughness ---
+        // External shake offset
         if (currentShakeStrength > 0.001f)
         {
             Vector2 shakeOffset = GetShakeOffset(currentShakeStrength, currentShakeRoughness);
             desiredPosition += new Vector3(shakeOffset.x, shakeOffset.y, 0f);
         }
         
-        // --- Smooth follow again (now includes both wobble and shake) ---
         smoothedPos = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed * Time.deltaTime);
         
-        // --- Rotational tilt (temperature based only) ---
+        // Rotational tilt
         Quaternion targetRotation = initialRotation;
         if (currentTiltIntensity > 0.001f && enableTilt)
         {
@@ -137,33 +169,26 @@ public class CameraController : MonoBehaviour
         transform.rotation = targetRotation;
     }
 
-    // Generate shake offset based on strength and roughness (0 = smooth, 1 = erratic)
     private Vector2 GetShakeOffset(float strength, float roughness)
     {
         float time = Time.time;
         float rough = Mathf.Clamp01(roughness);
-        float smoothPart = 1f - rough;
         
-        // Smooth component (original sine waves)
         float smoothX = Mathf.Sin(time * 25f) * strength;
         smoothX += Mathf.Sin(time * 13f) * (strength * 0.6f);
         float smoothY = Mathf.Cos(time * 22f) * strength;
         smoothY += Mathf.Sin(time * 17f) * (strength * 0.5f);
         
-        // Rough component (Perlin noise for erratic movement)
         float noiseX = Mathf.PerlinNoise(randomSeedX + time * 30f, 0f) * 2f - 1f;
         float noiseY = Mathf.PerlinNoise(randomSeedY + time * 25f, 0f) * 2f - 1f;
         noiseX *= strength * rough;
         noiseY *= strength * rough;
         
-        // Blend
         float finalX = (smoothX * (1f - rough)) + noiseX;
         float finalY = (smoothY * (1f - rough)) + noiseY;
-        
         return new Vector2(finalX, finalY);
     }
     
-    // --- Public method to trigger a camera shake with smoothness parameter ---
     public void TriggerShake(float intensity, float duration, float smoothness = 0.5f)
     {
         currentShakeStrength = Mathf.Max(currentShakeStrength, intensity);
