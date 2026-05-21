@@ -57,7 +57,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -78,12 +78,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 3
-  m_Sprite: {fileID: 1987766910169132740, guid: b1fb484c86c97a9489df987818d1570b, type: 3}
+  m_Sprite: {fileID: -86536063, guid: b1fb484c86c97a9489df987818d1570b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.09, y: 0.1}
+  m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -125,7 +125,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   temperature: 100
   currentTemperature: 0
-  fresnelPower: 0
+  fresnelPower: 0.876
   brightnessInfluence: 1
   fresnelCenter: {x: 0.5, y: 0.5}
   temperatureLerpSpeed: 5
@@ -211,7 +211,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: 7648128650684761585, guid: e087b63d9cfbab642adca2090cc732e8, type: 3}
+  m_Sprite: {fileID: 7067002416802404409, guid: 59ab7153b3d41364fa17d6dde6aaef83, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -237,13 +237,13 @@ MonoBehaviour:
   temperature: 70
   currentTemperature: 0
   fresnelPower: 0.287
-  brightnessInfluence: 0.82
+  brightnessInfluence: 0.687
   fresnelCenter: {x: 0.7, y: 0.59}
   temperatureLerpSpeed: 20
   enablePulse: 1
   pulseSpeed: 0.08
   pulseAmplitude: 4.7
-  useRandomPhase: 1
+  useRandomPhase: 0
   infraredMaterial: {fileID: 2100000, guid: b4fd0e44745275b4a92bc32b828f26d4, type: 2}
 --- !u!1 &4070062582235551253
 GameObject:
@@ -379,14 +379,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   temperature: 70
   currentTemperature: 70
-  fresnelPower: 0.128
-  brightnessInfluence: 0.928
+  fresnelPower: 0.4
+  brightnessInfluence: 0.687
   fresnelCenter: {x: 0.5, y: 0.5}
   temperatureLerpSpeed: 20
   enablePulse: 1
-  pulseSpeed: 0.23
-  pulseAmplitude: 1.23
-  useRandomPhase: 1
+  pulseSpeed: 0.21
+  pulseAmplitude: 10.2
+  useRandomPhase: 0
   infraredMaterial: {fileID: 2100000, guid: b4fd0e44745275b4a92bc32b828f26d4, type: 2}
 --- !u!95 &1050252505090677471
 Animator:
@@ -426,7 +426,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3374192485560622825
 Transform:
   m_ObjectHideFlags: 0
@@ -466,6 +466,9 @@ MonoBehaviour:
   directionIndicator: {fileID: 8106077944697287082}
   bulletPrefab: {fileID: 132753738356837407, guid: 4ffda103b120de64cba3cb8826825267, type: 3}
   fireRate: 2
+  recoilStrength: 0.05
+  recoilDuration: 0.1
+  muzzleFlashAnimator: {fileID: 4658165770266886540}
   armThermalObject: {fileID: 2051003976633089647}
   bodyThermalObject: {fileID: 1826829146766602594}
 --- !u!1 &7433923514042709585
@@ -547,7 +550,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: -4709777414506960502, guid: 296bd8cc2d8a65b45a07cdc312d9c8bf, type: 3}
+  m_Sprite: {fileID: -1495816008420106182, guid: 09946d7ad1eb31243bd80797e9a24ae4, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -573,13 +576,13 @@ MonoBehaviour:
   temperature: 70
   currentTemperature: 0
   fresnelPower: 0.183
-  brightnessInfluence: 0.402
+  brightnessInfluence: 0.687
   fresnelCenter: {x: 0.5, y: 0.5}
   temperatureLerpSpeed: 20
   enablePulse: 1
   pulseSpeed: 0.23
   pulseAmplitude: 8
-  useRandomPhase: 1
+  useRandomPhase: 0
   infraredMaterial: {fileID: 2100000, guid: b4fd0e44745275b4a92bc32b828f26d4, type: 2}
 --- !u!114 &1014917297205175852
 MonoBehaviour:

@@ -480,11 +480,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!95 &919944609 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 4658165770266886540, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
-  m_PrefabInstance: {fileID: 336386366199253394}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2003924538
 GameObject:
   m_ObjectHideFlags: 0
@@ -657,10 +652,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 927296276545873791, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
-      propertyPath: fresnelPower
-      value: 0.876
-      objectReference: {fileID: 0}
     - target: {fileID: 1608731299875015705, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.0707362
@@ -701,90 +692,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1826829146766602594, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
-      propertyPath: pulseSpeed
-      value: 0.21
+    - target: {fileID: 5427079165002162839, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
+      propertyPath: walkSpeed
+      value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 1826829146766602594, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
-      propertyPath: fresnelPower
-      value: 0.4
-      objectReference: {fileID: 0}
-    - target: {fileID: 1826829146766602594, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
-      propertyPath: pulseAmplitude
-      value: 10.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1826829146766602594, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
-      propertyPath: useRandomPhase
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1826829146766602594, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
-      propertyPath: brightnessInfluence
-      value: 0.687
-      objectReference: {fileID: 0}
-    - target: {fileID: 1955767946148112222, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: -1495816008420106182, guid: 09946d7ad1eb31243bd80797e9a24ae4, type: 3}
-    - target: {fileID: 2051003976633089647, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
-      propertyPath: useRandomPhase
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2051003976633089647, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
-      propertyPath: brightnessInfluence
-      value: 0.687
-      objectReference: {fileID: 0}
-    - target: {fileID: 2242229410501056500, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
-      propertyPath: useRandomPhase
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2242229410501056500, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
-      propertyPath: brightnessInfluence
-      value: 0.687
-      objectReference: {fileID: 0}
-    - target: {fileID: 3667457769765169290, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6602669560062932297, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
-      propertyPath: recoilStrength
-      value: 0.05
-      objectReference: {fileID: 0}
-    - target: {fileID: 6602669560062932297, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
-      propertyPath: muzzleFlashAnimator
-      value: 
-      objectReference: {fileID: 919944609}
-    - target: {fileID: 7205983957010132467, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7483931928737666453, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
-      propertyPath: m_Size.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7483931928737666453, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
-      propertyPath: m_Size.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7483931928737666453, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: -86536063, guid: b1fb484c86c97a9489df987818d1570b, type: 3}
-    - target: {fileID: 7483931928737666453, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
-      propertyPath: m_WasSpriteAssigned
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7483931928737666453, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
     - target: {fileID: 8330259796792489906, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    - target: {fileID: 9045547938306447343, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 7067002416802404409, guid: 59ab7153b3d41364fa17d6dde6aaef83, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
