@@ -10,6 +10,7 @@ public class ThermalObject : MonoBehaviour, IHasThermal
     [SerializeField, Range(0f, 1f)] private float fresnelPower = 0.5f;
     [SerializeField, Range(0f, 1f)] private float brightnessInfluence = 0.08f;
     [SerializeField] private Vector2 fresnelCenter = new Vector2(0.5f, 0.5f); // NEW
+    [SerializeField, Range(0.1f, 5f)] private float fresnelRadius = 1f; // NEW
     [SerializeField, Range(0.5f, 20f)] private float temperatureLerpSpeed = 5f; 
 
     [Header("Temperature Pulse (Beating Heart)")]
@@ -29,6 +30,7 @@ public class ThermalObject : MonoBehaviour, IHasThermal
     private static readonly int FresnelPowerProperty = Shader.PropertyToID("_FresnelPower");
     private static readonly int BrightnessInfluenceProperty = Shader.PropertyToID("_BrightnessInfluence");
     private static readonly int FresnelCenterProperty = Shader.PropertyToID("_FresnelCenter"); // NEW
+    private static readonly int FresnelRadiusProperty = Shader.PropertyToID("_FresnelRadius"); // NEW
 
     void Awake()
     {
@@ -91,6 +93,7 @@ public class ThermalObject : MonoBehaviour, IHasThermal
         uniqueMaterial.SetFloat(FresnelPowerProperty, fresnelPower);
         uniqueMaterial.SetFloat(BrightnessInfluenceProperty, brightnessInfluence);
         uniqueMaterial.SetVector(FresnelCenterProperty, fresnelCenter); // NEW
+        uniqueMaterial.SetFloat(FresnelRadiusProperty, fresnelRadius); // NEW
     }
 
     // Public API
@@ -103,6 +106,7 @@ public class ThermalObject : MonoBehaviour, IHasThermal
     public void SetFresnelPower(float newPower) => fresnelPower = Mathf.Clamp01(newPower);
     public void SetBrightnessInfluence(float newInfluence) => brightnessInfluence = Mathf.Clamp01(newInfluence);
     public void SetFresnelCenter(Vector2 center) => fresnelCenter = center; // NEW
+    public void SetFresnelRadius(float radius) => fresnelRadius = Mathf.Clamp(radius, 0.1f, 5f); // NEW
 
     public void SetPulse(bool enabled, float speed = 1f, float amplitude = 20f)
     {

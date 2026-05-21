@@ -10,6 +10,7 @@ Shader "Shaders/ThermalVision_Sprite_NoGhost"
         _FresnelPower ("Fresnel Power", Range(0.0, 1.0)) = 0.5
         _BrightnessInfluence ("Brightness Influence", Range(0.0, 1.0)) = 0.08
         _FresnelCenter ("Fresnel Center", Vector) = (0.5, 0.5, 0, 0)
+        _FresnelRadius ("Fresnel Radius", Range(0.1, 5.0)) = 1.0
     }
     SubShader
     {
@@ -57,6 +58,7 @@ Shader "Shaders/ThermalVision_Sprite_NoGhost"
             float _FresnelPower;
             float _BrightnessInfluence;
             float2 _FresnelCenter;
+            float _FresnelRadius;
 
             v2f vert(appdata_t IN)
             {
@@ -82,7 +84,7 @@ Shader "Shaders/ThermalVision_Sprite_NoGhost"
                 float2 centerOffset = _FresnelCenter * 2.0 - 1.0;
                 float2 centeredPos = spritePos - centerOffset;
                 float dist = length(centeredPos);
-                dist = clamp(dist, 0.0, 1.0);
+                dist = clamp(dist / _FresnelRadius, 0.0, 1.0);
                 float fresnelHeat = 1.0 - pow(dist, _FresnelPower);
 
                 float rampValueUnscaled = clamp(fresnelHeat + grayValue * _BrightnessInfluence, 0.0, 1.0);

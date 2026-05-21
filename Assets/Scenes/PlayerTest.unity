@@ -155,6 +155,7 @@ MonoBehaviour:
   fresnelPower: 0.131
   brightnessInfluence: 0.835
   fresnelCenter: {x: 0.5, y: 0.5}
+  fresnelRadius: 1
   temperatureLerpSpeed: 5
   enablePulse: 1
   pulseSpeed: 0.23
@@ -312,6 +313,7 @@ MonoBehaviour:
   fresnelPower: 0
   brightnessInfluence: 0.395
   fresnelCenter: {x: 0.5, y: 0.5}
+  fresnelRadius: 1
   temperatureLerpSpeed: 5
   enablePulse: 0
   pulseSpeed: 0
@@ -864,9 +866,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   temperature: 79.8
   currentTemperature: 0
-  fresnelPower: 0.6
+  fresnelPower: 0.191
   brightnessInfluence: 1
   fresnelCenter: {x: 0.45, y: 0.06}
+  fresnelRadius: 3.63
   temperatureLerpSpeed: 20
   enablePulse: 1
   pulseSpeed: 0.16
