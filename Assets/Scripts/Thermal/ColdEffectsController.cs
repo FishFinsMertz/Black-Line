@@ -6,23 +6,30 @@ using UnityEngine.SceneManagement;
 [RequireComponent(typeof(Volume))]
 public class ColdEffectsController : MonoBehaviour
 {
-    [Header("Temperature Mapping")]
+    [Header("Cold Effects")]
+    [SerializeField] private Volume coldVolume;                 // Assign in Inspector (the existing cold volume)
     [SerializeField] private float maxColdWeight = 1f;
     [SerializeField] private float minColdWeight = 0f;
     [SerializeField] private float warmThreshold = 70f;
 
-    private Volume coldVolume;
+    [Header("Overheat Effects")]
+    [SerializeField] private Volume overheatVolume;             // Assign your OverheatEffectPPr Volume here
+    [SerializeField] private float maxOverheatWeight = 1f;
+    [SerializeField] private float overheatThreshold = 80f;     // Above this temperature, overheat starts
+
     private ThermalObject playerThermal;
 
     private void Start()
     {
-        coldVolume = GetComponent<Volume>();
+        // Ensure both volumes are assigned (fallback to GetComponent for coldVolume if needed)
+        if (coldVolume == null)
+            coldVolume = GetComponent<Volume>();
+
         FindPlayerThermal();
     }
 
     private void OnEnable()
     {
-        // Subscribe to scene load events
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
@@ -33,10 +40,7 @@ public class ColdEffectsController : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // Re‑find the player after every scene load
         FindPlayerThermal();
-        // Also reset volume weight to avoid sudden jumps (optional)
-        // coldVolume.weight = 0;
     }
 
     private void FindPlayerThermal()
@@ -44,7 +48,7 @@ public class ColdEffectsController : MonoBehaviour
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj == null)
         {
-            Debug.LogWarning("No GameObject with tag 'Player' found. Cold effects won't work.");
+            Debug.LogWarning("No GameObject with tag 'Player' found. Temperature effects won't work.");
             playerThermal = null;
             return;
         }
@@ -61,16 +65,25 @@ public class ColdEffectsController : MonoBehaviour
         if (playerThermal == null) return;
 
         float temp = playerThermal.GetTemperature();
-        float weight = 0f;
 
+        // --- Cold effects (below warmThreshold) ---
+        float coldWeight = 0f;
         if (temp < warmThreshold)
         {
-            weight = 1f - (temp / warmThreshold);
-            weight = Mathf.Clamp01(weight);
-            weight = weight * maxColdWeight;
+            coldWeight = 1f - (temp / warmThreshold);
+            coldWeight = Mathf.Clamp01(coldWeight) * maxColdWeight;
         }
+        if (coldVolume != null)
+            coldVolume.weight = coldWeight;
 
-        // Smooth transition
-        coldVolume.weight = weight;
+        // --- Overheat effects (above overheatThreshold) ---
+        float overheatWeight = 0f;
+        if (temp > overheatThreshold)
+        {
+            overheatWeight = (temp - overheatThreshold) / (100f - overheatThreshold);
+            overheatWeight = Mathf.Clamp01(overheatWeight) * maxOverheatWeight;
+        }
+        if (overheatVolume != null)
+            overheatVolume.weight = overheatWeight;
     }
 }
