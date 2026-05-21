@@ -721,6 +721,10 @@ PrefabInstance:
       propertyPath: brightnessInfluence
       value: 0.687
       objectReference: {fileID: 0}
+    - target: {fileID: 1955767946148112222, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -1495816008420106182, guid: 09946d7ad1eb31243bd80797e9a24ae4, type: 3}
     - target: {fileID: 2051003976633089647, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
       propertyPath: useRandomPhase
       value: 0
