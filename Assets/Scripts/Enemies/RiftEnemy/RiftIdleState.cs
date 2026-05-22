@@ -14,6 +14,7 @@ public class RiftIdleState : EnemyState
         {
             enemy.ChangeState(new RiftBounceState(enemy));
         }
+
     }
 
     public override void FixedUpdate() { }

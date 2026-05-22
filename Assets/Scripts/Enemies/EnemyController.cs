@@ -6,7 +6,7 @@ public abstract class EnemyController : MonoBehaviour
     [SerializeField] protected float detectionRadius = 5f;
     [SerializeField] protected float attackRadius = 1f;
 
-    protected Rigidbody2D rb;
+    public Rigidbody2D rb;
     protected EnemyState currentState;
     protected ThermalObject thermalObject;
     protected GameObject player;
