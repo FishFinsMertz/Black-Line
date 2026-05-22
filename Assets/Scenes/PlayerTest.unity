@@ -937,7 +937,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 872885805935217519, guid: 5dd8d1f111f7aca43b4e79ff5356af00, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.097
+      value: -2.135
       objectReference: {fileID: 0}
     - target: {fileID: 872885805935217519, guid: 5dd8d1f111f7aca43b4e79ff5356af00, type: 3}
       propertyPath: m_LocalPosition.z
@@ -973,6 +973,34 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2510765323977025971, guid: 5dd8d1f111f7aca43b4e79ff5356af00, type: 3}
       propertyPath: bounceDelay
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2510765323977025971, guid: 5dd8d1f111f7aca43b4e79ff5356af00, type: 3}
+      propertyPath: bounceSpeed
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 2510765323977025971, guid: 5dd8d1f111f7aca43b4e79ff5356af00, type: 3}
+      propertyPath: chanceToLunge
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2510765323977025971, guid: 5dd8d1f111f7aca43b4e79ff5356af00, type: 3}
+      propertyPath: bounceAngleMax
+      value: 70
+      objectReference: {fileID: 0}
+    - target: {fileID: 2510765323977025971, guid: 5dd8d1f111f7aca43b4e79ff5356af00, type: 3}
+      propertyPath: bounceAngleMin
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 2510765323977025971, guid: 5dd8d1f111f7aca43b4e79ff5356af00, type: 3}
+      propertyPath: bounceDelayMax
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2510765323977025971, guid: 5dd8d1f111f7aca43b4e79ff5356af00, type: 3}
+      propertyPath: surfaceLayer.m_Bits
+      value: 64
+      objectReference: {fileID: 0}
+    - target: {fileID: 7321368099368343260, guid: 5dd8d1f111f7aca43b4e79ff5356af00, type: 3}
+      propertyPath: m_CollisionDetection
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7462846303542068838, guid: 5dd8d1f111f7aca43b4e79ff5356af00, type: 3}

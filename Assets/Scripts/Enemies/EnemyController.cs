@@ -1,3 +1,4 @@
+// EnemyController.cs
 using UnityEngine;
 
 public abstract class EnemyController : MonoBehaviour
@@ -7,9 +8,10 @@ public abstract class EnemyController : MonoBehaviour
     [SerializeField] protected float attackRadius = 1f;
 
     public Rigidbody2D rb;
+    public bool isFacingRight = false;
     protected EnemyState currentState;
     protected ThermalObject thermalObject;
-    protected GameObject player;
+    public GameObject player;
 
     protected virtual void Awake()
     {
@@ -18,17 +20,10 @@ public abstract class EnemyController : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
     }
 
-    protected virtual void Start() { } // subclass sets initial state
+    protected virtual void Start() { }
 
-    protected virtual void Update()
-    {
-        currentState?.Update();
-    }
-
-    protected virtual void FixedUpdate()
-    {
-        currentState?.FixedUpdate();
-    }
+    protected virtual void Update() { currentState?.Update(); }
+    protected virtual void FixedUpdate() { currentState?.FixedUpdate(); }
 
     public void ChangeState(EnemyState newState)
     {
@@ -37,29 +32,25 @@ public abstract class EnemyController : MonoBehaviour
         currentState?.Enter();
     }
 
-    public void Flip()
+    public void FacePlayer()
     {
-        Vector3 scale = transform.localScale;
-        scale.x *= -1f;
-        transform.localScale = scale;
+        float dx = player.transform.position.x - transform.position.x;
+        bool shouldFaceRight = dx > 0f;
+        if (shouldFaceRight != isFacingRight)
+        {
+            isFacingRight = shouldFaceRight;
+            Vector3 scale = transform.localScale;
+            scale.x *= -1f;
+            transform.localScale = scale;
+        }
     }
 
-    // Locational Logic
-    public bool IsPlayerInDetectionRange()
-    {
-        Vector2 direction = player.transform.position - transform.position;
-        return direction.magnitude <= detectionRadius;
-    }
+    public bool IsPlayerInDetectionRange() =>
+        (player.transform.position - transform.position).magnitude <= detectionRadius;
 
-    public bool IsPlayerInAttackRange()
-    {
-        Vector2 direction = player.transform.position - transform.position;
-        return direction.magnitude <= attackRadius;
-    }
+    public bool IsPlayerInAttackRange() =>
+        (player.transform.position - transform.position).magnitude <= attackRadius;
 
-    // Temperature logic
-    public void ChangeBaseTemperature(float damage)
-    {
+    public void ChangeBaseTemperature(float damage) =>
         thermalObject.ChangeBaseTemperature(damage);
-    }
 }
