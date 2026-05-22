@@ -45,9 +45,16 @@ public abstract class EnemyController : MonoBehaviour
     }
 
     // Locational Logic
-    public Vector2 GetPlayerPosition()
+    public bool IsPlayerInDetectionRange()
     {
-        return player.transform.position;
+        Vector2 direction = player.transform.position - transform.position;
+        return direction.magnitude <= detectionRadius;
+    }
+
+    public bool IsPlayerInAttackRange()
+    {
+        Vector2 direction = player.transform.position - transform.position;
+        return direction.magnitude <= attackRadius;
     }
 
     // Temperature logic

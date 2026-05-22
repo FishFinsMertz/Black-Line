@@ -10,6 +10,10 @@ public class RiftIdleState : EnemyState
 
     public override void Update()
     {
+        if (enemy.IsPlayerInDetectionRange())
+        {
+            enemy.ChangeState(new RiftBounceState(enemy));
+        }
     }
 
     public override void FixedUpdate() { }
