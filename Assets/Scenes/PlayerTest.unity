@@ -493,9 +493,10 @@ GameObject:
   - component: {fileID: 519526953}
   - component: {fileID: 519526954}
   - component: {fileID: 519526955}
+  - component: {fileID: 519526956}
   m_Layer: 8
   m_Name: EnemyRift
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -594,8 +595,21 @@ PolygonCollider2D:
       - {x: -0.9068311, y: -0.42301175}
       - {x: -0.5877852, y: -0.80901706}
       - {x: 0.58778536, y: -0.80901694}
-      - {x: 0.6722969, y: 0.48507565}
+      - {x: 0.75713444, y: 0.52627087}
+      - {x: 0.63369656, y: 0.5159556}
   m_UseDelaunayMesh: 0
+--- !u!114 &519526956
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519526952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cb0aaf4ff0270ab4ba028dee65554481, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2003924538
 GameObject:
   m_ObjectHideFlags: 0
@@ -864,16 +878,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3834701d395f3fb4f9415b7789ba40b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  temperature: 79.8
+  temperature: 30
   currentTemperature: 0
-  fresnelPower: 0.191
+  fresnelPower: 0.32
   brightnessInfluence: 1
   fresnelCenter: {x: 0.45, y: 0.06}
-  fresnelRadius: 3.63
+  fresnelRadius: 5
   temperatureLerpSpeed: 20
   enablePulse: 1
   pulseSpeed: 0.16
-  pulseAmplitude: 42
+  pulseAmplitude: 11.4
   useRandomPhase: 1
   infraredMaterial: {fileID: 2100000, guid: b4fd0e44745275b4a92bc32b828f26d4, type: 2}
 --- !u!1001 &336386366199253394

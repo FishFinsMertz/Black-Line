@@ -51,7 +51,7 @@ public class GunBullet : MonoBehaviour
         if (hitEffectPrefab != null)
         {
             GameObject effect = Instantiate(hitEffectPrefab, transform.position, Quaternion.identity);
-            // Optional: destroy effect after its duration
+
             ParticleSystem ps = effect.GetComponent<ParticleSystem>();
             if (ps != null)
             {
@@ -64,7 +64,15 @@ public class GunBullet : MonoBehaviour
             }
         }
 
-        //Debug.Log($"Bullet hit: {hitObject.name}");
+        if (hitObject.CompareTag("Enemy"))
+        {
+            EnemyController enemy = hitObject.GetComponent<EnemyController>();
+            if (enemy != null)
+            {
+                enemy.ChangeBaseTemperature(10f); // example damage value
+            }
+        }
+        
         Destroy(gameObject);
     }
 }
