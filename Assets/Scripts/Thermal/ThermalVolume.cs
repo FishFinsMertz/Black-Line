@@ -4,12 +4,17 @@ using UnityEngine.Rendering;
 [RequireComponent(typeof(Volume))]
 public class ThermalVolume : MonoBehaviour
 {
-    private Volume volume;
+    // When thermal turned on, turn on thermal volume, turn off main volume, vice versa
+
+    private Volume thermalVolume;
+    [SerializeField] private Volume mainVolume;
 
     private void Awake()
     {
-        volume = GetComponent<Volume>();
-        volume.enabled = false;
+        thermalVolume = GetComponent<Volume>();
+        thermalVolume.enabled = false;
+
+        mainVolume.enabled = true;
     }
 
     private void OnEnable()
@@ -28,7 +33,9 @@ public class ThermalVolume : MonoBehaviour
 
     private void OnThermalToggled(bool enabled)
     {
-        if (volume != null)
-            volume.enabled = enabled;
+        if (thermalVolume != null)
+            thermalVolume.enabled = enabled;
+        if (mainVolume != null)
+            mainVolume.enabled = !enabled;
     }
 }
