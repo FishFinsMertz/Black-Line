@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 4771264120262986322}
   - component: {fileID: 4988724920929410681}
   - component: {fileID: 1883035514933329284}
-  m_Layer: 6
+  m_Layer: 9
   m_Name: GunBullet
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -314,6 +314,7 @@ MonoBehaviour:
   fresnelPower: 1
   brightnessInfluence: 1
   fresnelCenter: {x: 0.5, y: 0.5}
+  fresnelRadius: 1
   temperatureLerpSpeed: 5
   enablePulse: 1
   pulseSpeed: 1

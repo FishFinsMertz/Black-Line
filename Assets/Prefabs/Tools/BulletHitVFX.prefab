@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4918733228147864898}
   - component: {fileID: 4467979745167757634}
   - component: {fileID: 5442678411396866150}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: BulletHitVFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3851,7 +3851,7 @@ ParticleSystem:
     radiusScale: 1
     collidesWith:
       serializedVersion: 2
-      m_Bits: 1
+      m_Bits: 65
     maxCollisionShapes: 256
     quality: 0
     voxelSize: 0.5
