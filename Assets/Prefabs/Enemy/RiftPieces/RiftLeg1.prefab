@@ -109,7 +109,7 @@ MonoBehaviour:
   brightnessInfluence: 1
   fresnelCenter: {x: 0.45, y: 0.06}
   fresnelRadius: 5
-  temperatureLerpSpeed: 20
+  temperatureLerpSpeed: 10
   enablePulse: 0
   pulseSpeed: 0.16
   pulseAmplitude: 11.4
