@@ -215,4 +215,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   delayBeforeFade: 5
-  fadeDuration: 10
+  fadeDuration: 5

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8117815522415112418}
   - component: {fileID: 9126317140604953338}
   - component: {fileID: 4321859201812857078}
-  - component: {fileID: 8647630895721006912}
+  - component: {fileID: 3155726339252712922}
   m_Layer: 8
   m_Name: SpriteRenderer
   m_TagString: Untagged
@@ -113,7 +113,7 @@ MonoBehaviour:
   pulseAmplitude: 11.4
   useRandomPhase: 1
   infraredMaterial: {fileID: 2100000, guid: b4fd0e44745275b4a92bc32b828f26d4, type: 2}
---- !u!95 &8647630895721006912
+--- !u!95 &3155726339252712922
 Animator:
   serializedVersion: 7
   m_ObjectHideFlags: 0
@@ -225,6 +225,7 @@ GameObject:
   - component: {fileID: 7321368099368343260}
   - component: {fileID: 7218107961216402859}
   - component: {fileID: 2510765323977025971}
+  - component: {fileID: 8425622741938610769}
   m_Layer: 8
   m_Name: EnemyRift
   m_TagString: Enemy
@@ -343,10 +344,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerDetectionRadius: 10
-  attackRadius: 1
-  animator: {fileID: 8647630895721006912}
-  rb: {fileID: 0}
+  attackRadius: 2
+  damage: -20
+  temperatureSteal: 25
+  animator: {fileID: 3155726339252712922}
   isFacingRight: 0
+  thermalObject: {fileID: 0}
+  rb: {fileID: 0}
   player: {fileID: 0}
   bounceSpeed: 30
   bounceDelayMin: 0.5
@@ -356,3 +360,27 @@ MonoBehaviour:
   surfaceLayer:
     serializedVersion: 2
     m_Bits: 64
+--- !u!114 &8425622741938610769
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7462846303542068838}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c766375577705c24883ebf72a95f6418, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  piecePrefabs:
+  - {fileID: 4696572617308749317, guid: 465f3d52d92e49f4397216fb6193b6cb, type: 3}
+  - {fileID: 4696572617308749317, guid: 2cb293bf1bd6ff8448200a5d9158a8f5, type: 3}
+  - {fileID: 4696572617308749317, guid: 0986ea4ae10fa344e923e4c6b46f385b, type: 3}
+  - {fileID: 4696572617308749317, guid: 9d56bdbd8f9716f4dacb77b2ea2da90b, type: 3}
+  - {fileID: 4696572617308749317, guid: 517c96fb062c5784f89b4e4d4d3d03a4, type: 3}
+  - {fileID: 4696572617308749317, guid: 19075bd3c492b704999816495a1516ef, type: 3}
+  pieceForceMin: {x: -1.5, y: 1}
+  pieceForceMax: {x: 1.5, y: 2.5}
+  pieceTorqueMin: -60
+  pieceTorqueMax: 60
+  bloodBurstPrefab: {fileID: 588043819693885274, guid: 555ecd0420cbfc246abbd90b7d981c43, type: 3}

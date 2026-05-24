@@ -15,6 +15,7 @@ public class RiftBounceState : EnemyState
     private float travelDuration;
     private bool hasFlipped;
     private bool bounceTriggered;
+    private bool hasHit = false;
 
     private const float FlipAtNormalized = 0.55f;
     private const float BOUNCE_ANIM_LENGTH = 1f; // Set to your Bounce animation length (seconds)
@@ -104,6 +105,17 @@ public class RiftBounceState : EnemyState
 
             if (progress >= 1f)
             {
+                // If hit player
+                if (Physics2D.OverlapCircle(rift.transform.position, rift.attackRadius, LayerMask.GetMask("Player")) && !hasHit)
+                {
+                    hasHit = true;
+                    PlayerController pc = rift.player.GetComponent<PlayerController>();
+                    if (pc != null)
+                        pc.TakeDamage(rift.damage);
+                    // bc purely visual (Unless this is changed)
+                    rift.thermalObject.ChangeCurrentTemperature(rift.temperatureSteal);
+                }
+
                 rift.rb.linearVelocity = Vector2.zero;
 
                 Collider2D col = rift.GetComponent<Collider2D>();
@@ -132,5 +144,6 @@ public class RiftBounceState : EnemyState
     public override void Exit()
     {
         rift.rb.linearVelocity = Vector2.zero;
+        hasHit = false;
     }
 }

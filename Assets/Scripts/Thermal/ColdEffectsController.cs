@@ -3,7 +3,6 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
 
-[RequireComponent(typeof(Volume))]
 public class ColdEffectsController : MonoBehaviour
 {
     [Header("Cold Effects")]

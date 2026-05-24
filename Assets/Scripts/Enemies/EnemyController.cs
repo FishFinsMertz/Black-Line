@@ -5,16 +5,19 @@ public abstract class EnemyController : MonoBehaviour
 {
     [Header("Enemy Stats")]
     [SerializeField] protected float playerDetectionRadius = 5f;
-    [SerializeField] protected float attackRadius = 1f;
+    public float attackRadius = 1f;
+    public float damage = -10f;
+    public float temperatureSteal = 20f;
 
     [Header("Animator")]
     public Animator animator;
 
-    public Rigidbody2D rb;
+    [Header("Misc")]
     public bool isFacingRight = false;
     protected EnemyState currentState;
-    protected ThermalObject thermalObject;
-    public GameObject player;
+    [HideInInspector] public ThermalObject thermalObject;
+    [HideInInspector] public Rigidbody2D rb;
+    [HideInInspector] public GameObject player;
 
     private GeneralThermalRegulator playerThermal;
 
