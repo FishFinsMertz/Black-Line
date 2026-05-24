@@ -13,14 +13,18 @@ public class EnemyDeathExploder : MonoBehaviour
     public ParticleSystem bloodBurstPrefab;
 
     private CameraController camController;
+    private ThermalObject enemyThermal;
 
     private void Start()
     {
         camController = Camera.main.GetComponent<CameraController>();
+        enemyThermal = GetComponentInChildren<ThermalObject>();
     }
 
     public void Explode()
     {
+        float currentTemp = enemyThermal != null ? enemyThermal.GetTemperature() : 50f;
+
         if (bloodBurstPrefab != null)
         {
             camController.TriggerShake(2f, 0.5f, 1f);
@@ -28,10 +32,16 @@ public class EnemyDeathExploder : MonoBehaviour
             Destroy(blood.gameObject, blood.main.duration);
         }
 
-        // Spawn each piece
         foreach (GameObject piecePrefab in piecePrefabs)
         {
             GameObject piece = Instantiate(piecePrefab, transform.position, Quaternion.identity);
+
+            // Apply enemy's current temperature to all thermal objects on the piece
+            foreach (ThermalObject thermal in piece.GetComponentsInChildren<ThermalObject>())
+            {
+                thermal.SetCurrentTemperature(currentTemp);
+            }
+
             Rigidbody2D rb = piece.GetComponent<Rigidbody2D>();
             if (rb != null)
             {
@@ -40,13 +50,10 @@ public class EnemyDeathExploder : MonoBehaviour
                     Random.Range(pieceForceMin.y, pieceForceMax.y)
                 );
                 rb.AddForce(force, ForceMode2D.Impulse);
-                float torque = Random.Range(pieceTorqueMin, pieceTorqueMax);
-                rb.AddTorque(torque);
+                rb.AddTorque(Random.Range(pieceTorqueMin, pieceTorqueMax));
             }
         }
 
-        // Disable or destroy the main enemy
         gameObject.SetActive(false);
-        // Alternatively: Destroy(gameObject);
     }
 }
