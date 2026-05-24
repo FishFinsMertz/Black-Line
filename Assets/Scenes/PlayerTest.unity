@@ -1027,6 +1027,9 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7462846303542068838, guid: 5dd8d1f111f7aca43b4e79ff5356af00, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2846145212830067085}
     - targetCorrespondingSourceObject: {fileID: 5251889097935205797, guid: 5dd8d1f111f7aca43b4e79ff5356af00, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2846145212830067083}
@@ -1058,6 +1061,31 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!1 &2846145212830067084 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7462846303542068838, guid: 5dd8d1f111f7aca43b4e79ff5356af00, type: 3}
+  m_PrefabInstance: {fileID: 2846145212830067081}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2846145212830067085
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2846145212830067084}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c766375577705c24883ebf72a95f6418, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  piecePrefabs:
+  - {fileID: 4696572617308749317, guid: 465f3d52d92e49f4397216fb6193b6cb, type: 3}
+  pieceForceMin: {x: -3, y: 2}
+  pieceForceMax: {x: 3, y: 5}
+  pieceTorqueMin: -180
+  pieceTorqueMax: 180
+  bloodBurstPrefab: {fileID: 588043819693885274, guid: 555ecd0420cbfc246abbd90b7d981c43, type: 3}
+  pieceLifetime: 3
 --- !u!1001 &8986094090307555724
 PrefabInstance:
   m_ObjectHideFlags: 0

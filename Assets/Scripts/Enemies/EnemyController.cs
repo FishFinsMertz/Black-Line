@@ -64,6 +64,18 @@ public abstract class EnemyController : MonoBehaviour
     public bool IsPlayerInAttackRange() =>
         (player.transform.position - transform.position).magnitude <= attackRadius;
 
-    public void ChangeBaseTemperature(float damage) =>
+    public void ChangeBaseTemperature(float damage) 
+    {
         thermalObject.ChangeBaseTemperature(damage);
+        // If temp greater or equal to 100, die
+        if (thermalObject.GetTemperature() >= 100f)
+            Die();
+    }
+
+    protected virtual void Die()
+    {
+        EnemyDeathExploder exploder = GetComponent<EnemyDeathExploder>();
+        if (exploder != null)
+            exploder.Explode();
+    }
 }

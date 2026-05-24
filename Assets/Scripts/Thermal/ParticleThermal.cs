@@ -5,24 +5,29 @@ public class ParticleThermal : MonoBehaviour
 {
     private ParticleSystem ps;
     private Material uniqueMaterial;
+    private Material uniqueTrailMaterial;
 
     private void Start()
     {
         ps = GetComponent<ParticleSystem>();
         if (ps == null) return;
 
-        // Get the renderer of the particle system
-        ParticleSystemRenderer renderer = ps.GetComponent<ParticleSystemRenderer>();
-        if (renderer == null) return;
+        ParticleSystemRenderer psRenderer = ps.GetComponent<ParticleSystemRenderer>();
+        if (psRenderer == null) return;
 
-        // Create a unique material instance to avoid affecting other particles
-        uniqueMaterial = new Material(renderer.material);
-        renderer.material = uniqueMaterial;
-
-        // Initially disable thermal keyword (will be enabled by ThermalManager if needed)
+        // Unique instance for particle material
+        uniqueMaterial = new Material(psRenderer.material);
+        psRenderer.material = uniqueMaterial;
         uniqueMaterial.DisableKeyword("THERMAL_ON");
 
-        // Subscribe to thermal toggle event and apply initial state
+        // Unique instance for trail material if one exists
+        if (psRenderer.trailMaterial != null)
+        {
+            uniqueTrailMaterial = new Material(psRenderer.trailMaterial);
+            psRenderer.trailMaterial = uniqueTrailMaterial;
+            uniqueTrailMaterial.DisableKeyword("THERMAL_ON");
+        }
+
         if (ThermalManager.Instance != null)
             OnThermalToggled(ThermalManager.Instance.IsThermalEnabled());
         else
@@ -41,10 +46,16 @@ public class ParticleThermal : MonoBehaviour
 
     private void OnThermalToggled(bool enabled)
     {
-        if (uniqueMaterial == null) return;
-        if (enabled)
-            uniqueMaterial.EnableKeyword("THERMAL_ON");
-        else
-            uniqueMaterial.DisableKeyword("THERMAL_ON");
+        if (uniqueMaterial != null)
+        {
+            if (enabled) uniqueMaterial.EnableKeyword("THERMAL_ON");
+            else uniqueMaterial.DisableKeyword("THERMAL_ON");
+        }
+
+        if (uniqueTrailMaterial != null)
+        {
+            if (enabled) uniqueTrailMaterial.EnableKeyword("THERMAL_ON");
+            else uniqueTrailMaterial.DisableKeyword("THERMAL_ON");
+        }
     }
 }
