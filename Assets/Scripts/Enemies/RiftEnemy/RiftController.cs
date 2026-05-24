@@ -1,4 +1,3 @@
-// RiftController.cs
 using UnityEngine;
 
 public class RiftController : EnemyController
@@ -9,10 +8,14 @@ public class RiftController : EnemyController
     public float bounceDelayMax = 2f;
     public bool startWithBounce = true;
 
-    [Header("Bounce Raycast Angles (degrees from straight up)")]
-    [Tooltip("0 = straight up, 90 = straight horizontal. Keep these above 0 and below 90.")]
-    public float bounceAngleMin = 10f; // slight forward lean minimum
-    public float bounceAngleMax = 45f; // maximum forward lean
+    [Header("Bounce Raycast Angles")]
+    public float bounceAngleMin = 10f;
+    public float bounceAngleMax = 45f;
+
+    [Header("Drop Attack (from ceiling)")]
+    [Range(0f, 1f)]
+    public float chanceToDropOnPlayer = 0.3f;
+    public float dropDistance = 7f;   // maximum horizontal distance to consider drop
 
     [Header("Raycast")]
     public LayerMask surfaceLayer;
@@ -23,13 +26,17 @@ public class RiftController : EnemyController
     {
         base.Start();
         if (startWithBounce)
+        {
+            SetVerticalOrientation(true);
             ChangeState(new RiftBounceState(this));
-        else {
+        }
+        else
+        {
+            SetVerticalOrientation(false);
             ChangeState(new RiftIdleState(this));
         }
     }
 
-    // Flip vertically, setting absolute orientation
     public void SetVerticalOrientation(bool onCeiling)
     {
         IsOnCeiling = onCeiling;
@@ -38,22 +45,42 @@ public class RiftController : EnemyController
         transform.localScale = scale;
     }
 
-    // Cast a ray in the required direction and return hit info
-    // On ground: cast upward+forward. On ceiling: cast downward+forward.
-    // Returns true if a valid opposite surface is found.
+    // Get a point on the ground directly below the player
+    public bool TryGetGroundUnderPlayer(out Vector2 groundPoint)
+    {
+        groundPoint = Vector2.zero;
+        RaycastHit2D hit = Physics2D.Raycast(player.transform.position, Vector2.down, 20f, surfaceLayer);
+        if (hit.collider)
+        {
+            groundPoint = hit.point;
+            return true;
+        }
+        return false;
+    }
+
+    // Main target finding – includes chance to drop on player within range
     public bool TryGetBounceTarget(out Vector2 landingPoint, out float travelDistance)
     {
         landingPoint = Vector2.zero;
         travelDistance = 0f;
 
-        // Pick a random angle within range
+        // If we're on the ceiling, check drop attack conditions
+        if (IsOnCeiling && Random.value < chanceToDropOnPlayer)
+        {
+            // Check horizontal distance to player
+            float horizDist = Mathf.Abs(player.transform.position.x - transform.position.x);
+            if (horizDist <= dropDistance && TryGetGroundUnderPlayer(out Vector2 playerGround))
+            {
+                landingPoint = playerGround;
+                travelDistance = Vector2.Distance(transform.position, landingPoint);
+                return true;
+            }
+        }
+
+        // Normal bounce: find opposite surface via angled raycast
         float angleDeg = Random.Range(bounceAngleMin, bounceAngleMax);
         float angleRad = angleDeg * Mathf.Deg2Rad;
-
-        // Forward direction (toward player horizontally)
         float forwardSign = isFacingRight ? 1f : -1f;
-
-        // On ground: cast upward. On ceiling: cast downward.
         float vertSign = IsOnCeiling ? -1f : 1f;
 
         Vector2 rayDir = new Vector2(
@@ -62,14 +89,10 @@ public class RiftController : EnemyController
         ).normalized;
 
         RaycastHit2D hit = Physics2D.Raycast(transform.position, rayDir, Mathf.Infinity, surfaceLayer);
-
         if (!hit.collider) return false;
 
-        // Validate: on ground we want a ceiling hit (normal pointing down),
-        // on ceiling we want a floor hit (normal pointing up)
         float normalY = hit.normal.y;
         bool validSurface = IsOnCeiling ? normalY > 0.7f : normalY < -0.7f;
-
         if (!validSurface) return false;
 
         landingPoint = hit.point;
@@ -80,5 +103,44 @@ public class RiftController : EnemyController
     private void OnCollisionEnter2D(Collision2D col)
     {
         (currentState as RiftBounceState)?.OnHitSurface();
+    }
+
+
+    // DEBUGS
+    private void OnDrawGizmosSelected()
+    {
+        if (!Application.isPlaying) return;
+
+        // Visualize drop attack range
+        Gizmos.color = new Color(1f, 0.5f, 0, 0.3f);
+        Gizmos.DrawWireSphere(transform.position, dropDistance);
+
+        // Visualize the bounce raycast directions (min and max angles)
+        float forwardSign = isFacingRight ? 1f : -1f;
+        float vertSign = IsOnCeiling ? -1f : 1f;
+
+        // Function to get direction for a given angle
+        Vector2 GetDir(float angleDeg)
+        {
+            float rad = angleDeg * Mathf.Deg2Rad;
+            return new Vector2(forwardSign * Mathf.Sin(rad), vertSign * Mathf.Cos(rad)).normalized;
+        }
+
+        Vector2 origin = transform.position;
+        Vector2 dirMin = GetDir(bounceAngleMin);
+        Vector2 dirMax = GetDir(bounceAngleMax);
+
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawRay(origin, dirMin * 5f);
+        Gizmos.DrawRay(origin, dirMax * 5f);
+
+        // Also draw the arc between them
+        Vector2 prev = dirMin;
+        for (float a = bounceAngleMin; a <= bounceAngleMax; a += 2f)
+        {
+            Vector2 current = GetDir(a);
+            Gizmos.DrawLine(origin + prev * 5f, origin + current * 5f);
+            prev = current;
+        }
     }
 }

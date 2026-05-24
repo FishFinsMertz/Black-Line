@@ -103,7 +103,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3834701d395f3fb4f9415b7789ba40b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  temperature: 30
+  temperature: 0
   currentTemperature: 0
   fresnelPower: 0.32
   brightnessInfluence: 1
@@ -215,5 +215,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4013b95441b975d4c81fd7c70dd8f1e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  delayBeforeFade: 5
-  fadeDuration: 5
+  delayBeforeFade: 10
+  fadeDuration: 3

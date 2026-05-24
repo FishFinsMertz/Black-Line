@@ -344,7 +344,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerDetectionRadius: 10
-  attackRadius: 2
+  attackRadius: 1.5
   damage: -20
   temperatureSteal: 25
   animator: {fileID: 3155726339252712922}
@@ -355,6 +355,7 @@ MonoBehaviour:
   bounceSpeed: 30
   bounceDelayMin: 0.5
   bounceDelayMax: 1.4
+  startWithBounce: 1
   bounceAngleMin: 50
   bounceAngleMax: 70
   surfaceLayer:

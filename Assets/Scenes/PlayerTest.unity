@@ -972,12 +972,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2510765323977025971, guid: 5dd8d1f111f7aca43b4e79ff5356af00, type: 3}
-      propertyPath: attackRadius
-      value: 1.5
+      propertyPath: dropDistance
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 2510765323977025971, guid: 5dd8d1f111f7aca43b4e79ff5356af00, type: 3}
-      propertyPath: isFacingRight
-      value: 0
+      propertyPath: bounceAngleMin
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 2510765323977025971, guid: 5dd8d1f111f7aca43b4e79ff5356af00, type: 3}
+      propertyPath: chanceToDropOnPlayer
+      value: 0.67
       objectReference: {fileID: 0}
     - target: {fileID: 7462846303542068838, guid: 5dd8d1f111f7aca43b4e79ff5356af00, type: 3}
       propertyPath: m_Name
