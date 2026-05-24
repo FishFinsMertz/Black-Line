@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 9204992440653211336}
   - component: {fileID: 9077205423804576620}
   - component: {fileID: 4867380405556124136}
+  - component: {fileID: -4998104173258332371}
   m_Layer: 8
   m_Name: RiftBody
   m_TagString: Untagged
@@ -126,7 +127,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 0.1
+  m_Mass: 1
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_GravityScale: 1
@@ -200,3 +201,17 @@ PolygonCollider2D:
       - {x: 0.28457117, y: -0.56050134}
       - {x: 0.2832415, y: -0.3919549}
   m_UseDelaunayMesh: 0
+--- !u!114 &-4998104173258332371
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4696572617308749317}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4013b95441b975d4c81fd7c70dd8f1e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  delayBeforeFade: 5
+  fadeDuration: 10

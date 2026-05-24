@@ -1,31 +1,34 @@
 using UnityEngine;
-using System.Collections;
 
 public class EnemyDeathExploder : MonoBehaviour
 {
     [Header("Piece Settings")]
-    public GameObject[] piecePrefabs;          // assign all piece prefabs
-    public Vector2 pieceForceMin = new Vector2(-3f, 2f);
-    public Vector2 pieceForceMax = new Vector2(3f, 5f);
-    public float pieceTorqueMin = -180f;
-    public float pieceTorqueMax = 180f;
+    public GameObject[] piecePrefabs;
+    public Vector2 pieceForceMin = new Vector2(-1.5f, 0.5f);
+    public Vector2 pieceForceMax = new Vector2(1.5f, 2.5f);
+    public float pieceTorqueMin = -60f;
+    public float pieceTorqueMax = 60f;
 
     [Header("Gore VFX")]
-    public ParticleSystem bloodBurstPrefab;    // assign a prefab with blood particles
+    public ParticleSystem bloodBurstPrefab;
 
-    [Header("Lifetime")]
-    public float pieceLifetime = 3f;
+    private CameraController camController;
+
+    private void Start()
+    {
+        camController = Camera.main.GetComponent<CameraController>();
+    }
 
     public void Explode()
     {
-        // Optional: instantiate blood burst at enemy position
         if (bloodBurstPrefab != null)
         {
+            camController.TriggerShake(2f, 0.5f, 1f);
             ParticleSystem blood = Instantiate(bloodBurstPrefab, transform.position, Quaternion.identity);
             Destroy(blood.gameObject, blood.main.duration);
         }
 
-        // Spawn each piece with random force and torque
+        // Spawn each piece
         foreach (GameObject piecePrefab in piecePrefabs)
         {
             GameObject piece = Instantiate(piecePrefab, transform.position, Quaternion.identity);
@@ -40,11 +43,10 @@ public class EnemyDeathExploder : MonoBehaviour
                 float torque = Random.Range(pieceTorqueMin, pieceTorqueMax);
                 rb.AddTorque(torque);
             }
-            // Optionally add a fade out script and destroy after lifetime
-            Destroy(piece, pieceLifetime);
         }
 
-        // Disable the main enemy (or destroy it)
+        // Disable or destroy the main enemy
         gameObject.SetActive(false);
+        // Alternatively: Destroy(gameObject);
     }
 }

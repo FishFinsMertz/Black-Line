@@ -1080,12 +1080,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   piecePrefabs:
   - {fileID: 4696572617308749317, guid: 465f3d52d92e49f4397216fb6193b6cb, type: 3}
-  pieceForceMin: {x: -3, y: 2}
-  pieceForceMax: {x: 3, y: 5}
-  pieceTorqueMin: -180
-  pieceTorqueMax: 180
+  - {fileID: 4696572617308749317, guid: 2cb293bf1bd6ff8448200a5d9158a8f5, type: 3}
+  - {fileID: 4696572617308749317, guid: 0986ea4ae10fa344e923e4c6b46f385b, type: 3}
+  - {fileID: 4696572617308749317, guid: 9d56bdbd8f9716f4dacb77b2ea2da90b, type: 3}
+  - {fileID: 4696572617308749317, guid: 517c96fb062c5784f89b4e4d4d3d03a4, type: 3}
+  - {fileID: 4696572617308749317, guid: 19075bd3c492b704999816495a1516ef, type: 3}
+  pieceForceMin: {x: -1.5, y: 0.5}
+  pieceForceMax: {x: 1.5, y: 2.5}
+  pieceTorqueMin: -60
+  pieceTorqueMax: 60
   bloodBurstPrefab: {fileID: 588043819693885274, guid: 555ecd0420cbfc246abbd90b7d981c43, type: 3}
   pieceLifetime: 3
+  fadeDuration: 1
 --- !u!1001 &8986094090307555724
 PrefabInstance:
   m_ObjectHideFlags: 0
