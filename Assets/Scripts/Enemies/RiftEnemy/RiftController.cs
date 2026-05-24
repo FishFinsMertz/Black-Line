@@ -7,6 +7,7 @@ public class RiftController : EnemyController
     public float bounceSpeed = 8f;
     public float bounceDelayMin = 1f;
     public float bounceDelayMax = 2f;
+    public bool startWithBounce = true;
 
     [Header("Bounce Raycast Angles (degrees from straight up)")]
     [Tooltip("0 = straight up, 90 = straight horizontal. Keep these above 0 and below 90.")]
@@ -21,7 +22,11 @@ public class RiftController : EnemyController
     protected override void Start()
     {
         base.Start();
-        ChangeState(new RiftIdleState(this));
+        if (startWithBounce)
+            ChangeState(new RiftBounceState(this));
+        else {
+            ChangeState(new RiftIdleState(this));
+        }
     }
 
     // Flip vertically, setting absolute orientation

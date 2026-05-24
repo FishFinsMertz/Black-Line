@@ -128,6 +128,7 @@ MonoBehaviour:
   fresnelPower: 0.876
   brightnessInfluence: 1
   fresnelCenter: {x: 0.5, y: 0.5}
+  fresnelRadius: 1
   temperatureLerpSpeed: 5
   enablePulse: 0
   pulseSpeed: 1
@@ -239,6 +240,7 @@ MonoBehaviour:
   fresnelPower: 0.287
   brightnessInfluence: 0.687
   fresnelCenter: {x: 0.7, y: 0.59}
+  fresnelRadius: 1
   temperatureLerpSpeed: 20
   enablePulse: 1
   pulseSpeed: 0.08
@@ -276,6 +278,55 @@ Transform:
   m_Children: []
   m_Father: {fileID: 3374192485560622825}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5644087389132929634
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1637858026863727469}
+  - component: {fileID: 5414317147145659246}
+  m_Layer: 0
+  m_Name: TakeDamagePPr
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1637858026863727469
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5644087389132929634}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1608731299875015705}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5414317147145659246
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5644087389132929634}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 1
+  priority: 4
+  blendDistance: 0
+  weight: 0
+  sharedProfile: {fileID: 11400000, guid: 09e7afe8149fb674ca1088de1f9d4619, type: 2}
 --- !u!1 &5965597034865106041
 GameObject:
   m_ObjectHideFlags: 0
@@ -382,6 +433,7 @@ MonoBehaviour:
   fresnelPower: 0.4
   brightnessInfluence: 0.687
   fresnelCenter: {x: 0.5, y: 0.5}
+  fresnelRadius: 1
   temperatureLerpSpeed: 20
   enablePulse: 1
   pulseSpeed: 0.21
@@ -578,6 +630,7 @@ MonoBehaviour:
   fresnelPower: 0.183
   brightnessInfluence: 0.687
   fresnelCenter: {x: 0.5, y: 0.5}
+  fresnelRadius: 1
   temperatureLerpSpeed: 20
   enablePulse: 1
   pulseSpeed: 0.23
@@ -654,6 +707,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1637858026863727469}
   - {fileID: 1919313892370810473}
   - {fileID: 7924612145997503870}
   - {fileID: 3374192485560622825}
@@ -747,6 +801,10 @@ MonoBehaviour:
   walkSpeed: 2
   isFacingRight: 1
   bodyAnimator: {fileID: 1050252505090677471}
+  dmgVolume: {fileID: 5414317147145659246}
+  damageFlashMaxWeight: 1
+  damageFlashRiseDuration: 0.1
+  damageFlashFallDuration: 0.4
   inventory: {fileID: 0}
 --- !u!114 &2181627742840537855
 MonoBehaviour:
