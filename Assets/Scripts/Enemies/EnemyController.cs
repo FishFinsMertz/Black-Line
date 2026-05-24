@@ -16,11 +16,14 @@ public abstract class EnemyController : MonoBehaviour
     protected ThermalObject thermalObject;
     public GameObject player;
 
+    private GeneralThermalRegulator playerThermal;
+
     protected virtual void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         thermalObject = GetComponentInChildren<ThermalObject>();
         player = GameObject.FindGameObjectWithTag("Player");
+        playerThermal = player.GetComponent<GeneralThermalRegulator>();
     }
 
     protected virtual void Start() { }
@@ -48,8 +51,15 @@ public abstract class EnemyController : MonoBehaviour
         }
     }
 
-    public bool IsPlayerInDetectionRange() =>
-        (player.transform.position - transform.position).magnitude <= playerDetectionRadius;
+    public bool IsPlayerInDetectionRange()
+    {
+        float tempMultiplier = playerThermal != null 
+            ? playerThermal.GetCurrentTemperature() / 100f 
+            : 1f; // fallback to full range if not found
+        
+        return (player.transform.position - transform.position).magnitude 
+            <= playerDetectionRadius * tempMultiplier;
+    }
 
     public bool IsPlayerInAttackRange() =>
         (player.transform.position - transform.position).magnitude <= attackRadius;

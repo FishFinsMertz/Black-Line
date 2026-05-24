@@ -64,4 +64,6 @@ public class GeneralThermalRegulator : MonoBehaviour, ISaveable
     {
         SaveManager.Instance?.Unregister(this);
     }
+
+    public float GetCurrentTemperature() => currentTemperature;
 }
