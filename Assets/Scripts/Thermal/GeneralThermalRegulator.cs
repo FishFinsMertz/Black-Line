@@ -22,6 +22,13 @@ public class GeneralThermalRegulator : MonoBehaviour, ISaveable
         baseTemperature = Mathf.Clamp(baseTemperature + delta, 0f, 100f);
     }
 
+    public void ChangeGlobalCurrentTemperature(float delta)
+    {
+        // Directly change the current temperature (for instant effects)
+        currentTemperature = Mathf.Clamp(currentTemperature + delta, 0f, 100f);
+        ApplyToAllThermalObjects();
+    }
+
     private void Update()
     {
         // Smoothly move current temperature toward base temperature
@@ -66,4 +73,5 @@ public class GeneralThermalRegulator : MonoBehaviour, ISaveable
     }
 
     public float GetCurrentTemperature() => currentTemperature;
+    public float GetBaseTemperature() => baseTemperature;
 }

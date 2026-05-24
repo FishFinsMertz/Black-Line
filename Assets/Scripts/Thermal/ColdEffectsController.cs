@@ -7,21 +7,24 @@ using UnityEngine.SceneManagement;
 public class ColdEffectsController : MonoBehaviour
 {
     [Header("Cold Effects")]
-    [SerializeField] private Volume coldVolume;                 // Assign in Inspector (the existing cold volume)
+    [SerializeField] private Volume coldVolume;
     [SerializeField] private float maxColdWeight = 1f;
-    [SerializeField] private float minColdWeight = 0f;
     [SerializeField] private float warmThreshold = 70f;
 
     [Header("Overheat Effects")]
-    [SerializeField] private Volume overheatVolume;             // Assign your OverheatEffectPPr Volume here
+    [SerializeField] private Volume overheatVolume;
     [SerializeField] private float maxOverheatWeight = 1f;
-    [SerializeField] private float overheatThreshold = 80f;     // Above this temperature, overheat starts
+    [SerializeField] private float overheatThreshold = 80f;
 
-    private ThermalObject playerThermal;
+    [Header("Smoothing")]
+    [SerializeField] private float weightSmoothSpeed = 2f;
+
+    private GeneralThermalRegulator playerThermal;
+    private float smoothedColdWeight = 0f;
+    private float smoothedOverheatWeight = 0f;
 
     private void Start()
     {
-        // Ensure both volumes are assigned (fallback to GetComponent for coldVolume if needed)
         if (coldVolume == null)
             coldVolume = GetComponent<Volume>();
 
@@ -52,38 +55,38 @@ public class ColdEffectsController : MonoBehaviour
             playerThermal = null;
             return;
         }
-
-        Transform bodyTransform = playerObj.transform.Find("Body");
-        if (bodyTransform != null)
-            playerThermal = bodyTransform.GetComponent<ThermalObject>();
-        else
-            playerThermal = playerObj.GetComponent<ThermalObject>();
+        playerThermal = playerObj.GetComponent<GeneralThermalRegulator>();
     }
 
     private void Update()
     {
         if (playerThermal == null) return;
 
-        float temp = playerThermal.GetTemperature();
+        float temp = playerThermal.GetBaseTemperature();
 
-        // --- Cold effects (below warmThreshold) ---
-        float coldWeight = 0f;
+        // --- Cold target weight ---
+        float targetColdWeight = 0f;
         if (temp < warmThreshold)
         {
-            coldWeight = 1f - (temp / warmThreshold);
-            coldWeight = Mathf.Clamp01(coldWeight) * maxColdWeight;
+            targetColdWeight = 1f - (temp / warmThreshold);
+            targetColdWeight = Mathf.Clamp01(targetColdWeight) * maxColdWeight;
         }
-        if (coldVolume != null)
-            coldVolume.weight = coldWeight;
 
-        // --- Overheat effects (above overheatThreshold) ---
-        float overheatWeight = 0f;
+        // --- Overheat target weight ---
+        float targetOverheatWeight = 0f;
         if (temp > overheatThreshold)
         {
-            overheatWeight = (temp - overheatThreshold) / (100f - overheatThreshold);
-            overheatWeight = Mathf.Clamp01(overheatWeight) * maxOverheatWeight;
+            targetOverheatWeight = (temp - overheatThreshold) / (100f - overheatThreshold);
+            targetOverheatWeight = Mathf.Clamp01(targetOverheatWeight) * maxOverheatWeight;
         }
+
+        // Smooth both weights
+        smoothedColdWeight = Mathf.Lerp(smoothedColdWeight, targetColdWeight, weightSmoothSpeed * Time.deltaTime);
+        smoothedOverheatWeight = Mathf.Lerp(smoothedOverheatWeight, targetOverheatWeight, weightSmoothSpeed * Time.deltaTime);
+
+        if (coldVolume != null)
+            coldVolume.weight = smoothedColdWeight;
         if (overheatVolume != null)
-            overheatVolume.weight = overheatWeight;
+            overheatVolume.weight = smoothedOverheatWeight;
     }
 }

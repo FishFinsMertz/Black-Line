@@ -798,7 +798,7 @@ MonoBehaviour:
   maxFollowDistance: 2.7
   mouseFollowSmoothing: 5
   enableWobble: 1
-  maxWobbleIntensity: 0.15
+  maxWobbleIntensity: 0.5
   wobbleFrequency: 1
   wobbleLerpSpeed: 0.1
   enableTilt: 1
@@ -1124,7 +1124,7 @@ SceneRoots:
   - {fileID: 336386366199253394}
   - {fileID: 139263950}
   - {fileID: 734715103}
-  - {fileID: 8986094090307555724}
   - {fileID: 2410981151704392758}
   - {fileID: 242132144}
   - {fileID: 2846145212830067081}
+  - {fileID: 8986094090307555724}

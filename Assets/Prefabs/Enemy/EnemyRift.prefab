@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8117815522415112418}
   - component: {fileID: 9126317140604953338}
   - component: {fileID: 4321859201812857078}
+  - component: {fileID: 8647630895721006912}
   m_Layer: 8
   m_Name: SpriteRenderer
   m_TagString: Untagged
@@ -112,6 +113,28 @@ MonoBehaviour:
   pulseAmplitude: 11.4
   useRandomPhase: 1
   infraredMaterial: {fileID: 2100000, guid: b4fd0e44745275b4a92bc32b828f26d4, type: 2}
+--- !u!95 &8647630895721006912
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5251889097935205797}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: b4f3d91dcf1eba94cb7443e47eefda59, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &6990867664520348218
 GameObject:
   m_ObjectHideFlags: 0
@@ -251,7 +274,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!60 &7218107961216402859
 PolygonCollider2D:
@@ -319,13 +342,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb0aaf4ff0270ab4ba028dee65554481, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  detectionRadius: 5
+  playerDetectionRadius: 10
   attackRadius: 1
+  animator: {fileID: 8647630895721006912}
   rb: {fileID: 0}
-  lungeSpeed: 10
-  lungeDuration: 1
-  lungeDelay: 0.5
-  bounceSpeed: 5
-  bounceDelay: 0.5
-  chanceToLungeDirectly: 0.1
-  bounceSegments: 3
+  isFacingRight: 0
+  player: {fileID: 0}
+  bounceSpeed: 30
+  bounceDelayMin: 0.5
+  bounceDelayMax: 1.4
+  bounceAngleMin: 50
+  bounceAngleMax: 70
+  surfaceLayer:
+    serializedVersion: 2
+    m_Bits: 64

@@ -32,7 +32,7 @@ public class CameraController : MonoBehaviour
     [Header("Camera Shake (External)")]
     [SerializeField] private float shakeDecaySpeed = 5f;
 
-    private ThermalObject playerThermal;
+    private GeneralThermalRegulator playerThermal;
     private Transform target;      
     private string defaultTargetTag = "Player"; 
     private float currentWobbleIntensity = 0f;
@@ -67,9 +67,7 @@ public class CameraController : MonoBehaviour
             return;
         }
         target = playerObj.transform;
-        Transform bodyTransform = playerObj.transform.Find("Body");
-        if (bodyTransform != null)
-            playerThermal = bodyTransform.GetComponent<ThermalObject>();
+        playerThermal = playerObj.GetComponent<GeneralThermalRegulator>();
     }
     
     private void LateUpdate()
@@ -88,8 +86,8 @@ public class CameraController : MonoBehaviour
         // Base desired position
         Vector3 desiredPosition = target.position + offset;
         
-        // --- Mouse follow offset – only when right click is held ---
-        if (enableMouseFollow && Input.GetMouseButton(1)) // 1 = right mouse button
+        // Mouse follow offset – only when right click is held
+        if (enableMouseFollow && Input.GetMouseButton(1))
         {
             Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             mouseWorldPos.z = 0f;
@@ -116,13 +114,11 @@ public class CameraController : MonoBehaviour
         currentMouseOffset = Vector3.Lerp(currentMouseOffset, targetMouseOffset, mouseFollowSmoothing * Time.deltaTime);
         desiredPosition += currentMouseOffset;
         
-        Vector3 smoothedPos = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed * Time.deltaTime);
-        
-        // Temperature intensity for wobble/tilt
+        // Temperature intensity for wobble/tilt — uses base temperature only
         float targetIntensity = 0f;
         if (playerThermal != null)
         {
-            float temp = playerThermal.GetTemperature();
+            float temp = playerThermal.GetBaseTemperature();
             if (temp < wobbleStartTemp)
             {
                 float t = (wobbleStartTemp - temp) / (wobbleStartTemp - wobbleMaxAtTemp);
@@ -153,7 +149,7 @@ public class CameraController : MonoBehaviour
             desiredPosition += new Vector3(shakeOffset.x, shakeOffset.y, 0f);
         }
         
-        smoothedPos = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed * Time.deltaTime);
+        Vector3 smoothedPos = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed * Time.deltaTime);
         
         // Rotational tilt
         Quaternion targetRotation = initialRotation;
@@ -200,7 +196,7 @@ public class CameraController : MonoBehaviour
     {
         target = newTarget;
         if (newTarget != null)
-            playerThermal = newTarget.GetComponentInChildren<ThermalObject>();
+            playerThermal = newTarget.GetComponentInChildren<GeneralThermalRegulator>();
     }
     
     public void ResetToPlayer()
