@@ -4,8 +4,11 @@ using UnityEngine;
 public abstract class EnemyController : MonoBehaviour
 {
     [Header("Enemy Stats")]
-    [SerializeField] protected float detectionRadius = 5f;
+    [SerializeField] protected float playerDetectionRadius = 5f;
     [SerializeField] protected float attackRadius = 1f;
+
+    [Header("Animator")]
+    public Animator animator;
 
     public Rigidbody2D rb;
     public bool isFacingRight = false;
@@ -46,7 +49,7 @@ public abstract class EnemyController : MonoBehaviour
     }
 
     public bool IsPlayerInDetectionRange() =>
-        (player.transform.position - transform.position).magnitude <= detectionRadius;
+        (player.transform.position - transform.position).magnitude <= playerDetectionRadius;
 
     public bool IsPlayerInAttackRange() =>
         (player.transform.position - transform.position).magnitude <= attackRadius;

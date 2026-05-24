@@ -13,6 +13,7 @@ public class RiftIdleState : EnemyState
 
     public override void Enter()
     {
+        rift.animator.SetBool("isIdle", true);
         rift.rb.linearVelocity = Vector2.zero;
         rift.rb.gravityScale = 0f; // pinned to surface, no gravity needed
         idleTimer = 0.2f;
@@ -26,5 +27,10 @@ public class RiftIdleState : EnemyState
         if (!enemy.IsPlayerInDetectionRange()) return;
 
         enemy.ChangeState(new RiftBounceState(rift));
+    }
+
+    public override void Exit()
+    {
+        rift.animator.SetBool("isIdle", false);
     }
 }

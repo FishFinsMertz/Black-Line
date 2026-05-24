@@ -1,4 +1,3 @@
-// RiftBounceState.cs
 using UnityEngine;
 
 public class RiftBounceState : EnemyState
@@ -15,8 +14,10 @@ public class RiftBounceState : EnemyState
     private float travelTimer;
     private float travelDuration;
     private bool hasFlipped;
+    private bool bounceTriggered;
 
     private const float FlipAtNormalized = 0.55f;
+    private const float BOUNCE_ANIM_LENGTH = 1f; // Set to your Bounce animation length (seconds)
 
     public RiftBounceState(RiftController rift) : base(rift)
     {
@@ -28,6 +29,7 @@ public class RiftBounceState : EnemyState
         rift.rb.gravityScale = 0f;
         rift.rb.linearVelocity = Vector2.zero;
         phase = Phase.Seeking;
+        bounceTriggered = false;
         SeekTarget();
     }
 
@@ -43,7 +45,7 @@ public class RiftBounceState : EnemyState
                 targetLandingPoint = landing;
                 totalDistance = dist;
                 phase = Phase.Delay;
-                // Randomize delay a bit for more natural behavior
+                // Random delay – must be at least the animation length
                 delayTimer = Random.Range(rift.bounceDelayMin, rift.bounceDelayMax);
                 return;
             }
@@ -66,9 +68,18 @@ public class RiftBounceState : EnemyState
     {
         if (phase == Phase.Delay)
         {
+            // Trigger the Bounce animation when there's exactly animation length left
+            if (!bounceTriggered && delayTimer <= BOUNCE_ANIM_LENGTH)
+            {
+                rift.animator.SetTrigger("Bounce");
+                bounceTriggered = true;
+            }
+
             delayTimer -= Time.deltaTime;
             if (delayTimer <= 0f)
+            {
                 Launch();
+            }
             return;
         }
 
@@ -76,26 +87,21 @@ public class RiftBounceState : EnemyState
         {
             travelTimer += Time.deltaTime;
             float progress = Mathf.Clamp01(travelTimer / travelDuration);
-
-            // Ease in-out: accelerate first half, decelerate second half
             float easedProgress = EaseInOut(progress);
 
-            // Move by setting position directly from eased progress
-            // so speed curve is perfectly smooth regardless of framerate
             rift.transform.position = new Vector3(
                 Mathf.Lerp(startPosition.x, targetLandingPoint.x, easedProgress),
                 Mathf.Lerp(startPosition.y, targetLandingPoint.y, easedProgress),
                 rift.transform.position.z
             );
 
-            // Flip slightly past halfway
             if (!hasFlipped && progress >= FlipAtNormalized)
             {
                 hasFlipped = true;
+                rift.animator.SetTrigger("Land");
                 rift.SetVerticalOrientation(!rift.IsOnCeiling);
             }
 
-            // Arrive
             if (progress >= 1f)
             {
                 rift.rb.linearVelocity = Vector2.zero;
@@ -115,7 +121,6 @@ public class RiftBounceState : EnemyState
         }
     }
 
-    // Smooth ease in-out: slow start, fast middle, slow end
     private float EaseInOut(float t) => t * t * (3f - 2f * t);
 
     public void OnHitSurface()

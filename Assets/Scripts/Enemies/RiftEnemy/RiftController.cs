@@ -5,8 +5,8 @@ public class RiftController : EnemyController
 {
     [Header("Bounce Settings")]
     public float bounceSpeed = 8f;
-    public float bounceDelayMin = 0.6f;
-    public float bounceDelayMax = 1.2f;
+    public float bounceDelayMin = 1f;
+    public float bounceDelayMax = 2f;
 
     [Header("Bounce Raycast Angles (degrees from straight up)")]
     [Tooltip("0 = straight up, 90 = straight horizontal. Keep these above 0 and below 90.")]
