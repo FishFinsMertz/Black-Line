@@ -355,9 +355,11 @@ MonoBehaviour:
   bounceSpeed: 30
   bounceDelayMin: 0.5
   bounceDelayMax: 1.4
-  startWithBounce: 1
+  startWithBounce: 0
   bounceAngleMin: 50
   bounceAngleMax: 70
+  chanceToDropOnPlayer: 0.67
+  dropDistance: 7
   surfaceLayer:
     serializedVersion: 2
     m_Bits: 64
