@@ -9,24 +9,28 @@ public class PlayerWalkState : PlayerState
     public override void FixedUpdate()
     {
         float moveInput = Input.GetAxis("Horizontal");
+        bool isFacingRight = player.isFacingRight;
+        bool movingForward = (moveInput > 0 && isFacingRight) || (moveInput < 0 && !isFacingRight);
+        
+        // Transition to Run if moving forward AND run key held
+        if (movingForward && Input.GetKey(player.runKey))
+        {
+            player.ChangeState(new PlayerRunState(player));
+            return;
+        }
+        
+        // rest of walk logic
         Vector2 velocity = player.rb.linearVelocity;
         velocity.x = moveInput * player.walkSpeed;
         player.rb.linearVelocity = velocity;
-
-        // No flip logic here – the gun controller (ArmGunController) handles flipping based on mouse position.
-
-        // Calculate relative speed for blend tree:
-        bool isFacingRight = player.transform.localScale.x > 0;
-        float relativeSpeed = (moveInput > 0 && isFacingRight || moveInput < 0 && !isFacingRight)
-            ? Mathf.Abs(moveInput)
-            : -Mathf.Abs(moveInput);
+        
+        // Set animator speed (normalized walk speed)
+        float relativeSpeed = moveInput;
+        if (!isFacingRight) relativeSpeed = -relativeSpeed;
         player.bodyAnimator.SetFloat("SpeedX", relativeSpeed);
-
-        // Transition to idle when no input
+        
         if (Mathf.Approximately(moveInput, 0f))
-        {
             player.ChangeState(new PlayerIdleState(player));
-        }
     }
 
     public override void Exit() { }

@@ -1344,32 +1344,12 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 743515948656246856, guid: f3ccc4fbbc48d804f9e89cf2a79e3fb6, type: 3}
-      propertyPath: erraticness
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 743515948656246856, guid: f3ccc4fbbc48d804f9e89cf2a79e3fb6, type: 3}
-      propertyPath: maxTiltAngle
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 743515948656246856, guid: f3ccc4fbbc48d804f9e89cf2a79e3fb6, type: 3}
-      propertyPath: isFacingRight
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 743515948656246856, guid: f3ccc4fbbc48d804f9e89cf2a79e3fb6, type: 3}
-      propertyPath: retargetInterval
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 743515948656246856, guid: f3ccc4fbbc48d804f9e89cf2a79e3fb6, type: 3}
-      propertyPath: wallLayer.m_Bits
-      value: 64
-      objectReference: {fileID: 0}
-    - target: {fileID: 743515948656246856, guid: f3ccc4fbbc48d804f9e89cf2a79e3fb6, type: 3}
-      propertyPath: wanderSmoothness
+      propertyPath: moveSpeed
       value: 4
       objectReference: {fileID: 0}
-    - target: {fileID: 743515948656246856, guid: f3ccc4fbbc48d804f9e89cf2a79e3fb6, type: 3}
-      propertyPath: targetableLayers.m_Bits
-      value: 264
+    - target: {fileID: 2933478864497186605, guid: f3ccc4fbbc48d804f9e89cf2a79e3fb6, type: 3}
+      propertyPath: m_Interpolate
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6714458030169104091, guid: f3ccc4fbbc48d804f9e89cf2a79e3fb6, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1409,10 +1389,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6714458030169104091, guid: f3ccc4fbbc48d804f9e89cf2a79e3fb6, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6891285563067602107, guid: f3ccc4fbbc48d804f9e89cf2a79e3fb6, type: 3}
-      propertyPath: m_FlipX
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8387372212467350229, guid: f3ccc4fbbc48d804f9e89cf2a79e3fb6, type: 3}

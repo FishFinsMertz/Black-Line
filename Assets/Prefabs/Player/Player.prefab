@@ -753,6 +753,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   walkSpeed: 2
+  runSpeed: 4
+  runAcceleration: 10
+  runDeceleration: 15
+  runKey: 304
   isFacingRight: 1
   bodyAnimator: {fileID: 1050252505090677471}
   dmgVolume: {fileID: 5414317147145659246}

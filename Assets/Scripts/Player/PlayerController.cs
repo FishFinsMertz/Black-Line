@@ -6,6 +6,10 @@ public class PlayerController : MonoBehaviour
 {
     [Header("Settings")]
     public float walkSpeed = 5f;
+    public float runSpeed = 8f;
+    public float runAcceleration = 15f; 
+    public float runDeceleration = 10f;
+    public KeyCode runKey = KeyCode.LeftShift;
     public bool isFacingRight = true;
 
     [Header("Misc")]

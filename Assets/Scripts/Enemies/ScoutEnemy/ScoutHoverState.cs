@@ -24,7 +24,7 @@ public class ScoutHoverState : EnemyState
         GenerateOrbitOffset();
     }
 
-    public override void Update()
+    public override void FixedUpdate()
     {
         retargetTimer -= Time.deltaTime;
         if (retargetTimer <= 0f)
