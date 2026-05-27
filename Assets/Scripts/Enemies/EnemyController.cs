@@ -72,7 +72,7 @@ public abstract class EnemyController : MonoBehaviour
     {
         thermalObject.ChangeBaseTemperature(damage * damageTakenMultiplier);
         // Debug to print damage taken and new temperature
-        Debug.Log($"{gameObject.name} took {damage * damageTakenMultiplier} damage, new temp: {thermalObject.GetTemperature()}");
+        //Debug.Log($"{gameObject.name} took {damage * damageTakenMultiplier} damage, new temp: {thermalObject.GetTemperature()}");
 
         // If temp greater or equal to 100, die
         if (thermalObject.GetTemperature() >= 100f)

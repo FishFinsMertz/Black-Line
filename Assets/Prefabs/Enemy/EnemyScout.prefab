@@ -232,7 +232,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.010207713, y: 0}
+  m_Offset: {x: 0.007558584, y: -0.022207916}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -242,7 +242,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.40794766, y: 0.22931147}
+  m_Size: {x: 0.5367534, y: 0.4425069}
   m_EdgeRadius: 0
 --- !u!114 &743515948656246856
 MonoBehaviour:
@@ -267,8 +267,23 @@ MonoBehaviour:
   rb: {fileID: 0}
   player: {fileID: 0}
   moveSpeed: 3
-  wanderRadius: 4
-  wanderSmoothness: 2
+  wanderSmoothness: 4
+  hoverRadiusMin: 1.5
+  hoverRadiusMax: 3
+  erraticness: 5
+  hoverSearchRadius: 10
+  retargetInterval: 1
+  maxTiltAngle: 5
+  tiltSpeed: 5
+  wallRepulsionRadius: 1.5
+  wallRepulsionForce: 5
+  wallLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  attackCooldown: 1.5
+  targetableLayers:
+    serializedVersion: 2
+    m_Bits: 264
 --- !u!114 &2098505944907290917
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -286,8 +301,8 @@ MonoBehaviour:
   - {fileID: 4696572617308749317, guid: 4d325e267b6765140a5487fa648bee7f, type: 3}
   - {fileID: 4696572617308749317, guid: 0a3be4ed30d4ba84cb3e37851f043e7a, type: 3}
   - {fileID: 4696572617308749317, guid: 4df08defc9ba16944861fff9a0e9ecc7, type: 3}
-  pieceForceMin: {x: -1.5, y: 0.5}
-  pieceForceMax: {x: 1.5, y: 2.5}
-  pieceTorqueMin: -60
-  pieceTorqueMax: 60
+  pieceForceMin: {x: -1, y: 0.5}
+  pieceForceMax: {x: 1, y: 2.5}
+  pieceTorqueMin: -30
+  pieceTorqueMax: 30
   bloodBurstPrefab: {fileID: 588043819693885274, guid: 8680d34d833d1d143a9d092474de0250, type: 3}

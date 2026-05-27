@@ -102,6 +102,7 @@ public class ThermalObject : MonoBehaviour, IHasThermal
     public void SetCurrentTemperature(float newTarget) => currentTemperature = Mathf.Clamp(newTarget, 0f, 100f);
     public void ChangeCurrentTemperature(float delta) => currentTemperature = Mathf.Clamp(currentTemperature + delta, 0f, 100f);
     public float GetTemperature() => temperature;
+    public float GetCurrentTemperature() => currentTemperature;
     public void SetTemperatureLerpSpeed(float speed) => temperatureLerpSpeed = Mathf.Max(0.1f, speed);
     public void SetFresnelPower(float newPower) => fresnelPower = Mathf.Clamp01(newPower);
     public void SetBrightnessInfluence(float newInfluence) => brightnessInfluence = Mathf.Clamp01(newInfluence);
