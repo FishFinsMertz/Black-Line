@@ -7,6 +7,7 @@ public abstract class EnemyController : MonoBehaviour
     [SerializeField] protected float playerDetectionRadius = 5f;
     public float attackRadius = 1f;
     public float damage = -10f;
+    public float damageTakenMultiplier = 1f;
     public float temperatureSteal = 20f;
 
     [Header("Animator")]
@@ -69,7 +70,10 @@ public abstract class EnemyController : MonoBehaviour
 
     public void ChangeBaseTemperature(float damage) 
     {
-        thermalObject.ChangeBaseTemperature(damage);
+        thermalObject.ChangeBaseTemperature(damage * damageTakenMultiplier);
+        // Debug to print damage taken and new temperature
+        Debug.Log($"{gameObject.name} took {damage * damageTakenMultiplier} damage, new temp: {thermalObject.GetTemperature()}");
+
         // If temp greater or equal to 100, die
         if (thermalObject.GetTemperature() >= 100f)
             Die();

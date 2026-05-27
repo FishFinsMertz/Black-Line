@@ -2,9 +2,10 @@ using UnityEngine;
 
 public class GunBullet : MonoBehaviour
 {
-    [Header("Movement")]
+    [Header("Stats")]
     [SerializeField] private float speed = 20f;
     [SerializeField] private float lifetime = 2f;
+    [SerializeField] private float damage = 30f;
 
     [Header("Hit Effect")]
     [SerializeField] private GameObject hitEffectPrefab; // assign your particle system prefab here
@@ -69,7 +70,7 @@ public class GunBullet : MonoBehaviour
             EnemyController enemy = hitObject.GetComponent<EnemyController>();
             if (enemy != null)
             {
-                enemy.ChangeBaseTemperature(10f); // example damage value
+                enemy.ChangeBaseTemperature(damage); // example damage value
             }
         }
         
