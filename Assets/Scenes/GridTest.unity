@@ -1326,6 +1326,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5427079165002162839, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
+      propertyPath: flipThreshold
+      value: 0.2
+      objectReference: {fileID: 0}
     - target: {fileID: 6602669560062932297, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
       propertyPath: runOffset.x
       value: 0.025
@@ -1351,14 +1355,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 743515948656246856, guid: f3ccc4fbbc48d804f9e89cf2a79e3fb6, type: 3}
-      propertyPath: moveSpeed
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 2933478864497186605, guid: f3ccc4fbbc48d804f9e89cf2a79e3fb6, type: 3}
-      propertyPath: m_Interpolate
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 6714458030169104091, guid: f3ccc4fbbc48d804f9e89cf2a79e3fb6, type: 3}
       propertyPath: m_LocalPosition.x
       value: 2.53

@@ -7,28 +7,29 @@ public class PlayerController : MonoBehaviour
     [Header("Settings")]
     public float walkSpeed = 5f;
     public float runSpeed = 8f;
-    public float runAcceleration = 15f; 
+    public float runAcceleration = 15f;
     public float runDeceleration = 10f;
     public KeyCode runKey = KeyCode.LeftShift;
     public bool isFacingRight = true;
 
+    [Header("Mouse Flip")]
+    [SerializeField] private float flipThreshold = 0.5f;   // deadzone for mouse flip
+
     [Header("Misc")]
     public Animator bodyAnimator;
-    public Volume dmgVolume;                // assign your damage post‑processing volume here
+    public Volume dmgVolume;
     [Header("Damage Flash")]
     public float damageFlashMaxWeight = 0.7f;
-    public float damageFlashRiseDuration = 0.1f;   // how fast it reaches max
-    public float damageFlashFallDuration = 0.4f;   // how long it fades back to 0
+    public float damageFlashRiseDuration = 0.1f;
+    public float damageFlashFallDuration = 0.4f;
 
     private GeneralThermalRegulator thermalRegulator;
-
     [HideInInspector] public Rigidbody2D rb { get; private set; }
-
     private PlayerState currentState;
     [HideInInspector] public Inventory inventory;
     private CameraController camController;
-
     private Coroutine damageFlashCoroutine;
+    private Camera mainCam;   // for mouse position
 
     void Start()
     {
@@ -37,14 +38,26 @@ public class PlayerController : MonoBehaviour
         inventory = GetComponent<Inventory>();
         thermalRegulator = GetComponent<GeneralThermalRegulator>();
         camController = Camera.main.GetComponent<CameraController>();
+        mainCam = Camera.main;
         currentState.Enter();
 
-        // Ensure damage volume starts at weight 0
         if (dmgVolume != null) dmgVolume.weight = 0f;
     }
 
     void Update()
     {
+        // Flip based on mouse position (centralised here)
+        if (mainCam != null)
+        {
+            Vector3 mousePos = mainCam.ScreenToWorldPoint(Input.mousePosition);
+            mousePos.z = 0f;
+            float dx = mousePos.x - transform.position.x;
+            if (dx > flipThreshold && !isFacingRight)
+                Flip();
+            else if (dx < -flipThreshold && isFacingRight)
+                Flip();
+        }
+
         currentState?.Update();
     }
 
@@ -75,11 +88,8 @@ public class PlayerController : MonoBehaviour
 
     public void TakeDamage(float tempChange)
     {
-        // Apply temperature change
         thermalRegulator.ChangeGlobalBaseTemperature(tempChange);
-        // Camera shake
         camController.TriggerShake(0.5f, 0.5f, 1f);
-        // Damage post‑processing flash
         if (dmgVolume != null)
         {
             if (damageFlashCoroutine != null)
@@ -91,7 +101,6 @@ public class PlayerController : MonoBehaviour
     private IEnumerator DamageFlashRoutine()
     {
         float elapsed = 0f;
-        // Rise to max weight
         while (elapsed < damageFlashRiseDuration)
         {
             elapsed += Time.deltaTime;
@@ -100,8 +109,6 @@ public class PlayerController : MonoBehaviour
             yield return null;
         }
         dmgVolume.weight = damageFlashMaxWeight;
-
-        // Fall to 0
         elapsed = 0f;
         while (elapsed < damageFlashFallDuration)
         {

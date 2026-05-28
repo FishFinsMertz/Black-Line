@@ -194,7 +194,7 @@ Rigidbody2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
@@ -266,7 +266,7 @@ MonoBehaviour:
   thermalObject: {fileID: 0}
   rb: {fileID: 0}
   player: {fileID: 0}
-  moveSpeed: 3
+  moveSpeed: 4
   wanderSmoothness: 4
   hoverRadiusMin: 1.5
   hoverRadiusMax: 3
