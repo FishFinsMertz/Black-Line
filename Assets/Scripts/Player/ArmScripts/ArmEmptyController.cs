@@ -1,4 +1,3 @@
-using Unity.Burst.Intrinsics;
 using UnityEngine;
 
 public class ArmEmptyController : ArmController
@@ -14,23 +13,35 @@ public class ArmEmptyController : ArmController
     protected override void Update()
     {
         base.Update();
-        if (currentPlayerState != null)
+
+        if (player != null)
         {
-            // Set animator parameters based on player state
-            if (currentPlayerState is PlayerIdleState)
+            PlayerState currentState = player.GetCurrentState();
+
+            if (currentState is PlayerIdleState)
             {
                 armEmptyAnimator.SetBool("isIdle", true);
                 armEmptyAnimator.SetBool("isWalking", false);
+                armEmptyAnimator.SetBool("isRunning", false);
             }
-            else if (currentPlayerState is PlayerWalkState)
+            else if (currentState is PlayerWalkState)
             {
                 armEmptyAnimator.SetBool("isIdle", false);
                 armEmptyAnimator.SetBool("isWalking", true);
+                armEmptyAnimator.SetBool("isRunning", false);
             }
-            else
+            else if (currentState is PlayerRunState)
             {
                 armEmptyAnimator.SetBool("isIdle", false);
                 armEmptyAnimator.SetBool("isWalking", false);
+                armEmptyAnimator.SetBool("isRunning", true);
+            }
+            else
+            {
+                // Fallback for any other state (should not happen normally)
+                armEmptyAnimator.SetBool("isIdle", false);
+                armEmptyAnimator.SetBool("isWalking", false);
+                armEmptyAnimator.SetBool("isRunning", false);
             }
         }
     }
