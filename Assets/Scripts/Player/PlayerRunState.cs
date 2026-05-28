@@ -6,7 +6,7 @@ public class PlayerRunState : PlayerState
 
     public override void Enter()
     {
-        Debug.Log("Entered Run State");
+        //Debug.Log("Entered Run State");
     }
 
     public override void FixedUpdate()

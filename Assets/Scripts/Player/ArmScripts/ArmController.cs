@@ -6,14 +6,21 @@ public abstract class ArmController : MonoBehaviour
     [SerializeField] protected bool armEnabled = true;
     [SerializeField] protected float flipThreshold = 0.1f;
 
+    [Header("Run Offset")]
+    [SerializeField] protected Vector2 runOffset = Vector2.zero; // X and Y offset in local space
+    [SerializeField] protected float runOffsetSmoothTime = 0.1f;
+
     protected PlayerController player;
     protected PlayerState currentPlayerState;
     protected Camera cam;
+    protected Vector3 originalLocalPosition;
+    protected Vector3 velocityRef;
 
     protected virtual void Start()
     {
         player = GetComponentInParent<PlayerController>();
         cam = Camera.main;
+        originalLocalPosition = transform.localPosition;
     }
 
     protected virtual void Update()
@@ -21,9 +28,18 @@ public abstract class ArmController : MonoBehaviour
         if (!armEnabled) return;
         HandleFlip();
         currentPlayerState = player.GetCurrentState();
+
+        // Calculate target position: original + run offset (if running)
+        Vector3 targetPos = originalLocalPosition;
+        if (currentPlayerState is PlayerRunState)
+        {
+            targetPos += new Vector3(runOffset.x, runOffset.y, 0f);
+        }
+
+        // Smoothly move towards target position
+        transform.localPosition = Vector3.SmoothDamp(transform.localPosition, targetPos, ref velocityRef, runOffsetSmoothTime);
     }
 
-    // Flip the player based on mouse position relative to player's pivot
     protected virtual void HandleFlip()
     {
         if (player == null || cam == null) return;
@@ -38,9 +54,6 @@ public abstract class ArmController : MonoBehaviour
             player.Flip();
     }
 
-    // Called by Inventory when this arm is equipped
     public virtual void OnEquip() { }
-
-    // Called by Inventory when this arm is unequipped
     public virtual void OnUnequip() { }
 }

@@ -26,7 +26,6 @@ public class ArmGunController : ArmController
 
     private CameraController camController;
     private float nextFireTime = 0f;
-    private Vector3 originalLocalPosition;
     private bool isRecoiling = false;
 
     protected override void Start()
