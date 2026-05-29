@@ -511,7 +511,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   armEnabled: 1
-  flipThreshold: 0.1
+  runOffset: {x: 0.025, y: 0.025}
+  runOffsetSmoothTime: 0.1
   minAngle: -16
   maxAngle: 89
   firePoint: {fileID: 1339711541712771895}
@@ -650,7 +651,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   armEnabled: 1
-  flipThreshold: 0.1
+  runOffset: {x: 0, y: 0}
+  runOffsetSmoothTime: 0.1
 --- !u!95 &788493472589341056
 Animator:
   serializedVersion: 7
@@ -758,6 +760,7 @@ MonoBehaviour:
   runDeceleration: 15
   runKey: 304
   isFacingRight: 1
+  flipThreshold: 0.2
   bodyAnimator: {fileID: 1050252505090677471}
   dmgVolume: {fileID: 5414317147145659246}
   damageFlashMaxWeight: 1

@@ -7,12 +7,11 @@ public class GameData
     // Inventory data
     public List<string> ownedItems = new List<string>();
     public string currentEquipment;
-
     public float playerBaseTemperature = 70f;
+    public List<string> deadEnemyIDs = new List<string>();
 
     // Future expansions (example)
     // public string currentScene;
     // public Vector3 playerPosition;
     // public List<string> unlockedDoors;
-    // public List<string> deadEnemies;
 }

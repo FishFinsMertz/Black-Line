@@ -3,6 +3,9 @@ using UnityEngine;
 
 public abstract class EnemyController : MonoBehaviour
 {
+    [Header("Identification")]
+    [SerializeField] protected string uniqueID;
+    
     [Header("Enemy Stats")]
     [SerializeField] protected float playerDetectionRadius = 5f;
     public float attackRadius = 1f;
@@ -30,7 +33,14 @@ public abstract class EnemyController : MonoBehaviour
         playerThermal = player.GetComponent<GeneralThermalRegulator>();
     }
 
-    protected virtual void Start() { }
+    protected virtual void Start()
+    {
+        if (EnemyManager.Instance != null && EnemyManager.Instance.IsEnemyDead(uniqueID))
+        {
+            gameObject.SetActive(false); // or Destroy(gameObject)
+            return;
+        }
+    }
 
     protected virtual void Update() { currentState?.Update(); }
     protected virtual void FixedUpdate() { currentState?.FixedUpdate(); }
@@ -81,6 +91,10 @@ public abstract class EnemyController : MonoBehaviour
 
     protected virtual void Die()
     {
+        // Register death with EnemyManager
+        EnemyManager.Instance.RegisterDeath(uniqueID);
+
+        // Explode
         EnemyDeathExploder exploder = GetComponent<EnemyDeathExploder>();
         if (exploder != null)
             exploder.Explode();
