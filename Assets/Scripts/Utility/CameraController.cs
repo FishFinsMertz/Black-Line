@@ -6,6 +6,12 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float smoothSpeed = 5f;     
     [SerializeField] private Vector3 offset = new Vector3(0f, 0f, -10f); 
 
+    [Header("Look Ahead")]
+    [SerializeField] private bool enableLookAhead = true;
+    [SerializeField] private float lookAheadDistance = 3f;    // how far ahead the camera pushes
+    [SerializeField] private float lookAheadSpeed = 3f;       // how quickly it pushes ahead
+    [SerializeField] private float lookAheadReturnSpeed = 1f; // how slowly it returns when idle
+
     [Header("Mouse Follow (Cursor) – Right Click Only")]
     [SerializeField] private bool enableMouseFollow = true;
     [SerializeField] private float minFollowDistance = 1f;
@@ -48,6 +54,10 @@ public class CameraController : MonoBehaviour
     private Vector3 currentMouseOffset = Vector3.zero;
     private Vector3 targetMouseOffset = Vector3.zero;
 
+    // Look ahead
+    private Vector3 currentLookAheadOffset = Vector3.zero;
+    private Vector3 previousTargetPosition = Vector3.zero;
+
     private float randomSeedX, randomSeedY;
 
     private void Start()
@@ -56,6 +66,9 @@ public class CameraController : MonoBehaviour
         randomSeedX = Random.Range(0f, 100f);
         randomSeedY = Random.Range(0f, 100f);
         FindAndAssignPlayer();
+
+        if (target != null)
+            previousTargetPosition = target.position;
     }
 
     private void FindAndAssignPlayer()
@@ -85,6 +98,31 @@ public class CameraController : MonoBehaviour
 
         // Base desired position
         Vector3 desiredPosition = target.position + offset;
+
+        // --- Look Ahead ---
+        if (enableLookAhead)
+        {
+            // Measure how much the player moved this frame
+            Vector3 playerDelta = target.position - previousTargetPosition;
+            previousTargetPosition = target.position;
+
+            // Only look ahead horizontally — vertical movement shouldn't shift the camera much
+            float horizontalSpeed = Mathf.Abs(playerDelta.x) / Time.deltaTime;
+            bool isMoving = horizontalSpeed > 0.1f;
+
+            Vector3 targetLookAhead = Vector3.zero;
+            if (isMoving)
+            {
+                float direction = Mathf.Sign(playerDelta.x);
+                targetLookAhead = new Vector3(direction * lookAheadDistance, 0f, 0f);
+            }
+
+            // Push ahead quickly, return slowly
+            float lerpSpeed = isMoving ? lookAheadSpeed : lookAheadReturnSpeed;
+            currentLookAheadOffset = Vector3.Lerp(currentLookAheadOffset, targetLookAhead, lerpSpeed * Time.deltaTime);
+
+            desiredPosition += currentLookAheadOffset;
+        }
         
         // Mouse follow offset – only when right click is held
         if (enableMouseFollow && Input.GetMouseButton(1))
@@ -114,7 +152,7 @@ public class CameraController : MonoBehaviour
         currentMouseOffset = Vector3.Lerp(currentMouseOffset, targetMouseOffset, mouseFollowSmoothing * Time.deltaTime);
         desiredPosition += currentMouseOffset;
         
-        // Temperature intensity for wobble/tilt — uses base temperature only
+        // Temperature intensity for wobble/tilt
         float targetIntensity = 0f;
         if (playerThermal != null)
         {
