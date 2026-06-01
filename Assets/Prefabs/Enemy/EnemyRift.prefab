@@ -248,6 +248,7 @@ Transform:
   m_Children:
   - {fileID: 8117815522415112418}
   - {fileID: 7992005603514772487}
+  - {fileID: 6310827784535853712}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &7321368099368343260
@@ -343,15 +344,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb0aaf4ff0270ab4ba028dee65554481, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  uniqueID: 
   playerDetectionRadius: 10
   attackRadius: 1.5
   damage: -20
+  damageTakenMultiplier: 1
   temperatureSteal: 25
   animator: {fileID: 3155726339252712922}
   isFacingRight: 0
   thermalObject: {fileID: 0}
   rb: {fileID: 0}
   player: {fileID: 0}
+  smokeController: {fileID: 0}
   bounceSpeed: 30
   bounceDelayMin: 0.5
   bounceDelayMax: 1.4
@@ -387,3 +391,73 @@ MonoBehaviour:
   pieceTorqueMin: -60
   pieceTorqueMax: 60
   bloodBurstPrefab: {fileID: 588043819693885274, guid: 555ecd0420cbfc246abbd90b7d981c43, type: 3}
+--- !u!1001 &5133581514795942600
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 872885805935217519}
+    m_Modifications:
+    - target: {fileID: 1200971671767369816, guid: 60ba0066cbb77224abcb510f6fbf4297, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1200971671767369816, guid: 60ba0066cbb77224abcb510f6fbf4297, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.44
+      objectReference: {fileID: 0}
+    - target: {fileID: 1200971671767369816, guid: 60ba0066cbb77224abcb510f6fbf4297, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.03550744
+      objectReference: {fileID: 0}
+    - target: {fileID: 1200971671767369816, guid: 60ba0066cbb77224abcb510f6fbf4297, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1200971671767369816, guid: 60ba0066cbb77224abcb510f6fbf4297, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1200971671767369816, guid: 60ba0066cbb77224abcb510f6fbf4297, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1200971671767369816, guid: 60ba0066cbb77224abcb510f6fbf4297, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1200971671767369816, guid: 60ba0066cbb77224abcb510f6fbf4297, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1200971671767369816, guid: 60ba0066cbb77224abcb510f6fbf4297, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1200971671767369816, guid: 60ba0066cbb77224abcb510f6fbf4297, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3766762657605368524, guid: 60ba0066cbb77224abcb510f6fbf4297, type: 3}
+      propertyPath: minTemp
+      value: 80
+      objectReference: {fileID: 0}
+    - target: {fileID: 3766762657605368524, guid: 60ba0066cbb77224abcb510f6fbf4297, type: 3}
+      propertyPath: maxEmission
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 7252784160325823708, guid: 60ba0066cbb77224abcb510f6fbf4297, type: 3}
+      propertyPath: m_Name
+      value: SmokeVFX
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 60ba0066cbb77224abcb510f6fbf4297, type: 3}
+--- !u!4 &6310827784535853712 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1200971671767369816, guid: 60ba0066cbb77224abcb510f6fbf4297, type: 3}
+  m_PrefabInstance: {fileID: 5133581514795942600}
+  m_PrefabAsset: {fileID: 0}

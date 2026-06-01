@@ -368,6 +368,17 @@ Transform:
   - {fileID: 1498012229}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &586992457 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4321859201812857078, guid: 5dd8d1f111f7aca43b4e79ff5356af00, type: 3}
+  m_PrefabInstance: {fileID: 2846145212830067081}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3834701d395f3fb4f9415b7789ba40b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1498012228
 GameObject:
   m_ObjectHideFlags: 0
@@ -1351,6 +1362,18 @@ PrefabInstance:
       propertyPath: uniqueID
       value: Test1
       objectReference: {fileID: 0}
+    - target: {fileID: 743515948656246856, guid: f3ccc4fbbc48d804f9e89cf2a79e3fb6, type: 3}
+      propertyPath: damageTakenMultiplier
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1695235797977171797, guid: f3ccc4fbbc48d804f9e89cf2a79e3fb6, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5145227968519229765, guid: f3ccc4fbbc48d804f9e89cf2a79e3fb6, type: 3}
+      propertyPath: minTemp
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 6714458030169104091, guid: f3ccc4fbbc48d804f9e89cf2a79e3fb6, type: 3}
       propertyPath: m_LocalPosition.x
       value: 2.53
@@ -1509,10 +1532,22 @@ PrefabInstance:
       propertyPath: uniqueID
       value: Test2
       objectReference: {fileID: 0}
+    - target: {fileID: 5936847342709684963, guid: 5dd8d1f111f7aca43b4e79ff5356af00, type: 3}
+      propertyPath: ShapeModule.m_Scale.x
+      value: 0.64
+      objectReference: {fileID: 0}
     - target: {fileID: 7462846303542068838, guid: 5dd8d1f111f7aca43b4e79ff5356af00, type: 3}
       propertyPath: m_Name
       value: EnemyRift
       objectReference: {fileID: 0}
+    - target: {fileID: 8320435076528257028, guid: 5dd8d1f111f7aca43b4e79ff5356af00, type: 3}
+      propertyPath: minTemp
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 8320435076528257028, guid: 5dd8d1f111f7aca43b4e79ff5356af00, type: 3}
+      propertyPath: thermalSource
+      value: 
+      objectReference: {fileID: 586992457}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1529,10 +1564,6 @@ PrefabInstance:
     - target: {fileID: 745036083082370713, guid: 111a68903a60e524dbe33db921bacd91, type: 3}
       propertyPath: m_Name
       value: EnemyManager
-      objectReference: {fileID: 0}
-    - target: {fileID: 3870357488531904600, guid: 111a68903a60e524dbe33db921bacd91, type: 3}
-      propertyPath: enablePersistence
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6910540572678629092, guid: 111a68903a60e524dbe33db921bacd91, type: 3}
       propertyPath: m_LocalPosition.x

@@ -125,7 +125,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 35
   lifetime: 2
+  damage: 20
   hitEffectPrefab: {fileID: 6032955814965413020, guid: 9c67ec2becf93b64f94e30c58fb9a4fa, type: 3}
+  surfaceOffset: 0.05
 --- !u!96 &6775708454615155045
 TrailRenderer:
   serializedVersion: 3

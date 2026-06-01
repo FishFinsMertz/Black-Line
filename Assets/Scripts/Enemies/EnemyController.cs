@@ -13,15 +13,16 @@ public abstract class EnemyController : MonoBehaviour
     public float damageTakenMultiplier = 1f;
     public float temperatureSteal = 20f;
 
-    [Header("Animator")]
+    [Header("Animator and VFX")]
     public Animator animator;
-
+    
     [Header("Misc")]
     public bool isFacingRight = false;
     protected EnemyState currentState;
     [HideInInspector] public ThermalObject thermalObject;
     [HideInInspector] public Rigidbody2D rb;
     [HideInInspector] public GameObject player;
+    [HideInInspector] public SmokeController smokeController;
 
     private GeneralThermalRegulator playerThermal;
 
@@ -31,13 +32,15 @@ public abstract class EnemyController : MonoBehaviour
         thermalObject = GetComponentInChildren<ThermalObject>();
         player = GameObject.FindGameObjectWithTag("Player");
         playerThermal = player.GetComponent<GeneralThermalRegulator>();
+        // Cache before SmokeController detaches itself in Start
+        smokeController = GetComponentInChildren<SmokeController>();
     }
 
     protected virtual void Start()
     {
         if (EnemyManager.Instance != null && EnemyManager.Instance.IsEnemyDead(uniqueID))
         {
-            gameObject.SetActive(false); // or Destroy(gameObject)
+            gameObject.SetActive(false);
             return;
         }
     }
@@ -69,7 +72,7 @@ public abstract class EnemyController : MonoBehaviour
     {
         float tempMultiplier = playerThermal != null 
             ? playerThermal.GetCurrentTemperature() / 100f 
-            : 1f; // fallback to full range if not found
+            : 1f;
         
         return (player.transform.position - transform.position).magnitude 
             <= playerDetectionRadius * tempMultiplier;
@@ -81,20 +84,19 @@ public abstract class EnemyController : MonoBehaviour
     public void ChangeBaseTemperature(float damage) 
     {
         thermalObject.ChangeBaseTemperature(damage * damageTakenMultiplier);
-        // Debug to print damage taken and new temperature
-        //Debug.Log($"{gameObject.name} took {damage * damageTakenMultiplier} damage, new temp: {thermalObject.GetTemperature()}");
 
-        // If temp greater or equal to 100, die
         if (thermalObject.GetTemperature() >= 100f)
             Die();
     }
 
     protected virtual void Die()
     {
-        // Register death with EnemyManager
-        EnemyManager.Instance.RegisterDeath(uniqueID);
+        if (EnemyManager.Instance != null)
+            EnemyManager.Instance.RegisterDeath(uniqueID);
 
-        // Explode
+        if (smokeController != null)
+            smokeController.OnOwnerDied();
+
         EnemyDeathExploder exploder = GetComponent<EnemyDeathExploder>();
         if (exploder != null)
             exploder.Explode();
