@@ -61,11 +61,16 @@ public class ScoutHoverState : EnemyState
 
         foreach (ThermalObject t in allThermals)
         {
-            // Check if this object's layer is in the targetable layers mask
+            // Layer check
             if ((scout.targetableLayers & (1 << t.gameObject.layer)) == 0) continue;
 
             float dist = Vector2.Distance(scout.transform.position, t.transform.position);
             if (dist > scout.hoverSearchRadius) continue;
+
+            // 🔥 NEW: Line‑of‑sight check – ignore if wall blocks the view
+            Vector2 direction = t.transform.position - scout.transform.position;
+            RaycastHit2D hit = Physics2D.Raycast(scout.transform.position, direction, dist, scout.obstacleMask);
+            if (hit.collider != null) continue; // wall in the way
 
             float temp = t.GetCurrentTemperature();
             if (temp > bestTemp)
@@ -76,8 +81,6 @@ public class ScoutHoverState : EnemyState
         }
 
         hoverTarget = best != null ? best.transform : null;
-
-        //Debug.Log($"[Scout] New target: {hoverTarget.name} (temp: {bestTemp:F1}, layer: {LayerMask.LayerToName(hoverTarget.gameObject.layer)})");
     }
 
     private void GenerateOrbitOffset()

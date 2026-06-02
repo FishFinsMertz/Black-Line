@@ -261,19 +261,23 @@ MonoBehaviour:
   playerDetectionRadius: 5
   attackRadius: 1
   damage: -10
-  damageTakenMultiplier: 3
+  damageTakenMultiplier: 2
   temperatureSteal: 20
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 64
   animator: {fileID: 8180243831815477077}
   isFacingRight: 0
   thermalObject: {fileID: 0}
   rb: {fileID: 0}
   player: {fileID: 0}
-  moveSpeed: 4
+  smokeController: {fileID: 0}
+  moveSpeed: 2.5
   wanderSmoothness: 4
-  hoverRadiusMin: 1.5
-  hoverRadiusMax: 3
-  erraticness: 5
-  hoverSearchRadius: 10
+  hoverRadiusMin: 0.5
+  hoverRadiusMax: 1
+  erraticness: 3
+  hoverSearchRadius: 3
   retargetInterval: 1
   maxTiltAngle: 5
   tiltSpeed: 5

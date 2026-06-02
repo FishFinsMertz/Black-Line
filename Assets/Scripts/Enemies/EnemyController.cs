@@ -13,6 +13,9 @@ public abstract class EnemyController : MonoBehaviour
     public float damageTakenMultiplier = 1f;
     public float temperatureSteal = 20f;
 
+    [Header("Line of Sight")]
+    public LayerMask obstacleMask; // assign layers that block sight (walls, floors, etc.)
+
     [Header("Animator and VFX")]
     public Animator animator;
     
@@ -32,7 +35,6 @@ public abstract class EnemyController : MonoBehaviour
         thermalObject = GetComponentInChildren<ThermalObject>();
         player = GameObject.FindGameObjectWithTag("Player");
         playerThermal = player.GetComponent<GeneralThermalRegulator>();
-        // Cache before SmokeController detaches itself in Start
         smokeController = GetComponentInChildren<SmokeController>();
     }
 
@@ -70,12 +72,22 @@ public abstract class EnemyController : MonoBehaviour
 
     public bool IsPlayerInDetectionRange()
     {
+        // First check if player is within distance
+        Vector2 directionToPlayer = player.transform.position - transform.position;
+        float distance = directionToPlayer.magnitude;
+        if (distance > playerDetectionRadius) return false;
+
+        // Apply temperature multiplier (player heat affects detection range)
         float tempMultiplier = playerThermal != null 
             ? playerThermal.GetCurrentTemperature() / 100f 
             : 1f;
-        
-        return (player.transform.position - transform.position).magnitude 
-            <= playerDetectionRadius * tempMultiplier;
+        if (distance > playerDetectionRadius * tempMultiplier) return false;
+
+        // Line of sight check: raycast towards player, ignoring enemy and player layers
+        // Use obstacleMask to detect only blocking geometry
+        RaycastHit2D hit = Physics2D.Raycast(transform.position, directionToPlayer, distance, obstacleMask);
+        // If the ray hits something, there's an obstacle -> player not visible
+        return hit.collider == null;
     }
 
     public bool IsPlayerInAttackRange() =>
@@ -100,5 +112,13 @@ public abstract class EnemyController : MonoBehaviour
         EnemyDeathExploder exploder = GetComponent<EnemyDeathExploder>();
         if (exploder != null)
             exploder.Explode();
+    }
+
+    // Optional: visualize the raycast in the editor
+    private void OnDrawGizmosSelected()
+    {
+        if (player == null) return;
+        Gizmos.color = IsPlayerInDetectionRange() ? Color.green : Color.red;
+        Gizmos.DrawLine(transform.position, player.transform.position);
     }
 }

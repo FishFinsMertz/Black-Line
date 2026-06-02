@@ -350,6 +350,9 @@ MonoBehaviour:
   damage: -20
   damageTakenMultiplier: 1
   temperatureSteal: 25
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 64
   animator: {fileID: 3155726339252712922}
   isFacingRight: 0
   thermalObject: {fileID: 0}
