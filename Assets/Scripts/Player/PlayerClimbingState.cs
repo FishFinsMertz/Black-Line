@@ -3,12 +3,18 @@ using UnityEngine;
 public class PlayerClimbingState : PlayerState
 {
     private float defaultGravityScale;
+    private Inventory.EquipmentType previousEquipment;
 
     public PlayerClimbingState(PlayerController player) : base(player) { }
 
     public override void Enter()
     {
         Debug.Log("Entered Climbing State");
+
+        // Save current equipment and equip empty hands
+        previousEquipment = player.inventory.GetCurrentEquipment();
+        player.inventory.EquipType(Inventory.EquipmentType.None);
+
         defaultGravityScale = player.rb.gravityScale;
         player.rb.gravityScale = 0f;
         player.rb.linearVelocity = Vector2.zero;
@@ -26,6 +32,7 @@ public class PlayerClimbingState : PlayerState
         if (Mathf.Approximately(verticalInput, 0f))
         {
             // No input – freeze the animation
+            player.currentSubState = PlayerController.SubState.ClimbPause;
             player.bodyAnimator.speed = 0f;
         }
         else
@@ -33,18 +40,29 @@ public class PlayerClimbingState : PlayerState
             // Climbing – resume normal speed and set direction
             player.bodyAnimator.speed = 1f;
             if (verticalInput > 0f)
+            {
+                player.currentSubState = PlayerController.SubState.None;
                 player.bodyAnimator.SetFloat("Mode", 3f); // climb up
+            }
             else
+            {
+                player.currentSubState = PlayerController.SubState.ClimbDown;
                 player.bodyAnimator.SetFloat("Mode", 4f); // climb down
+            }
         }
     }
 
     public override void Exit()
     {
         Debug.Log("Exited Climbing State");
+
         // Resume normal animator speed and reset parameter
         player.bodyAnimator.speed = 1f;
         player.bodyAnimator.SetFloat("Mode", 0f);
         player.rb.gravityScale = defaultGravityScale;
+        player.currentSubState = PlayerController.SubState.None;
+
+        // Re-equip the previously held arm
+        player.inventory.EquipType(previousEquipment);
     }
 }

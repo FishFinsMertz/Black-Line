@@ -97,4 +97,14 @@ public class Inventory : MonoBehaviour, ISaveable
     {
         SaveManager.Instance?.Unregister(this);
     }
+
+    public EquipmentType GetCurrentEquipment()
+    {
+        return currentEquipment;
+    }
+
+    public void EquipType(EquipmentType type)
+    {
+        Equip(type);
+    }
 }

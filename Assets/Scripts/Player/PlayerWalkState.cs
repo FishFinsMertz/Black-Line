@@ -15,9 +15,12 @@ public class PlayerWalkState : PlayerState
         // Transition to Run if moving forward AND run key held
         if (movingForward && Input.GetKey(player.runKey))
         {
+            player.currentSubState = PlayerController.SubState.None;
             player.ChangeState(new PlayerRunState(player));
             return;
         }
+
+        player.currentSubState = PlayerController.SubState.WalkBack;
         
         // rest of walk logic
         Vector2 velocity = player.rb.linearVelocity;
@@ -33,5 +36,8 @@ public class PlayerWalkState : PlayerState
             player.ChangeState(new PlayerIdleState(player));
     }
 
-    public override void Exit() { }
+    public override void Exit()
+    {
+        player.currentSubState = PlayerController.SubState.None;
+    }
 }

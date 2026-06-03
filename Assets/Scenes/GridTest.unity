@@ -648,6 +648,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be2fc72a17bc53c429f2ebe4fcda6373, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isTopEntrance: 1
+  exitDistance: 0.5
 --- !u!1 &1498012228
 GameObject:
   m_ObjectHideFlags: 0
@@ -1958,6 +1960,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be2fc72a17bc53c429f2ebe4fcda6373, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isTopEntrance: 0
+  exitDistance: 0
 --- !u!1001 &336386366199253394
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2005,10 +2009,6 @@ PrefabInstance:
     - target: {fileID: 1608731299875015705, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5427079165002162839, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
-      propertyPath: climbSpeed
-      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 8330259796792489906, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
       propertyPath: m_Name

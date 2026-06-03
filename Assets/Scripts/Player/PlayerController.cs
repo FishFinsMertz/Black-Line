@@ -32,6 +32,10 @@ public class PlayerController : MonoBehaviour
     private Coroutine damageFlashCoroutine;
     private Camera mainCam;   // for mouse position
 
+    // Substates
+    public enum SubState {None, WalkBack, ClimbDown, ClimbPause}
+    public SubState currentSubState = SubState.None;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
