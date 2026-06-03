@@ -756,6 +756,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   walkSpeed: 2
   runSpeed: 4
+  climbSpeed: 1.5
   runAcceleration: 10
   runDeceleration: 15
   runKey: 304

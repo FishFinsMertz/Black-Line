@@ -7,7 +7,7 @@ public class PlayerIdleState : PlayerState
     public override void Enter()
     {
         player.rb.linearVelocity = Vector2.zero;
-        player.bodyAnimator.SetFloat("SpeedX", 0.0f);
+        player.bodyAnimator.SetFloat("Mode", 0.0f);
     }
 
     public override void Update()

@@ -47,7 +47,7 @@ public class PlayerRunState : PlayerState
         float relativeSpeed = moveInput;
         if (!isFacingRight) relativeSpeed = -relativeSpeed;
         float animSpeed = Mathf.Abs(relativeSpeed) > 0 ? Mathf.Sign(relativeSpeed) * 2.0f : 0f;
-        player.bodyAnimator.SetFloat("SpeedX", animSpeed);
+        player.bodyAnimator.SetFloat("Mode", animSpeed);
     }
 
     public override void Exit() { }

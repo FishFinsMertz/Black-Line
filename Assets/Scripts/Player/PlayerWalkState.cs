@@ -27,7 +27,7 @@ public class PlayerWalkState : PlayerState
         // Set animator speed (normalized walk speed)
         float relativeSpeed = moveInput;
         if (!isFacingRight) relativeSpeed = -relativeSpeed;
-        player.bodyAnimator.SetFloat("SpeedX", relativeSpeed);
+        player.bodyAnimator.SetFloat("Mode", relativeSpeed);
         
         if (Mathf.Approximately(moveInput, 0f))
             player.ChangeState(new PlayerIdleState(player));
