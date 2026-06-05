@@ -163,7 +163,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   coldVolume: {fileID: 5252347464817028447}
   maxColdWeight: 1
-  warmThreshold: 70
+  warmThreshold: 40
   overheatVolume: {fileID: 6969594621403123540}
   maxOverheatWeight: 1
   overheatThreshold: 80

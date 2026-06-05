@@ -30,10 +30,10 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public Inventory inventory;
     private CameraController camController;
     private Coroutine damageFlashCoroutine;
-    private Camera mainCam;   // for mouse position
+    private Camera mainCam;
 
     // Substates
-    public enum SubState {None, WalkBack, ClimbDown, ClimbPause}
+    public enum SubState { None, WalkBack, ClimbDown, ClimbPause }
     public SubState currentSubState = SubState.None;
 
     void Start()
@@ -51,8 +51,8 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        // Flip based on mouse position (centralised here)
-        if (mainCam != null)
+        // Flip based on mouse position – but NOT while climbing
+        if (!(currentState is PlayerClimbingState) && mainCam != null)
         {
             Vector3 mousePos = mainCam.ScreenToWorldPoint(Input.mousePosition);
             mousePos.z = 0f;

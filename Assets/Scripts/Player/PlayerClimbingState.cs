@@ -5,64 +5,93 @@ public class PlayerClimbingState : PlayerState
     private float defaultGravityScale;
     private Inventory.EquipmentType previousEquipment;
 
-    public PlayerClimbingState(PlayerController player) : base(player) { }
+    private bool atTop = false;
+    private bool atBottom = false;
+    private bool startedFromTop;
+
+    public PlayerClimbingState(PlayerController player, bool fromTop) : base(player)
+    {
+        startedFromTop = fromTop;
+    }
+
+    public void OnEntranceTouched(bool isTop, bool entered)
+    {
+        if (isTop) atTop = entered;
+        else atBottom = entered;
+    }
 
     public override void Enter()
     {
-        Debug.Log("Entered Climbing State");
-
-        // Save current equipment and equip empty hands
+        //Debug.Log("Entered Climbing State");
         previousEquipment = player.inventory.GetCurrentEquipment();
         player.inventory.EquipType(Inventory.EquipmentType.None);
-
         defaultGravityScale = player.rb.gravityScale;
         player.rb.gravityScale = 0f;
         player.rb.linearVelocity = Vector2.zero;
-
-        // Ensure animator speed is normal when starting to climb
         player.bodyAnimator.speed = 1f;
-        player.bodyAnimator.SetFloat("Mode", 3f); // default to climb up pose
+
+        if (startedFromTop)
+        {
+            player.currentSubState = PlayerController.SubState.ClimbDown;
+            player.bodyAnimator.SetFloat("Mode", 4f);
+            player.rb.linearVelocity = new Vector2(0f, -player.climbSpeed);
+        }
+        else
+        {
+            player.currentSubState = PlayerController.SubState.None;
+            player.bodyAnimator.SetFloat("Mode", 3f);
+            player.rb.linearVelocity = new Vector2(0f, player.climbSpeed);
+        }
+    }
+
+    public override void Update()
+    {
+        // Exit only if the player is at the top OR bottom entrance AND pressing horizontal
+        if ( (atTop || atBottom) && Input.GetAxisRaw("Horizontal") != 0f )
+        {
+            player.ChangeState(new PlayerIdleState(player));
+        }
     }
 
     public override void FixedUpdate()
     {
         float verticalInput = Input.GetAxisRaw("Vertical");
-        player.rb.linearVelocity = new Vector2(0f, verticalInput * player.climbSpeed);
 
-        if (Mathf.Approximately(verticalInput, 0f))
+        bool blockedUp   = atTop    && verticalInput > 0f;
+        bool blockedDown = atBottom && verticalInput < 0f;
+        bool blocked = blockedUp || blockedDown;
+
+        if (Mathf.Approximately(verticalInput, 0f) || blocked)
         {
-            // No input – freeze the animation
+            player.rb.linearVelocity = Vector2.zero;
             player.currentSubState = PlayerController.SubState.ClimbPause;
             player.bodyAnimator.speed = 0f;
         }
         else
         {
-            // Climbing – resume normal speed and set direction
+            player.rb.linearVelocity = new Vector2(0f, verticalInput * player.climbSpeed);
             player.bodyAnimator.speed = 1f;
+
             if (verticalInput > 0f)
             {
                 player.currentSubState = PlayerController.SubState.None;
-                player.bodyAnimator.SetFloat("Mode", 3f); // climb up
+                player.bodyAnimator.SetFloat("Mode", 3f);
             }
             else
             {
                 player.currentSubState = PlayerController.SubState.ClimbDown;
-                player.bodyAnimator.SetFloat("Mode", 4f); // climb down
+                player.bodyAnimator.SetFloat("Mode", 4f);
             }
         }
     }
 
     public override void Exit()
     {
-        Debug.Log("Exited Climbing State");
-
-        // Resume normal animator speed and reset parameter
+        //Debug.Log("Exited Climbing State");
         player.bodyAnimator.speed = 1f;
         player.bodyAnimator.SetFloat("Mode", 0f);
         player.rb.gravityScale = defaultGravityScale;
         player.currentSubState = PlayerController.SubState.None;
-
-        // Re-equip the previously held arm
         player.inventory.EquipType(previousEquipment);
     }
 }
