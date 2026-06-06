@@ -99,6 +99,11 @@ public abstract class EnemyController : MonoBehaviour
 
         if (thermalObject.GetTemperature() >= 100f)
             Die();
+
+        if (thermalObject.GetTemperature() <= 0f)
+        {
+            Debug.Log("Enemy froze");
+        }
     }
 
     protected virtual void Die()
