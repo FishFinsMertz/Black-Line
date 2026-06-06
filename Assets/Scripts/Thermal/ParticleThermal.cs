@@ -34,16 +34,20 @@ public class ParticleThermal : MonoBehaviour
 
     private void Start()
     {
+        // Initial application (will also be done in OnEnable, but safe to keep)
         ApplyTemperature();
-        if (ThermalManager.Instance != null)
-            OnThermalToggled(ThermalManager.Instance.IsThermalEnabled());
-        else
-            OnThermalToggled(false);
+        // OnEnable will handle the keyword based on current thermal state
     }
 
     private void OnEnable()
     {
         ThermalManager.OnThermalToggled += OnThermalToggled;
+        // Force refresh the thermal keyword and temperature when re‑enabled
+        ApplyTemperature();
+        if (ThermalManager.Instance != null)
+            OnThermalToggled(ThermalManager.Instance.IsThermalEnabled());
+        else
+            OnThermalToggled(false);
     }
 
     private void OnDisable()
@@ -75,7 +79,6 @@ public class ParticleThermal : MonoBehaviour
         }
     }
 
-    // Public API – temperature is applied immediately
     public void SetTemperature(float newTemperature)
     {
         temperature = Mathf.Clamp(newTemperature, 0f, 100f);

@@ -58,7 +58,7 @@ MonoBehaviour:
   emissionRate: 1000
   recoilOffset: 0.05
   recoilReturnSpeed: 20
-  shakeIntensity: 0.15
+  shakeIntensity: 0.2
   shakeFrequency: 60
   armThermalObject: {fileID: 4737346704820805785}
   bodyThermalObject: {fileID: 1826829146766602594}
@@ -4922,7 +4922,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce01f679206ab8a45ad3c4bfff571e08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damagePerHit: 2
+  damagePerHit: 3
   hitCooldown: 0.5
   enemyLayer:
     serializedVersion: 2

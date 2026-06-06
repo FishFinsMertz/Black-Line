@@ -24,6 +24,11 @@ public class RiftIdleState : EnemyState
         idleTimer -= Time.deltaTime;
         if (idleTimer > 0f) return;
 
+        if (rift.IsFrozen()) {
+            rift.ChangeState(new RiftFreezeState(rift));
+            return;
+        }
+
         if (!enemy.IsPlayerInDetectionRange()) return;
 
         enemy.ChangeState(new RiftBounceState(rift));

@@ -28,6 +28,7 @@ public abstract class EnemyController : MonoBehaviour
     [HideInInspector] public SmokeController smokeController;
 
     private GeneralThermalRegulator playerThermal;
+    private bool isFrozen = false;
 
     protected virtual void Awake()
     {
@@ -97,12 +98,19 @@ public abstract class EnemyController : MonoBehaviour
     {
         thermalObject.ChangeBaseTemperature(damage * damageTakenMultiplier);
 
+        if (isFrozen && damage > 0f)
+        {
+            Die();
+            return;
+        }
+
         if (thermalObject.GetTemperature() >= 100f)
             Die();
 
         if (thermalObject.GetTemperature() <= 0f)
         {
             Debug.Log("Enemy froze");
+            isFrozen = true;
         }
     }
 
@@ -126,4 +134,6 @@ public abstract class EnemyController : MonoBehaviour
         Gizmos.color = IsPlayerInDetectionRange() ? Color.green : Color.red;
         Gizmos.DrawLine(transform.position, player.transform.position);
     }
+
+    public bool IsFrozen() => isFrozen;
 }

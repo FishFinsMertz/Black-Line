@@ -24,6 +24,14 @@ public class ScoutHoverState : EnemyState
         GenerateOrbitOffset();
     }
 
+    public override void Update()
+    {
+        if (scout.IsFrozen())
+        {
+            scout.ChangeState(new ScoutFreezeState(scout));
+        }
+    }
+
     public override void FixedUpdate()
     {
         retargetTimer -= Time.deltaTime;
@@ -67,7 +75,7 @@ public class ScoutHoverState : EnemyState
             float dist = Vector2.Distance(scout.transform.position, t.transform.position);
             if (dist > scout.hoverSearchRadius) continue;
 
-            // 🔥 NEW: Line‑of‑sight check – ignore if wall blocks the view
+            // ignore if wall blocks the view
             Vector2 direction = t.transform.position - scout.transform.position;
             RaycastHit2D hit = Physics2D.Raycast(scout.transform.position, direction, dist, scout.obstacleMask);
             if (hit.collider != null) continue; // wall in the way
