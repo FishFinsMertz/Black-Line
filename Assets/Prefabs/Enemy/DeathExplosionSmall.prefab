@@ -4905,3 +4905,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e12c9aea316c7b5468f8fb9f1398ae61, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  temperature: 84
+  currentTemperature: 0
+  temperatureLerpSpeed: 5

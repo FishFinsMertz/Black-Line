@@ -99,25 +99,27 @@ public class CameraController : MonoBehaviour
         // Base desired position
         Vector3 desiredPosition = target.position + offset;
 
-        // --- Look Ahead ---
+        // --- Look Ahead (always in facing direction) ---
         if (enableLookAhead)
         {
-            // Measure how much the player moved this frame
+            // Detect horizontal movement speed (still needed to decide if player is moving)
             Vector3 playerDelta = target.position - previousTargetPosition;
             previousTargetPosition = target.position;
-
-            // Only look ahead horizontally — vertical movement shouldn't shift the camera much
             float horizontalSpeed = Mathf.Abs(playerDelta.x) / Time.deltaTime;
             bool isMoving = horizontalSpeed > 0.1f;
+
+            // Determine facing direction (assumes player flips by changing localScale.x)
+            // If your player uses a different method, adjust accordingly.
+            float facingDir = Mathf.Sign(target.localScale.x);  // 1 = right, -1 = left
 
             Vector3 targetLookAhead = Vector3.zero;
             if (isMoving)
             {
-                float direction = Mathf.Sign(playerDelta.x);
-                targetLookAhead = new Vector3(direction * lookAheadDistance, 0f, 0f);
+                // Push camera in the direction the player is facing, not the movement direction
+                targetLookAhead = new Vector3(facingDir * lookAheadDistance, 0f, 0f);
             }
 
-            // Push ahead quickly, return slowly
+            // Smoothly move toward the target offset (push quickly, return slowly)
             float lerpSpeed = isMoving ? lookAheadSpeed : lookAheadReturnSpeed;
             currentLookAheadOffset = Vector3.Lerp(currentLookAheadOffset, targetLookAhead, lerpSpeed * Time.deltaTime);
 

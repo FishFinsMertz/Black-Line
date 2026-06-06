@@ -3,11 +3,12 @@ using System.Collections.Generic;
 
 public class Inventory : MonoBehaviour, ISaveable
 {
-    public enum EquipmentType { None, Gun }
+    public enum EquipmentType { None, Gun, Spray }
 
     [Header("Arm References")]
     [SerializeField] private GameObject emptyHandArm;
     [SerializeField] private GameObject gunArm;
+    [SerializeField] private GameObject sprayArm;
 
     private EquipmentType currentEquipment = EquipmentType.None;
     private HashSet<string> ownedItems = new HashSet<string>();
@@ -34,6 +35,7 @@ public class Inventory : MonoBehaviour, ISaveable
         
         EquipmentType loadedEquip = EquipmentType.None;
         if (data.currentEquipment == "Gun") loadedEquip = EquipmentType.Gun;
+        else if (data.currentEquipment == "Spray") loadedEquip = EquipmentType.Spray;
         
         if (!ownedItems.Contains("None"))
             ownedItems.Add("None");
@@ -49,7 +51,6 @@ public class Inventory : MonoBehaviour, ISaveable
         data.currentEquipment = currentEquipment.ToString();
     }
 
-    // ----- Rest of Inventory logic (Equip, GiveGun, Update) unchanged -----
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1)) Equip(EquipmentType.None);
@@ -58,7 +59,14 @@ public class Inventory : MonoBehaviour, ISaveable
             if (ownedItems.Contains("Gun")) Equip(EquipmentType.Gun);
             else Debug.Log("Gun not owned. Press G to give yourself the gun.");
         }
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            if (ownedItems.Contains("Spray")) Equip(EquipmentType.Spray);
+            else Debug.Log("Spray not owned. Press Y to give yourself the spray gun.");
+        }
+
         if (Input.GetKeyDown(KeyCode.G)) GiveGun();
+        if (Input.GetKeyDown(KeyCode.Y)) GiveSpray();
     }
 
     private void Equip(EquipmentType type)
@@ -66,6 +74,7 @@ public class Inventory : MonoBehaviour, ISaveable
         if (currentEquipment == type) return;
         if (emptyHandArm) emptyHandArm.SetActive(false);
         if (gunArm) gunArm.SetActive(false);
+        if (sprayArm) sprayArm.SetActive(false);
         switch (type)
         {
             case EquipmentType.None:
@@ -75,6 +84,10 @@ public class Inventory : MonoBehaviour, ISaveable
             case EquipmentType.Gun:
                 if (gunArm) gunArm.SetActive(true);
                 currentEquipment = EquipmentType.Gun;
+                break;
+            case EquipmentType.Spray:
+                if (sprayArm) sprayArm.SetActive(true);
+                currentEquipment = EquipmentType.Spray;
                 break;
         }
         
@@ -88,6 +101,17 @@ public class Inventory : MonoBehaviour, ISaveable
         {
             ownedItems.Add("Gun");
             Equip(EquipmentType.Gun);
+            // Notify SaveManager to save
+            SaveManager.Instance?.RequestSave();
+        }
+    }
+
+    private void GiveSpray()
+    {
+        if (!ownedItems.Contains("Spray"))
+        {
+            ownedItems.Add("Spray");
+            Equip(EquipmentType.Spray);
             // Notify SaveManager to save
             SaveManager.Instance?.RequestSave();
         }

@@ -1974,7 +1974,7 @@ MonoBehaviour:
   lookAheadReturnSpeed: 0.5
   enableMouseFollow: 1
   minFollowDistance: 2
-  maxFollowDistance: 3
+  maxFollowDistance: 2.3
   mouseFollowSmoothing: 5
   enableWobble: 1
   maxWobbleIntensity: 0.5
@@ -2401,10 +2401,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 4216547621254958396, guid: 66c55fa92210cfb418171dd194f3144e, type: 3}
-      propertyPath: warmThreshold
-      value: 40
-      objectReference: {fileID: 0}
     - target: {fileID: 4419232350363945829, guid: 66c55fa92210cfb418171dd194f3144e, type: 3}
       propertyPath: m_Name
       value: PPVolumes
