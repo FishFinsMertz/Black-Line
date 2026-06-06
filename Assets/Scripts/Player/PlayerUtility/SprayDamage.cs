@@ -31,7 +31,7 @@ public class SprayDamage : MonoBehaviour
 
         if (ps.particleCount == 0) return;
 
-        // Manual particle overlap check
+        // Get all particles
         ParticleSystem.Particle[] particles = new ParticleSystem.Particle[ps.particleCount];
         int count = ps.GetParticles(particles);
 
@@ -41,18 +41,20 @@ public class SprayDamage : MonoBehaviour
             Collider2D hit = Physics2D.OverlapCircle(pos, detectionRadius, enemyLayer);
             if (hit == null) continue;
 
-            ThermalObject thermal = hit.GetComponentInParent<ThermalObject>();
-            if (thermal == null)
-                thermal = hit.GetComponentInChildren<ThermalObject>();
-            if (thermal == null) continue;
+            // Find EnemyController on the hit object or its parent
+            EnemyController enemy = hit.GetComponentInParent<EnemyController>();
+            if (enemy == null) enemy = hit.GetComponentInChildren<EnemyController>();
+            if (enemy == null) continue;
 
             float currentTime = Time.time;
-            if (lastHitTime.TryGetValue(hit.gameObject, out float lastHit))
+            if (lastHitTime.TryGetValue(enemy.gameObject, out float lastHit))
                 if (currentTime - lastHit < hitCooldown) continue;
 
-            thermal.ChangeBaseTemperature(-damagePerHit);
-            //Debug.Log($"Hit {hit.gameObject.name} for {damagePerHit} damage. New temp: {thermal.GetTemperature()}");
-            lastHitTime[hit.gameObject] = currentTime;
+            // Apply damage through EnemyController (handles multiplier, death, freeze)
+            enemy.ChangeBaseTemperature(-damagePerHit);
+            // Optional debug
+            // Debug.Log($"Hit {enemy.gameObject.name} for {damagePerHit} damage. New temp: {enemy.thermalObject.GetTemperature()}");
+            lastHitTime[enemy.gameObject] = currentTime;
         }
     }
 }
