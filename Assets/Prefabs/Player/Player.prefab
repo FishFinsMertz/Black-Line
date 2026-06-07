@@ -56,6 +56,7 @@ MonoBehaviour:
   fireDirection: {fileID: 6459871279835489012}
   spraySpeed: 30
   emissionRate: 1000
+  tempDrainPerSecond: 25
   recoilOffset: 0.05
   recoilReturnSpeed: 20
   shakeIntensity: 0.2
@@ -5337,11 +5338,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3834701d395f3fb4f9415b7789ba40b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  temperature: 0
+  temperature: 79.9
   currentTemperature: 0
-  fresnelPower: 0
-  brightnessInfluence: 0
-  fresnelCenter: {x: 0.7, y: 0.59}
+  fresnelPower: 0.156
+  brightnessInfluence: 1
+  fresnelCenter: {x: 0.4, y: 0.5}
   fresnelRadius: 0.29
   temperatureLerpSpeed: 20
   enablePulse: 1
@@ -5869,7 +5870,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   baseTemperature: 70
+  battery: 100
   smoothSpeed: 14.18
+  batterySmoothSpeed: 5
+  batteryDrainRate: 0.5
 --- !u!70 &3348807431190664019
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

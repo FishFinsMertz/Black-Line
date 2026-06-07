@@ -10,7 +10,10 @@ public class ArmSprayController : ArmController
     [SerializeField] private ParticleSystem sprayEffect;
     [SerializeField] private Transform fireDirection;
     [SerializeField] private float spraySpeed = 5f;
-    [SerializeField] private float emissionRate = 50f; // particles per second while spraying
+    [SerializeField] private float emissionRate = 50f;
+
+    [Header("Temperature Drain")]
+    [SerializeField] private float tempDrainPerSecond = 10f;
 
     [Header("Recoil")]
     [SerializeField] private float recoilOffset = 0.2f;
@@ -25,6 +28,7 @@ public class ArmSprayController : ArmController
     [SerializeField] private ThermalObject bodyThermalObject;
 
     private CameraController camController;
+    private GeneralThermalRegulator thermalRegulator;
     private bool isSpraying = false;
     private Vector3 sprayOriginalLocalPosition;
     private Vector3 recoilTargetPosition;
@@ -37,12 +41,16 @@ public class ArmSprayController : ArmController
     {
         base.Start();
         camController = Camera.main.GetComponent<CameraController>();
+        thermalRegulator = GetComponentInParent<GeneralThermalRegulator>();
+
+        if (thermalRegulator == null)
+            Debug.LogWarning("ArmSprayController: No GeneralThermalRegulator found in parent.");
+
         sprayOriginalLocalPosition = transform.localPosition;
         recoilTargetPosition = sprayOriginalLocalPosition + Vector3.left * recoilOffset;
 
         if (sprayEffect != null)
         {
-            // Keep the system playing always, but emission rate zero initially
             emissionModule = sprayEffect.emission;
             emissionModule.rateOverTime = 0f;
             if (!sprayEffect.isPlaying)
@@ -68,7 +76,13 @@ public class ArmSprayController : ArmController
         HandleShooting();
 
         if (isSpraying)
+        {
             UpdateSprayDirection();
+
+            // Drain temperature each second while spraying
+            if (thermalRegulator != null)
+                thermalRegulator.ChangeGlobalCurrentTemperature(-tempDrainPerSecond * Time.deltaTime);
+        }
 
         if (isReturning)
         {
@@ -145,24 +159,14 @@ public class ArmSprayController : ArmController
 
         if (sprayEffect != null)
         {
-            // Set emission rate to desired value
             emissionModule.rateOverTime = emissionRate;
             UpdateSprayDirection();
-            // Ensure system is playing
             if (!sprayEffect.isPlaying)
                 sprayEffect.Play();
         }
 
         transform.localPosition = recoilTargetPosition;
         shakeTimer = 0f;
-
-        /* IMPROVE IN THE FUTURE (Should be a constant drop)
-        if (armThermalObject != null)
-            armThermalObject.ChangeCurrentTemperature(-20f);
-        if (bodyThermalObject != null)
-            bodyThermalObject.ChangeCurrentTemperature(-15f);
-            */
-
     }
 
     private void StopSpray()
@@ -170,10 +174,7 @@ public class ArmSprayController : ArmController
         isSpraying = false;
 
         if (sprayEffect != null)
-        {
-            // Set emission rate to zero – particles already emitted will continue their lifetime
             emissionModule.rateOverTime = 0f;
-        }
 
         isReturning = true;
         returnT = 0f;

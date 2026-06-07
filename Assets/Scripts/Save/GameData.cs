@@ -9,6 +9,7 @@ public class GameData
     public string currentEquipment;
     public float playerBaseTemperature = 70f;
     public List<string> deadEnemyIDs = new List<string>();
+    public float playerBatteryAmt = 100f;
 
     // Future expansions (example)
     // public string currentScene;
