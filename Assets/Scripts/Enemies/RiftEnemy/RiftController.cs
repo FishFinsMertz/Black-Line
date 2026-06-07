@@ -15,16 +15,26 @@ public class RiftController : EnemyController
     [Header("Drop Attack (from ceiling)")]
     [Range(0f, 1f)]
     public float chanceToDropOnPlayer = 0.3f;
-    public float dropDistance = 7f;   // maximum horizontal distance to consider drop
+    public float dropDistance = 7f;
 
     [Header("Raycast")]
     public LayerMask surfaceLayer;
 
     public bool IsOnCeiling { get; private set; } = false;
 
+    // Original values for smoking state
+    private float originalBounceSpeed;
+    private float originalBounceDelayMin;
+    private float originalBounceDelayMax;
+
     protected override void Start()
     {
         base.Start();
+        // Store original values
+        originalBounceSpeed = bounceSpeed;
+        originalBounceDelayMin = bounceDelayMin;
+        originalBounceDelayMax = bounceDelayMax;
+
         if (startWithBounce)
         {
             SetVerticalOrientation(true);
@@ -37,6 +47,22 @@ public class RiftController : EnemyController
         }
     }
 
+    protected override void OnSmokingStarted()
+    {
+        //Debug.Log($"{name} (Rift) is overheating – bouncing faster and more unpredictably!");
+        bounceSpeed *= 1.6f;
+        bounceDelayMin = 0.2f;
+        bounceDelayMax = 0.6f;
+    }
+
+    protected override void OnSmokingEnded()
+    {
+        Debug.Log($"{name} (Rift) cooled down – bounce pattern normalised.");
+        bounceSpeed = originalBounceSpeed;
+        bounceDelayMin = originalBounceDelayMin;
+        bounceDelayMax = originalBounceDelayMax;
+    }
+
     public void SetVerticalOrientation(bool onCeiling)
     {
         IsOnCeiling = onCeiling;
@@ -45,7 +71,6 @@ public class RiftController : EnemyController
         transform.localScale = scale;
     }
 
-    // Get a point on the ground directly below the player
     public bool TryGetGroundUnderPlayer(out Vector2 groundPoint)
     {
         groundPoint = Vector2.zero;
@@ -58,16 +83,13 @@ public class RiftController : EnemyController
         return false;
     }
 
-    // Main target finding – includes chance to drop on player within range
     public bool TryGetBounceTarget(out Vector2 landingPoint, out float travelDistance)
     {
         landingPoint = Vector2.zero;
         travelDistance = 0f;
 
-        // If we're on the ceiling, check drop attack conditions
         if (IsOnCeiling && Random.value < chanceToDropOnPlayer)
         {
-            // Check horizontal distance to player
             float horizDist = Mathf.Abs(player.transform.position.x - transform.position.x);
             if (horizDist <= dropDistance && TryGetGroundUnderPlayer(out Vector2 playerGround))
             {
@@ -77,7 +99,6 @@ public class RiftController : EnemyController
             }
         }
 
-        // Normal bounce: find opposite surface via angled raycast
         float angleDeg = Random.Range(bounceAngleMin, bounceAngleMax);
         float angleRad = angleDeg * Mathf.Deg2Rad;
         float forwardSign = isFacingRight ? 1f : -1f;
@@ -105,21 +126,16 @@ public class RiftController : EnemyController
         (currentState as RiftBounceState)?.OnHitSurface();
     }
 
-
-    // DEBUGS
     private void OnDrawGizmosSelected()
     {
         if (!Application.isPlaying) return;
 
-        // Visualize drop attack range
         Gizmos.color = new Color(1f, 0.5f, 0, 0.3f);
         Gizmos.DrawWireSphere(transform.position, dropDistance);
 
-        // Visualize the bounce raycast directions (min and max angles)
         float forwardSign = isFacingRight ? 1f : -1f;
         float vertSign = IsOnCeiling ? -1f : 1f;
 
-        // Function to get direction for a given angle
         Vector2 GetDir(float angleDeg)
         {
             float rad = angleDeg * Mathf.Deg2Rad;
@@ -134,7 +150,6 @@ public class RiftController : EnemyController
         Gizmos.DrawRay(origin, dirMin * 5f);
         Gizmos.DrawRay(origin, dirMax * 5f);
 
-        // Also draw the arc between them
         Vector2 prev = dirMin;
         for (float a = bounceAngleMin; a <= bounceAngleMax; a += 2f)
         {

@@ -54,7 +54,7 @@ MonoBehaviour:
   maxAngle: 89
   sprayEffect: {fileID: 3561394025373964649}
   fireDirection: {fileID: 6459871279835489012}
-  spraySpeed: 30
+  spraySpeed: 40
   emissionRate: 1000
   tempDrainPerSecond: 25
   recoilOffset: 0.05

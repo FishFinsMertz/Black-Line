@@ -30,37 +30,58 @@ public class ScoutController : EnemyController
     [Header("Targeting")]
     public LayerMask targetableLayers;
 
+    // Original values for smoking state
+    private float originalMoveSpeed;
+    private float originalHoverRadiusMin;
+    private float originalHoverRadiusMax;
+    private float originalErraticness;
+
     protected override void Start()
     {
         base.Start();
+        // Store original values
+        originalMoveSpeed = moveSpeed;
+        originalHoverRadiusMin = hoverRadiusMin;
+        originalHoverRadiusMax = hoverRadiusMax;
+        originalErraticness = erraticness;
+
         ChangeState(new ScoutHoverState(this));
+    }
+
+    protected override void OnSmokingStarted()
+    {
+        //Debug.Log($"{name} (Scout) is overheating – becoming erratic!");
+        moveSpeed *= 1.8f;
+        hoverRadiusMin = 0.5f;
+        hoverRadiusMax = 1.8f;
+        erraticness *= 2.5f;
+    }
+
+    protected override void OnSmokingEnded()
+    {
+        Debug.Log($"{name} (Scout) cooled down – returning to normal.");
+        moveSpeed = originalMoveSpeed;
+        hoverRadiusMin = originalHoverRadiusMin;
+        hoverRadiusMax = originalHoverRadiusMax;
+        erraticness = originalErraticness;
     }
 
     private void OnDrawGizmosSelected()
     {
-        // Detection radius
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, playerDetectionRadius);
-
-        // Hover search radius
         Gizmos.color = Color.cyan;
         Gizmos.DrawWireSphere(transform.position, hoverSearchRadius);
-
-        // Attack radius
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, attackRadius);
-
-        // Wall repulsion radius
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(transform.position, wallRepulsionRadius);
 
-        // Hover radius min/max ring
-        Gizmos.color = new Color(1f, 0.5f, 0f, 0.4f); // orange translucent
+        Gizmos.color = new Color(1f, 0.5f, 0f, 0.4f);
         Gizmos.DrawWireSphere(transform.position, hoverRadiusMin);
         Gizmos.color = new Color(1f, 0.5f, 0f, 0.8f);
         Gizmos.DrawWireSphere(transform.position, hoverRadiusMax);
 
-        // Wall repulsion rays (8 directions)
         Gizmos.color = new Color(0f, 1f, 0f, 0.5f);
         Vector2[] directions = {
             Vector2.up, Vector2.down, Vector2.left, Vector2.right,
@@ -70,7 +91,6 @@ public class ScoutController : EnemyController
         foreach (Vector2 dir in directions)
             Gizmos.DrawRay(transform.position, dir * wallRepulsionRadius);
 
-        // Draw line to current hover target if in play mode
         if (Application.isPlaying)
         {
             ScoutHoverState hoverState = currentState as ScoutHoverState;

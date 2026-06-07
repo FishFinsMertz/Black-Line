@@ -345,7 +345,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uniqueID: 
-  playerDetectionRadius: 10
+  playerDetectionRadius: 15
   attackRadius: 1.5
   damage: -20
   damageTakenMultiplier: 1

@@ -1,4 +1,3 @@
-// EnemyController.cs
 using UnityEngine;
 using System.Collections;
 
@@ -15,11 +14,11 @@ public abstract class EnemyController : MonoBehaviour
     public float temperatureSteal = 20f;
 
     [Header("Critical Temperatures")]
-    public float frozenTime = 5f;      // how long the frozen state lasts
-    public float smokingTime = 5f;     // how long the overheated state lasts
+    public float frozenTime = 5f;
+    public float smokingTime = 5f;
 
     [Header("Temperature Drift (Natural Revert)")]
-    public float temperatureDriftSpeed = 5f; // units per second (towards initial temp)
+    public float temperatureDriftSpeed = 5f;
 
     [Header("Line of Sight")]
     public LayerMask obstacleMask;
@@ -127,30 +126,26 @@ public abstract class EnemyController : MonoBehaviour
         
         thermalObject.ChangeBaseTemperature(damage * damageTakenMultiplier);
 
-        // Die if frozen and now heated (damage > 0)
         if (isFrozen && damage > 0f)
         {
             Die();
             return;
         }
-        // Die if smoking and now cooled (damage < 0)
         if (isSmoking && damage < 0f)
         {
             Die();
             return;
         }
 
-        // Update extreme flags after temperature change
         float finalTemp = thermalObject.GetTemperature();
         if (finalTemp >= 100f && !isSmoking)
         {
-            //Debug.Log($"Enemy {name} becomes overheated (temp {finalTemp})");
             isSmoking = true;
+            OnSmokingStarted();
             StartCriticalStateTimer(false);
         }
         if (finalTemp <= 0f && !isFrozen)
         {
-            //Debug.Log($"Enemy {name} becomes frozen (temp {finalTemp})");
             isFrozen = true;
             StartCriticalStateTimer(true);
         }
@@ -168,15 +163,20 @@ public abstract class EnemyController : MonoBehaviour
         float delay = isFrozenState ? frozenTime : smokingTime;
         yield return new WaitForSeconds(delay);
 
-        // End the critical state (allow natural drift to resume)
         if (isFrozenState)
+        {
             isFrozen = false;
+        }
         else
+        {
             isSmoking = false;
-
-        //Debug.Log($"Enemy {name} critical state ended. Natural drift resumes.");
+            OnSmokingEnded();
+        }
         criticalStateTimer = null;
     }
+
+    protected virtual void OnSmokingStarted() { }
+    protected virtual void OnSmokingEnded() { }
 
     protected virtual void Die()
     {
