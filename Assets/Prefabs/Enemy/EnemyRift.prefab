@@ -350,8 +350,8 @@ MonoBehaviour:
   damage: -20
   damageTakenMultiplier: 1
   temperatureSteal: 25
-  frozenTime: 5
-  smokingTime: 5
+  frozenTime: 10
+  smokingTime: 10
   temperatureDriftSpeed: 1
   obstacleMask:
     serializedVersion: 2

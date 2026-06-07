@@ -20,6 +20,7 @@ public class ScoutHoverState : EnemyState
         retargetTimer = 0f;
         attackCooldownTimer = 0f;
         smoothedVelocity = Vector2.zero;
+        scout.animator.SetBool("isIdle", true);
         FindHoverTarget();
         GenerateOrbitOffset();
     }
@@ -58,6 +59,7 @@ public class ScoutHoverState : EnemyState
     {
         scout.transform.rotation = Quaternion.identity;
         scout.rb.linearVelocity = Vector2.zero;
+        scout.animator.SetBool("isIdle", false);
     }
 
     private void FindHoverTarget()

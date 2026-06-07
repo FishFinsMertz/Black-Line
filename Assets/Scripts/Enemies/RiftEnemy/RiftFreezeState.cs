@@ -2,29 +2,52 @@ using UnityEngine;
 
 public class RiftFreezeState : EnemyState
 {
-    private EnemyController enemy;
+    private RiftController rift;
+    private float freezeEndTime;
+    private bool isUnfreezing;
+    private float unfreezeStartTime;
 
-    public RiftFreezeState(EnemyController enemy) : base(enemy)
+    public RiftFreezeState(RiftController rift) : base(rift)
     {
-        this.enemy = enemy;
+        this.rift = rift;
     }
 
     public override void Enter()
     {
+        // Stop movement
+        rift.rb.linearVelocity = Vector2.zero;
+        rift.rb.gravityScale = 1f;
 
-        if (enemy.animator != null)
-            enemy.animator.SetTrigger("Freeze");
+        freezeEndTime = Time.time + rift.frozenTime;
+
+        if (rift.animator != null)
+            rift.animator.SetTrigger("Freeze");
+
+        isUnfreezing = false;
     }
 
     public override void Update()
     {
-        // Unfreeze if needed (might or might not be needed)
+        if (!isUnfreezing)
+        {
+            if (Time.time >= freezeEndTime)
+            {
+                isUnfreezing = true;
+                if (rift.animator != null)
+                    rift.animator.SetTrigger("Unfreeze");
+                unfreezeStartTime = Time.time;
+            }
+        }
+        else
+        {
+            // Wait for unfreeze animation (adjust delay to match clip length)
+            if (Time.time >= unfreezeStartTime + 1f)
+            {
+                rift.ChangeState(new RiftIdleState(rift));
+            }
+        }
     }
 
     public override void FixedUpdate() { }
-
-    public override void Exit()
-    {
-
-    }
+    public override void Exit() { }
 }
