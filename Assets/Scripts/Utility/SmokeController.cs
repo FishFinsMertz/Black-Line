@@ -6,13 +6,11 @@ public class SmokeController : MonoBehaviour
     [Header("References")]
     [SerializeField] private ThermalObject thermalSource;
 
-    [Header("Temperature Thresholds")]
-    [SerializeField] private float minTemp = 70f;
-    [SerializeField] private float maxTemp = 100f;
+    [Header("Hard Threshold")]
+    [SerializeField] private float activationTemp = 100f;
 
-    [Header("Emission Range (particles per second)")]
-    [SerializeField] private float minEmission = 0f;
-    [SerializeField] private float maxEmission = 30f;
+    [Header("Emission Rate (when active)")]
+    [SerializeField] private float activeEmission = 50f;
 
     [Header("Death Linger")]
     [SerializeField] private float lingerDuration = 2f;
@@ -25,12 +23,13 @@ public class SmokeController : MonoBehaviour
     {
         smokeSystem = GetComponent<ParticleSystem>();
         emissionModule = smokeSystem.emission;
+        emissionModule.rateOverTime = 0f;
 
         if (thermalSource == null)
             thermalSource = GetComponentInParent<ThermalObject>();
 
         if (thermalSource == null)
-            Debug.LogWarning("SmokeController: No ThermalObject found. Smoke won't scale.", this);
+            Debug.LogWarning("SmokeController: No ThermalObject found.", this);
     }
 
     private void Update()
@@ -39,15 +38,16 @@ public class SmokeController : MonoBehaviour
         if (thermalSource == null) return;
 
         float temp = thermalSource.GetCurrentTemperature();
-        float t = (temp > minTemp) ? Mathf.Clamp01((temp - minTemp) / (maxTemp - minTemp)) : 0f;
-        emissionModule.rateOverTime = Mathf.Lerp(minEmission, maxEmission, t);
+        float rate = (temp >= activationTemp) ? activeEmission : 0f;
+        emissionModule.rateOverTime = rate;
     }
 
     public void OnOwnerDied()
     {
+        if (isDying) return;
         isDying = true;
 
-        // Detach now so the parent destruction doesn't take us with it
+        // Detach from the parent so we aren't destroyed with the enemy
         transform.SetParent(null);
 
         emissionModule.rateOverTime = 0f;

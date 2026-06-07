@@ -4848,8 +4848,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   temperature: 62.6
-  currentTemperature: 0
-  temperatureLerpSpeed: 5
 --- !u!114 &3766762657605368524
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4863,7 +4861,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   thermalSource: {fileID: 0}
-  minTemp: 70
+  minTemp: 100
   maxTemp: 100
   minEmission: 0
   maxEmission: 30

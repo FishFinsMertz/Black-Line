@@ -350,6 +350,9 @@ MonoBehaviour:
   damage: -20
   damageTakenMultiplier: 1
   temperatureSteal: 25
+  frozenTime: 5
+  smokingTime: 5
+  temperatureDriftSpeed: 1
   obstacleMask:
     serializedVersion: 2
     m_Bits: 64
@@ -450,6 +453,10 @@ PrefabInstance:
       propertyPath: maxEmission
       value: 100
       objectReference: {fileID: 0}
+    - target: {fileID: 3766762657605368524, guid: 60ba0066cbb77224abcb510f6fbf4297, type: 3}
+      propertyPath: thermalSource
+      value: 
+      objectReference: {fileID: 4321859201812857078}
     - target: {fileID: 7252784160325823708, guid: 60ba0066cbb77224abcb510f6fbf4297, type: 3}
       propertyPath: m_Name
       value: SmokeVFX
