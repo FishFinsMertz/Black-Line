@@ -8,21 +8,31 @@ public class SprayDamage : MonoBehaviour
     [SerializeField] private float damagePerHit = 10f;
     [SerializeField] private float hitCooldown = 0.5f;
 
+    [Header("Player Settings")]
+    [SerializeField] private bool affectPlayer = true;
+    [SerializeField] private float playerTempChange = -5f;
+
     [Header("Detection")]
     [SerializeField] private LayerMask enemyLayer;
+    [SerializeField] private LayerMask playerLayer; // Add a dedicated player layer
     [SerializeField] private float detectionRadius = 0.1f;
 
+    [Header("Performance")]
+    [SerializeField] private int maxParticles = 1000;
+
     private ParticleSystem ps;
+    private ParticleSystem.Particle[] particles;
     private Dictionary<GameObject, float> lastHitTime = new Dictionary<GameObject, float>();
 
     private void Start()
     {
         ps = GetComponent<ParticleSystem>();
+        particles = new ParticleSystem.Particle[maxParticles];
     }
 
     private void Update()
     {
-        // Clean up destroyed enemies
+        // Clean up destroyed references
         List<GameObject> toRemove = new List<GameObject>();
         foreach (var kvp in lastHitTime)
             if (kvp.Key == null) toRemove.Add(kvp.Key);
@@ -31,29 +41,45 @@ public class SprayDamage : MonoBehaviour
 
         if (ps.particleCount == 0) return;
 
-        // Get all particles
-        ParticleSystem.Particle[] particles = new ParticleSystem.Particle[ps.particleCount];
         int count = ps.GetParticles(particles);
+        if (count > maxParticles) count = maxParticles;
 
         for (int i = 0; i < count; i++)
         {
             Vector2 pos = particles[i].position;
+            float currentTime = Time.time;
+
+            // 1) Check for player (using player layer)
+            if (affectPlayer)
+            {
+                Collider2D playerHit = Physics2D.OverlapCircle(pos, detectionRadius, playerLayer);
+                if (playerHit != null && playerHit.CompareTag("Player"))
+                {
+                    //Debug.Log($"Player hit by spray at {currentTime}");
+                    GeneralThermalRegulator thermal = playerHit.GetComponent<GeneralThermalRegulator>();
+                    if (thermal != null)
+                    {
+                        if (lastHitTime.TryGetValue(playerHit.gameObject, out float last))
+                            if (currentTime - last < hitCooldown) goto SkipPlayer;
+                        thermal.ChangeGlobalBaseTemperature(playerTempChange);
+                        lastHitTime[playerHit.gameObject] = currentTime;
+                    }
+                    SkipPlayer:;
+                }
+            }
+
+            // 2) Check for enemies (using enemy layer)
             Collider2D hit = Physics2D.OverlapCircle(pos, detectionRadius, enemyLayer);
             if (hit == null) continue;
 
-            // Find EnemyController on the hit object or its parent
             EnemyController enemy = hit.GetComponentInParent<EnemyController>();
             if (enemy == null) enemy = hit.GetComponentInChildren<EnemyController>();
             if (enemy == null) continue;
 
-            float currentTime = Time.time;
             if (lastHitTime.TryGetValue(enemy.gameObject, out float lastHit))
                 if (currentTime - lastHit < hitCooldown) continue;
 
-            // Apply damage through EnemyController (handles multiplier, death, freeze)
-            enemy.ChangeBaseTemperature(-damagePerHit);
-            // Optional debug
-            // Debug.Log($"Hit {enemy.gameObject.name} for {damagePerHit} damage. New temp: {enemy.thermalObject.GetTemperature()}");
+            enemy.ChangeBaseTemperature(damagePerHit);
             lastHitTime[enemy.gameObject] = currentTime;
         }
     }
