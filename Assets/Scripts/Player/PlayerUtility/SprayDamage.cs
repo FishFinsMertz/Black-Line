@@ -12,9 +12,15 @@ public class SprayDamage : MonoBehaviour
     [SerializeField] private bool affectPlayer = true;
     [SerializeField] private float playerTempChange = -5f;
 
+    [Header("Camera Shake")]
+    [SerializeField] private bool shakeOnPlayerHit = true;
+    [SerializeField] private float shakeIntensity = 0.2f;
+    [SerializeField] private float shakeDuration = 0.2f;
+    [SerializeField] private float shakeSmoothness = 0.5f;
+
     [Header("Detection")]
     [SerializeField] private LayerMask enemyLayer;
-    [SerializeField] private LayerMask playerLayer; // Add a dedicated player layer
+    [SerializeField] private LayerMask playerLayer;
     [SerializeField] private float detectionRadius = 0.1f;
 
     [Header("Performance")]
@@ -23,11 +29,13 @@ public class SprayDamage : MonoBehaviour
     private ParticleSystem ps;
     private ParticleSystem.Particle[] particles;
     private Dictionary<GameObject, float> lastHitTime = new Dictionary<GameObject, float>();
+    private CameraController camController;
 
     private void Start()
     {
         ps = GetComponent<ParticleSystem>();
         particles = new ParticleSystem.Particle[maxParticles];
+        camController = Camera.main.GetComponent<CameraController>();
     }
 
     private void Update()
@@ -55,7 +63,6 @@ public class SprayDamage : MonoBehaviour
                 Collider2D playerHit = Physics2D.OverlapCircle(pos, detectionRadius, playerLayer);
                 if (playerHit != null && playerHit.CompareTag("Player"))
                 {
-                    //Debug.Log($"Player hit by spray at {currentTime}");
                     GeneralThermalRegulator thermal = playerHit.GetComponent<GeneralThermalRegulator>();
                     if (thermal != null)
                     {
@@ -63,6 +70,10 @@ public class SprayDamage : MonoBehaviour
                             if (currentTime - last < hitCooldown) goto SkipPlayer;
                         thermal.ChangeGlobalBaseTemperature(playerTempChange);
                         lastHitTime[playerHit.gameObject] = currentTime;
+
+                        // Trigger camera shake when player is hit
+                        if (shakeOnPlayerHit && camController != null)
+                            camController.TriggerShake(shakeIntensity, shakeDuration, shakeSmoothness);
                     }
                     SkipPlayer:;
                 }
