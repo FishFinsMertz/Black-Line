@@ -134,7 +134,7 @@ MonoBehaviour:
   pulseSpeed: 0.22
   pulseAmplitude: 11.1
   useRandomPhase: 1
-  infraredMaterial: {fileID: 2100000, guid: b4fd0e44745275b4a92bc32b828f26d4, type: 2}
+  infraredMaterial: {fileID: 2100000, guid: 484fb33827467fe44b5a4770d97fa0a0, type: 2}
 --- !u!1 &8387372212467350229
 GameObject:
   m_ObjectHideFlags: 0

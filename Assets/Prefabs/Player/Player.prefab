@@ -197,7 +197,7 @@ MonoBehaviour:
   pulseSpeed: 1
   pulseAmplitude: 20
   useRandomPhase: 1
-  infraredMaterial: {fileID: 2100000, guid: b4fd0e44745275b4a92bc32b828f26d4, type: 2}
+  infraredMaterial: {fileID: 2100000, guid: 484fb33827467fe44b5a4770d97fa0a0, type: 2}
 --- !u!1 &3667457769765169290
 GameObject:
   m_ObjectHideFlags: 0
@@ -309,7 +309,7 @@ MonoBehaviour:
   pulseSpeed: 0.08
   pulseAmplitude: 4.7
   useRandomPhase: 0
-  infraredMaterial: {fileID: 2100000, guid: b4fd0e44745275b4a92bc32b828f26d4, type: 2}
+  infraredMaterial: {fileID: 2100000, guid: 484fb33827467fe44b5a4770d97fa0a0, type: 2}
 --- !u!1 &3965149233561482020
 GameObject:
   m_ObjectHideFlags: 0
@@ -483,7 +483,7 @@ MonoBehaviour:
   pulseSpeed: 0.08
   pulseAmplitude: 4.7
   useRandomPhase: 0
-  infraredMaterial: {fileID: 2100000, guid: b4fd0e44745275b4a92bc32b828f26d4, type: 2}
+  infraredMaterial: {fileID: 2100000, guid: 484fb33827467fe44b5a4770d97fa0a0, type: 2}
 --- !u!1 &5644087389132929634
 GameObject:
   m_ObjectHideFlags: 0
@@ -645,7 +645,7 @@ MonoBehaviour:
   pulseSpeed: 0.21
   pulseAmplitude: 10.2
   useRandomPhase: 0
-  infraredMaterial: {fileID: 2100000, guid: b4fd0e44745275b4a92bc32b828f26d4, type: 2}
+  infraredMaterial: {fileID: 2100000, guid: 484fb33827467fe44b5a4770d97fa0a0, type: 2}
 --- !u!95 &1050252505090677471
 Animator:
   serializedVersion: 7
@@ -843,7 +843,7 @@ MonoBehaviour:
   pulseSpeed: 0.23
   pulseAmplitude: 8
   useRandomPhase: 0
-  infraredMaterial: {fileID: 2100000, guid: b4fd0e44745275b4a92bc32b828f26d4, type: 2}
+  infraredMaterial: {fileID: 2100000, guid: 484fb33827467fe44b5a4770d97fa0a0, type: 2}
 --- !u!114 &1014917297205175852
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -4864,8 +4864,15 @@ MonoBehaviour:
   hitCooldown: 0.5
   affectPlayer: 0
   playerTempChange: -5
+  shakeOnPlayerHit: 1
+  shakeIntensity: 0.2
+  shakeDuration: 0.2
+  shakeSmoothness: 0.5
   enemyLayer:
     serializedVersion: 2
     m_Bits: 256
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 0
   detectionRadius: 0.1
   maxParticles: 1000

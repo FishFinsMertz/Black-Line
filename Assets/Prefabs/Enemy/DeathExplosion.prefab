@@ -4906,5 +4906,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   temperature: 84
-  currentTemperature: 0
-  temperatureLerpSpeed: 5

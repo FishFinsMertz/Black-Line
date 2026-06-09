@@ -112,7 +112,7 @@ MonoBehaviour:
   pulseSpeed: 0.16
   pulseAmplitude: 11.4
   useRandomPhase: 1
-  infraredMaterial: {fileID: 2100000, guid: b4fd0e44745275b4a92bc32b828f26d4, type: 2}
+  infraredMaterial: {fileID: 2100000, guid: 484fb33827467fe44b5a4770d97fa0a0, type: 2}
 --- !u!95 &3155726339252712922
 Animator:
   serializedVersion: 7

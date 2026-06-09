@@ -4861,8 +4861,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   thermalSource: {fileID: 0}
-  minTemp: 100
-  maxTemp: 100
-  minEmission: 0
-  maxEmission: 30
+  activationTemp: 100
+  activeEmission: 50
   lingerDuration: 5
