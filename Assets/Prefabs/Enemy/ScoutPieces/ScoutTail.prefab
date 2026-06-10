@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 9077205423804576620}
   - component: {fileID: -4998104173258332371}
   - component: {fileID: 4440977669270560886}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: ScoutTail
   m_TagString: Untagged
   m_Icon: {fileID: 0}

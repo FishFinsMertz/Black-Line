@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 9077205423804576620}
   - component: {fileID: 4867380405556124136}
   - component: {fileID: -4998104173258332371}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: RiftBody
   m_TagString: Untagged
   m_Icon: {fileID: 0}

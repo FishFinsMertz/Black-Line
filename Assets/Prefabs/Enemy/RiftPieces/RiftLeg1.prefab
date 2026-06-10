@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 9077205423804576620}
   - component: {fileID: 3201770267004546164}
   - component: {fileID: 8134161518843860047}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: RiftLeg1
   m_TagString: Untagged
   m_Icon: {fileID: 0}

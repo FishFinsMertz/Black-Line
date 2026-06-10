@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 9077205423804576620}
   - component: {fileID: 3985223195209064588}
   - component: {fileID: -8340892086400809955}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: RiftThorax
   m_TagString: Untagged
   m_Icon: {fileID: 0}
