@@ -197,7 +197,7 @@ MonoBehaviour:
   pulseSpeed: 1
   pulseAmplitude: 20
   useRandomPhase: 1
-  infraredMaterial: {fileID: 2100000, guid: 484fb33827467fe44b5a4770d97fa0a0, type: 2}
+  infraredMaterial: {fileID: 2100000, guid: b4fd0e44745275b4a92bc32b828f26d4, type: 2}
 --- !u!1 &3667457769765169290
 GameObject:
   m_ObjectHideFlags: 0
@@ -1043,8 +1043,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0.01}
-  m_Size: {x: 0.5, y: 1}
+  m_Offset: {x: 0, y: 0}
+  m_Size: {x: 0.5, y: 0.9638729}
   m_Direction: 0
 --- !u!1 &8644804971891721797
 GameObject:
