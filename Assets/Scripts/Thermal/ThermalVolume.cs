@@ -4,8 +4,6 @@ using UnityEngine.Rendering;
 [RequireComponent(typeof(Volume))]
 public class ThermalVolume : MonoBehaviour
 {
-    // When thermal turned on, turn on thermal volume, turn off main volume, vice versa
-
     private Volume thermalVolume;
     [SerializeField] private Volume mainVolume;
 

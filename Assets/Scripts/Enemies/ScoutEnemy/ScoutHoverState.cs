@@ -71,16 +71,14 @@ public class ScoutHoverState : EnemyState
 
         foreach (ThermalObject t in allThermals)
         {
-            // Layer check
             if ((scout.targetableLayers & (1 << t.gameObject.layer)) == 0) continue;
 
             float dist = Vector2.Distance(scout.transform.position, t.transform.position);
             if (dist > scout.hoverSearchRadius) continue;
 
-            // ignore if wall blocks the view
             Vector2 direction = t.transform.position - scout.transform.position;
             RaycastHit2D hit = Physics2D.Raycast(scout.transform.position, direction, dist, scout.obstacleMask);
-            if (hit.collider != null) continue; // wall in the way
+            if (hit.collider != null) continue; 
 
             float temp = t.GetCurrentTemperature();
             if (temp > bestTemp)
@@ -150,12 +148,9 @@ public class ScoutHoverState : EnemyState
         smoothedVelocity = Vector2.Lerp(smoothedVelocity, desiredVelocity, scout.wanderSmoothness * Time.deltaTime);
         scout.rb.linearVelocity = smoothedVelocity;
 
-        // Sprite faces left by default so negative scale.x = facing right
         if (Mathf.Abs(smoothedVelocity.x) > 0.1f)
         {
             Vector3 scale = scout.transform.localScale;
-            // Moving right → flip to negative x (facing right)
-            // Moving left → positive x (default, facing left)
             scale.x = smoothedVelocity.x > 0f ? -Mathf.Abs(scale.x) : Mathf.Abs(scale.x);
             scout.transform.localScale = scale;
         }

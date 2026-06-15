@@ -37,7 +37,7 @@ public class EnemyManager : MonoBehaviour, ISaveable
 
     public bool IsEnemyDead(string uniqueID)
     {
-        if (!enablePersistence) return false; // assume alive during tests
+        if (!enablePersistence) return false;
         return deadEnemies.Contains(uniqueID);
     }
 

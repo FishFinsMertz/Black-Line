@@ -9,7 +9,7 @@ public class GunBullet : MonoBehaviour
 
     [Header("Hit Effect")]
     [SerializeField] private GameObject hitEffectPrefab;
-    [SerializeField] private float surfaceOffset = 0.05f; // push effect slightly outward
+    [SerializeField] private float surfaceOffset = 0.05f;
 
     private Vector2 direction;
     private float spawnTime;
@@ -36,7 +36,6 @@ public class GunBullet : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // Store previous position before moving for accurate raycast in triggers
         lastPosition = transform.position;
     }
 
@@ -60,7 +59,6 @@ public class GunBullet : MonoBehaviour
         }
         else
         {
-            // Fallback: use current position, no surface offset
             SpawnHitEffect(currentPos, Vector2.zero);
         }
 

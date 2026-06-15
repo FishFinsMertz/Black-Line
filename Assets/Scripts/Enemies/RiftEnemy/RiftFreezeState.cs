@@ -40,7 +40,7 @@ public class RiftFreezeState : EnemyState
         }
         else
         {
-            // Wait for unfreeze animation (adjust delay to match clip length)
+            // Wait for unfreeze animation
             if (Time.time >= unfreezeStartTime + 1f)
             {
                 rift.ChangeState(new RiftIdleState(rift));

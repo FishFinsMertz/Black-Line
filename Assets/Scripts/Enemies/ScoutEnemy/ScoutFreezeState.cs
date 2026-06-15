@@ -14,14 +14,10 @@ public class ScoutFreezeState : EnemyState
 
     public override void Enter()
     {
-        // Stop movement
         scout.rb.linearVelocity = Vector2.zero;
         scout.rb.gravityScale = 1f;
-
-        // Calculate when freeze should end (using frozenTime from EnemyController)
         freezeEndTime = Time.time + scout.frozenTime;
 
-        // Play freeze animation
         if (scout.animator != null)
             scout.animator.SetTrigger("Freeze");
 
@@ -32,7 +28,6 @@ public class ScoutFreezeState : EnemyState
     {
         if (!isUnfreezing)
         {
-            // Wait until freeze duration is over
             if (Time.time >= freezeEndTime)
             {
                 isUnfreezing = true;
@@ -43,10 +38,8 @@ public class ScoutFreezeState : EnemyState
         }
         else
         {
-            // Wait for unfreeze animation to complete (approx 1 second)
             if (Time.time >= unfreezeStartTime + 1f)
             {
-                // Return to hover state
                 scout.ChangeState(new ScoutHoverState(scout));
             }
         }

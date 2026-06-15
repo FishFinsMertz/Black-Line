@@ -7,10 +7,7 @@ public class SceneTeleporter : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            // Save game before teleporting
             SaveManager.Instance?.SaveGame();
-            
-            // Load the target scene
             UnityEngine.SceneManagement.SceneManager.LoadScene(targetSceneName);
         }
     }

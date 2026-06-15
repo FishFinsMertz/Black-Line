@@ -51,7 +51,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        // Flip based on mouse position – but NOT while climbing
+        // Flip based on mouse position
         if (!(currentState is PlayerClimbingState) && mainCam != null)
         {
             Vector3 mousePos = mainCam.ScreenToWorldPoint(Input.mousePosition);

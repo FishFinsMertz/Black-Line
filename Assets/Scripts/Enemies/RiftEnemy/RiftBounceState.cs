@@ -18,7 +18,7 @@ public class RiftBounceState : EnemyState
     private bool hasHit = false;
 
     private const float FlipAtNormalized = 0.55f;
-    private const float BOUNCE_ANIM_LENGTH = 1f; // Set to your Bounce animation length (seconds)
+    private const float BOUNCE_ANIM_LENGTH = 1f;
 
     public RiftBounceState(RiftController rift) : base(rift)
     {
@@ -46,7 +46,6 @@ public class RiftBounceState : EnemyState
                 targetLandingPoint = landing;
                 totalDistance = dist;
                 phase = Phase.Delay;
-                // Random delay – must be at least the animation length
                 delayTimer = Random.Range(rift.bounceDelayMin, rift.bounceDelayMax);
                 return;
             }
@@ -69,7 +68,6 @@ public class RiftBounceState : EnemyState
     {
         if (phase == Phase.Delay)
         {
-            // Trigger the Bounce animation when there's exactly animation length left
             if (!bounceTriggered && delayTimer <= BOUNCE_ANIM_LENGTH)
             {
                 rift.animator.SetTrigger("Bounce");
@@ -112,7 +110,6 @@ public class RiftBounceState : EnemyState
                     PlayerController pc = rift.player.GetComponent<PlayerController>();
                     if (pc != null)
                         pc.TakeDamage(rift.damage);
-                    // bc purely visual (Unless this is changed)
                     rift.thermalObject.ChangeCurrentTemperature(rift.temperatureSteal);
                 }
 

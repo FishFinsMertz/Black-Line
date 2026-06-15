@@ -12,7 +12,6 @@ public class PlayerWalkState : PlayerState
         bool isFacingRight = player.isFacingRight;
         bool movingForward = (moveInput > 0 && isFacingRight) || (moveInput < 0 && !isFacingRight);
         
-        // Transition to Run if moving forward AND run key held
         if (movingForward && Input.GetKey(player.runKey))
         {
             player.currentSubState = PlayerController.SubState.None;
@@ -22,12 +21,10 @@ public class PlayerWalkState : PlayerState
 
         player.currentSubState = PlayerController.SubState.WalkBack;
         
-        // rest of walk logic
         Vector2 velocity = player.rb.linearVelocity;
         velocity.x = moveInput * player.walkSpeed;
         player.rb.linearVelocity = velocity;
         
-        // Set animator speed (normalized walk speed)
         float relativeSpeed = moveInput;
         if (!isFacingRight) relativeSpeed = -relativeSpeed;
         player.bodyAnimator.SetFloat("Mode", relativeSpeed);

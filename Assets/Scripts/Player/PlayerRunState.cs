@@ -16,17 +16,13 @@ public class PlayerRunState : PlayerState
         bool movingForward = (moveInput > 0 && isFacingRight) || (moveInput < 0 && !isFacingRight);
         float targetSpeed = movingForward && Input.GetKey(player.runKey) ? player.runSpeed : player.walkSpeed;
 
-        // Apply acceleration/deceleration towards target horizontal speed
+        // Apply acceleration/deceleration
         float currentVelX = player.rb.linearVelocity.x;
         float targetVelX = moveInput * targetSpeed;
         float accel = (Mathf.Abs(targetVelX) > Mathf.Abs(currentVelX)) ? player.runAcceleration : player.runDeceleration;
         float newVelX = Mathf.MoveTowards(currentVelX, targetVelX, accel * Time.fixedDeltaTime);
         player.rb.linearVelocity = new Vector2(newVelX, player.rb.linearVelocity.y);
 
-        // Condition to leave run state:
-        // 1. Not moving forward (e.g., moving backwards)
-        // 2. Run key released while moving forward (then transition to walk)
-        // 3. No input (idle)
         if (!movingForward)
         {
             player.ChangeState(new PlayerWalkState(player));
@@ -43,7 +39,6 @@ public class PlayerRunState : PlayerState
             return;
         }
 
-        // Set animator speed (2.0 for run, 0.5 for walk, etc.)
         float relativeSpeed = moveInput;
         if (!isFacingRight) relativeSpeed = -relativeSpeed;
         float animSpeed = Mathf.Abs(relativeSpeed) > 0 ? Mathf.Sign(relativeSpeed) * 2.0f : 0f;

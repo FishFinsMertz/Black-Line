@@ -29,7 +29,7 @@ public abstract class ArmController : MonoBehaviour
         // Update current player state for animators
         currentPlayerState = player.GetCurrentState();
 
-        // Apply run offset (handled here, not related to flip)
+        // Apply run offset
         Vector3 targetPos = originalLocalPosition;
         if (currentPlayerState is PlayerRunState)
             targetPos += new Vector3(runOffset.x, runOffset.y, 0f);

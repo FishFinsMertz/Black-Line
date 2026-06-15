@@ -3,8 +3,6 @@ using UnityEngine;
 public class ThermalManager : MonoBehaviour
 {
     public static ThermalManager Instance { get; private set; }
-
-    // Event that fires whenever thermal vision is toggled (bool = enabled)
     public static System.Action<bool> OnThermalToggled;
 
     [SerializeField] private KeyCode toggleKey = KeyCode.T;

@@ -49,7 +49,7 @@ public class RiftController : EnemyController
 
     protected override void OnSmokingStarted()
     {
-        //Debug.Log($"{name} (Rift) is overheating – bouncing faster and more unpredictably!");
+        //Debug.Log($"{name} (Rift) is overheating");
         bounceSpeed *= 1.6f;
         bounceDelayMin = 0.2f;
         bounceDelayMax = 0.6f;

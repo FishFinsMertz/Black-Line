@@ -47,7 +47,6 @@ public class SmokeController : MonoBehaviour
         if (isDying) return;
         isDying = true;
 
-        // Detach from the parent so we aren't destroyed with the enemy
         transform.SetParent(null);
 
         emissionModule.rateOverTime = 0f;

@@ -64,7 +64,7 @@ public class SaveManager : MonoBehaviour
 
     public void RequestSave()
     {
-        SaveGame(); // for compatibility with Inventory
+        SaveGame();
     }
 
     private void LoadSaveFileIntoCache()

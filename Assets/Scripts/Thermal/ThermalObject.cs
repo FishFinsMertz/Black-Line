@@ -5,12 +5,12 @@ public class ThermalObject : MonoBehaviour, IHasThermal
 // Thermal objects for individual sprites
 {
     [Header("Thermal Vision Parameters")]
-    [SerializeField, Range(0f, 100f)] private float temperature = 0f; // Base temp
-    [SerializeField] private float currentTemperature;   // actual temp
+    [SerializeField, Range(0f, 100f)] private float temperature = 0f;
+    [SerializeField] private float currentTemperature;
     [SerializeField, Range(0f, 1f)] private float fresnelPower = 0.5f;
     [SerializeField, Range(0f, 1f)] private float brightnessInfluence = 0.08f;
-    [SerializeField] private Vector2 fresnelCenter = new Vector2(0.5f, 0.5f); // NEW
-    [SerializeField, Range(0.1f, 5f)] private float fresnelRadius = 1f; // NEW
+    [SerializeField] private Vector2 fresnelCenter = new Vector2(0.5f, 0.5f);
+    [SerializeField, Range(0.1f, 5f)] private float fresnelRadius = 1f;
     [SerializeField, Range(0.5f, 20f)] private float temperatureLerpSpeed = 5f; 
 
     [Header("Temperature Pulse (Beating Heart)")]
@@ -115,8 +115,6 @@ public class ThermalObject : MonoBehaviour, IHasThermal
         pulseSpeed = speed;
         pulseAmplitude = amplitude;
     }
-
-    // Thermal Manager Toggle
 
     private void OnThermalToggled(bool enabled)
     {

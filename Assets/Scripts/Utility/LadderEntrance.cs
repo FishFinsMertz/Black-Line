@@ -17,13 +17,10 @@ public class LadderEntrance : MonoBehaviour
         {
             float verticalInput = Input.GetAxisRaw("Vertical");
             float horizontalInput = Input.GetAxisRaw("Horizontal");
-            // Top entrance: only mount with DOWN (S) – verticalInput < 0
-            // Bottom entrance: only mount with UP (W) – verticalInput > 0
             bool validMount = isTop ? verticalInput < 0f : verticalInput > 0f;
             if (validMount && horizontalInput == 0f)
             {
                 PlayerClimbingState newState = new PlayerClimbingState(playerController, isTop);
-                // Immediately set the flag so the player can't climb past the end
                 newState.OnEntranceTouched(isTop, true);
                 playerController.ChangeState(newState);
             }

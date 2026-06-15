@@ -99,34 +99,26 @@ public class CameraController : MonoBehaviour
         // Base desired position
         Vector3 desiredPosition = target.position + offset;
 
-        // --- Look Ahead (always in facing direction) ---
         if (enableLookAhead)
         {
-            // Detect horizontal movement speed (still needed to decide if player is moving)
             Vector3 playerDelta = target.position - previousTargetPosition;
             previousTargetPosition = target.position;
             float horizontalSpeed = Mathf.Abs(playerDelta.x) / Time.deltaTime;
             bool isMoving = horizontalSpeed > 0.1f;
 
-            // Determine facing direction (assumes player flips by changing localScale.x)
-            // If your player uses a different method, adjust accordingly.
-            float facingDir = Mathf.Sign(target.localScale.x);  // 1 = right, -1 = left
+            float facingDir = Mathf.Sign(target.localScale.x);
 
             Vector3 targetLookAhead = Vector3.zero;
             if (isMoving)
             {
-                // Push camera in the direction the player is facing, not the movement direction
                 targetLookAhead = new Vector3(facingDir * lookAheadDistance, 0f, 0f);
             }
-
-            // Smoothly move toward the target offset (push quickly, return slowly)
             float lerpSpeed = isMoving ? lookAheadSpeed : lookAheadReturnSpeed;
             currentLookAheadOffset = Vector3.Lerp(currentLookAheadOffset, targetLookAhead, lerpSpeed * Time.deltaTime);
 
             desiredPosition += currentLookAheadOffset;
         }
         
-        // Mouse follow offset – only when right click is held
         if (enableMouseFollow && Input.GetMouseButton(1))
         {
             Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -173,7 +165,6 @@ public class CameraController : MonoBehaviour
         if (enableTilt)
             currentTiltIntensity = Mathf.Lerp(currentTiltIntensity, targetIntensity * maxTiltAngle, tiltLerpSpeed * Time.deltaTime);
         
-        // Temperature wobble offset
         if (currentWobbleIntensity > 0.001f)
         {
             float time = Time.time * wobbleFrequency;
@@ -182,7 +173,6 @@ public class CameraController : MonoBehaviour
             desiredPosition += new Vector3(wobbleX, wobbleY, 0f);
         }
         
-        // External shake offset
         if (currentShakeStrength > 0.001f)
         {
             Vector2 shakeOffset = GetShakeOffset(currentShakeStrength, currentShakeRoughness);
@@ -191,7 +181,6 @@ public class CameraController : MonoBehaviour
         
         Vector3 smoothedPos = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed * Time.deltaTime);
         
-        // Rotational tilt
         Quaternion targetRotation = initialRotation;
         if (currentTiltIntensity > 0.001f && enableTilt)
         {

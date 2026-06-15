@@ -18,9 +18,6 @@ public class Inventory : MonoBehaviour, ISaveable
     {
         playerController = GetComponent<PlayerController>();
         SaveManager.Instance?.Register(this);
-        // Inventory does NOT load itself anymore.
-        // The SaveManager will call Load() after this object is registered.
-        // But we need default values if no save exists.
         if (!ownedItems.Contains("None"))
             ownedItems.Add("None");
         //Equip(EquipmentType.None);
@@ -101,7 +98,6 @@ public class Inventory : MonoBehaviour, ISaveable
         {
             ownedItems.Add("Gun");
             Equip(EquipmentType.Gun);
-            // Notify SaveManager to save
             SaveManager.Instance?.RequestSave();
         }
     }
@@ -112,7 +108,6 @@ public class Inventory : MonoBehaviour, ISaveable
         {
             ownedItems.Add("Spray");
             Equip(EquipmentType.Spray);
-            // Notify SaveManager to save
             SaveManager.Instance?.RequestSave();
         }
     }

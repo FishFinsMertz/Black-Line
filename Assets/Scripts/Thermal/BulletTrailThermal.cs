@@ -10,14 +10,11 @@ public class BulletTrailThermal : MonoBehaviour
     {
         trail = GetComponent<TrailRenderer>();
         
-        // Create a unique material instance so toggling doesn't affect other bullets
         uniqueMaterial = new Material(trail.material);
         trail.material = uniqueMaterial;
         
-        // Initially disable thermal keyword (will be enabled by ThermalManager if needed)
         uniqueMaterial.DisableKeyword("THERMAL_ON");
         
-        // Subscribe to thermal toggle event
         if (ThermalManager.Instance != null)
             OnThermalToggled(ThermalManager.Instance.IsThermalEnabled());
         else

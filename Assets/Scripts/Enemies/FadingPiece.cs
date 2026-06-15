@@ -4,8 +4,8 @@ using System.Collections;
 public class FadingPiece : MonoBehaviour
 {
     [Header("Fade Settings")]
-    public float delayBeforeFade = 5f;   // time to fly before fading starts
-    public float fadeDuration = 10f;       // how long the fade takes
+    public float delayBeforeFade = 5f;
+    public float fadeDuration = 10f;
 
     private SpriteRenderer sr;
     private Color startColor;
@@ -28,7 +28,6 @@ public class FadingPiece : MonoBehaviour
 
     private IEnumerator FadeOut()
     {
-        // Wait before fading
         if (delayBeforeFade > 0f)
             yield return new WaitForSeconds(delayBeforeFade);
 

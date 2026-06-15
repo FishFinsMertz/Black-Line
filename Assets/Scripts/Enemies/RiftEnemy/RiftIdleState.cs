@@ -15,7 +15,7 @@ public class RiftIdleState : EnemyState
     {
         rift.animator.SetBool("isIdle", true);
         rift.rb.linearVelocity = Vector2.zero;
-        rift.rb.gravityScale = 0f; // pinned to surface, no gravity needed
+        rift.rb.gravityScale = 0f;
         idleTimer = 0.2f;
     }
 

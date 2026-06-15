@@ -39,7 +39,6 @@ public class ScoutController : EnemyController
     protected override void Start()
     {
         base.Start();
-        // Store original values
         originalMoveSpeed = moveSpeed;
         originalHoverRadiusMin = hoverRadiusMin;
         originalHoverRadiusMax = hoverRadiusMax;
@@ -50,7 +49,7 @@ public class ScoutController : EnemyController
 
     protected override void OnSmokingStarted()
     {
-        //Debug.Log($"{name} (Scout) is overheating – becoming erratic!");
+        //Debug.Log($"{name} (Scout) is overheating");
         moveSpeed *= 1.8f;
         hoverRadiusMin = 0.5f;
         hoverRadiusMax = 1.8f;

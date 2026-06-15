@@ -63,7 +63,6 @@ public class ColdEffectsController : MonoBehaviour
 
         float temp = playerThermal.GetBaseTemperature();
 
-        // --- Cold target weight ---
         float targetColdWeight = 0f;
         if (temp < warmThreshold)
         {
@@ -71,7 +70,6 @@ public class ColdEffectsController : MonoBehaviour
             targetColdWeight = Mathf.Clamp01(targetColdWeight) * maxColdWeight;
         }
 
-        // --- Overheat target weight ---
         float targetOverheatWeight = 0f;
         if (temp > overheatThreshold)
         {
@@ -79,7 +77,6 @@ public class ColdEffectsController : MonoBehaviour
             targetOverheatWeight = Mathf.Clamp01(targetOverheatWeight) * maxOverheatWeight;
         }
 
-        // Smooth both weights
         smoothedColdWeight = Mathf.Lerp(smoothedColdWeight, targetColdWeight, weightSmoothSpeed * Time.deltaTime);
         smoothedOverheatWeight = Mathf.Lerp(smoothedOverheatWeight, targetOverheatWeight, weightSmoothSpeed * Time.deltaTime);
 

@@ -6,15 +6,15 @@ public class GeneralThermalRegulator : MonoBehaviour, ISaveable
     [SerializeField, Range(0f, 100f)] private float baseTemperature = 70f; 
     [SerializeField, Range(0f, 100f)] private float battery = 100f;
     private float currentTemperature; 
-    private float initialBaseTemperature; // stored at start
+    private float initialBaseTemperature;
 
     [Header("Smoothing")]
-    [SerializeField, Range(1f, 20f)] private float smoothSpeed = 5f; // temp smoothing speed
+    [SerializeField, Range(1f, 20f)] private float smoothSpeed = 5f;
     [SerializeField, Range(1f, 20f)] private float batterySmoothSpeed = 5f;
 
     [Header("Natural Drain & Drift")]
     [SerializeField, Range(0f, 10f)] private float batteryDrainRate = 0.5f;
-    [SerializeField, Range(0.1f, 10f)] private float baseTemperatureDriftSpeed = 1f; // how fast base temp returns to normal when battery > 0
+    [SerializeField, Range(0.1f, 10f)] private float baseTemperatureDriftSpeed = 1f;
 
     private float currentBatterySmoothed;
 
@@ -29,14 +29,12 @@ public class GeneralThermalRegulator : MonoBehaviour, ISaveable
 
     private void Update()
     {
-        // Natural battery drain
         if (battery > 0f)
         {
             float drain = batteryDrainRate * Time.deltaTime;
             battery = Mathf.Max(0f, battery - drain);
         }
 
-        // Smooth battery for UI
         currentBatterySmoothed = Mathf.MoveTowards(currentBatterySmoothed, battery, batterySmoothSpeed * Time.deltaTime);
 
         // Natural drift of baseTemperature towards initialBaseTemperature if battery > 0
@@ -46,7 +44,6 @@ public class GeneralThermalRegulator : MonoBehaviour, ISaveable
             baseTemperature = Mathf.MoveTowards(baseTemperature, initialBaseTemperature, step);
         }
 
-        // Smooth current temperature toward base temperature
         currentTemperature = Mathf.MoveTowards(currentTemperature, baseTemperature, smoothSpeed * Time.deltaTime);
         ApplyToAllThermalObjects();
 
@@ -56,7 +53,7 @@ public class GeneralThermalRegulator : MonoBehaviour, ISaveable
         if (Input.GetKeyDown(KeyCode.K))
             AddBattery(-20f);
         if (Input.GetKeyDown(KeyCode.H))
-            battery = 100f; // instant recharge
+            battery = 100f;
     }
 
     public void ChangeGlobalBaseTemperature(float delta) // Takes from battery first
@@ -108,7 +105,7 @@ public class GeneralThermalRegulator : MonoBehaviour, ISaveable
         currentBatterySmoothed = battery;
         currentTemperature = baseTemperature;
         ApplyToAllThermalObjects();
-        initialBaseTemperature = baseTemperature; // also set initial after load
+        initialBaseTemperature = baseTemperature;
     }
 
     private void OnDestroy()

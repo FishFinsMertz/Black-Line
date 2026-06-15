@@ -16,7 +16,7 @@ public class TilemapThermal : MonoBehaviour
     [SerializeField, Range(0.1f, 5f)] private float fresnelRadius = 1f;
 
     private TilemapRenderer tilemapRenderer;
-    private Material currentMaterial;      // reference to the instanced material (when thermal active)
+    private Material currentMaterial;
     private bool isThermalOn = false;
 
     private static readonly int TemperatureProperty = Shader.PropertyToID("_Temperature");
@@ -53,7 +53,6 @@ public class TilemapThermal : MonoBehaviour
 
         if (enabled && thermalMaterial != null)
         {
-            // Create unique instance for this tilemap (so each tilemap can have its own temperature)
             currentMaterial = new Material(thermalMaterial);
             ApplyParametersToMaterial(currentMaterial);
             tilemapRenderer.material = currentMaterial;
@@ -61,7 +60,6 @@ public class TilemapThermal : MonoBehaviour
         }
         else
         {
-            // Switch back to normal material (shared)
             tilemapRenderer.material = normalMaterial;
             isThermalOn = false;
             currentMaterial = null;

@@ -11,7 +11,6 @@ public class GameData
     public List<string> deadEnemyIDs = new List<string>();
     public float playerBatteryAmt = 100f;
 
-    // Future expansions (example)
     // public string currentScene;
     // public Vector3 playerPosition;
     // public List<string> unlockedDoors;

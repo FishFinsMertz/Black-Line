@@ -57,7 +57,6 @@ public class SprayDamage : MonoBehaviour
             Vector2 pos = particles[i].position;
             float currentTime = Time.time;
 
-            // 1) Check for player (using player layer)
             if (affectPlayer)
             {
                 Collider2D playerHit = Physics2D.OverlapCircle(pos, detectionRadius, playerLayer);
@@ -79,7 +78,6 @@ public class SprayDamage : MonoBehaviour
                 }
             }
 
-            // 2) Check for enemies (using enemy layer)
             Collider2D hit = Physics2D.OverlapCircle(pos, detectionRadius, enemyLayer);
             if (hit == null) continue;
 

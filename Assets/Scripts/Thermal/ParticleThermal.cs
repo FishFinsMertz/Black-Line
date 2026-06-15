@@ -34,15 +34,12 @@ public class ParticleThermal : MonoBehaviour
 
     private void Start()
     {
-        // Initial application (will also be done in OnEnable, but safe to keep)
         ApplyTemperature();
-        // OnEnable will handle the keyword based on current thermal state
     }
 
     private void OnEnable()
     {
         ThermalManager.OnThermalToggled += OnThermalToggled;
-        // Force refresh the thermal keyword and temperature when re‑enabled
         ApplyTemperature();
         if (ThermalManager.Instance != null)
             OnThermalToggled(ThermalManager.Instance.IsThermalEnabled());

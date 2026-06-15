@@ -11,11 +11,11 @@ public class ArmGunController : ArmController
     [SerializeField] private Transform firePoint;
     [SerializeField] private Transform directionIndicator;
     [SerializeField] private GameObject bulletPrefab;
-    [SerializeField] private float fireRate = 5f; // shots per second
+    [SerializeField] private float fireRate = 5f;
 
     [Header("Recoil")]
-    [SerializeField] private float recoilStrength = 0.2f; // how far the arm moves back (units)
-    [SerializeField] private float recoilDuration = 0.1f; // total duration (back + return)
+    [SerializeField] private float recoilStrength = 0.2f;
+    [SerializeField] private float recoilDuration = 0.1f;
 
     [Header("Muzzle Flash")]
     [SerializeField] private Animator muzzleFlashAnimator;
@@ -47,7 +47,7 @@ public class ArmGunController : ArmController
 
     protected override void Update()
     {
-        base.Update(); // handles flip and armEnabled check
+        base.Update();
         if (!armEnabled) return;
 
         AimAtMouse();
@@ -102,11 +102,9 @@ public class ArmGunController : ArmController
         if (bodyThermalObject != null)
             bodyThermalObject.ChangeCurrentTemperature(15f);
 
-        // Trigger muzzle flash
         if (muzzleFlashAnimator != null)
             muzzleFlashAnimator.SetTrigger("Shoot");
 
-        // Apply recoil (only if not already recoiling)
         if (!isRecoiling && recoilStrength > 0f)
             StartCoroutine(Recoil());
     }
@@ -118,7 +116,7 @@ public class ArmGunController : ArmController
         float elapsed = 0f;
         float halfDuration = recoilDuration / 2f;
 
-        // Phase 1: move backward (negative local X) - assumes gun's forward is local X
+        // Move backward
         Vector3 startPos = originalLocalPosition;
         Vector3 recoilPos = startPos + Vector3.left * recoilStrength;
 
@@ -131,7 +129,7 @@ public class ArmGunController : ArmController
         }
         transform.localPosition = recoilPos;
 
-        // Phase 2: return to original
+        // Return to original
         elapsed = 0f;
         while (elapsed < halfDuration)
         {
