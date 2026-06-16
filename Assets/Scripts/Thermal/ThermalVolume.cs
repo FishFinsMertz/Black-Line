@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 
 [RequireComponent(typeof(Volume))]
-public class ThermalVolume : MonoBehaviour
+public class ThermalVolume : BaseThermalComponent
 {
     private Volume thermalVolume;
     [SerializeField] private Volume mainVolume;
@@ -17,19 +17,15 @@ public class ThermalVolume : MonoBehaviour
 
     private void OnEnable()
     {
-        ThermalManager.OnThermalToggled += OnThermalToggled;
-        if (ThermalManager.Instance != null)
-            OnThermalToggled(ThermalManager.Instance.IsThermalEnabled());
-        else
-            OnThermalToggled(false);
+        SubscribeToThermalEvents();
     }
 
     private void OnDisable()
     {
-        ThermalManager.OnThermalToggled -= OnThermalToggled;
+        UnsubscribeFromThermalEvents();
     }
 
-    private void OnThermalToggled(bool enabled)
+    protected override void OnThermalToggled(bool enabled)
     {
         if (thermalVolume != null)
             thermalVolume.enabled = enabled;

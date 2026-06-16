@@ -1,12 +1,10 @@
 using UnityEngine;
 
 [RequireComponent(typeof(ParticleSystem))]
-public class ParticleThermal : MonoBehaviour
+public class ParticleThermal : BaseThermalComponent
 {
     [Header("Thermal Settings")]
     [SerializeField, Range(0f, 100f)] private float temperature = 0f;
-
-    private static readonly int TemperatureProperty = Shader.PropertyToID("_Temperature");
 
     private ParticleSystem ps;
     private Material uniqueMaterial;
@@ -39,17 +37,13 @@ public class ParticleThermal : MonoBehaviour
 
     private void OnEnable()
     {
-        ThermalManager.OnThermalToggled += OnThermalToggled;
         ApplyTemperature();
-        if (ThermalManager.Instance != null)
-            OnThermalToggled(ThermalManager.Instance.IsThermalEnabled());
-        else
-            OnThermalToggled(false);
+        SubscribeToThermalEvents();
     }
 
     private void OnDisable()
     {
-        ThermalManager.OnThermalToggled -= OnThermalToggled;
+        UnsubscribeFromThermalEvents();
     }
 
     private void ApplyTemperature()
@@ -61,19 +55,10 @@ public class ParticleThermal : MonoBehaviour
             uniqueTrailMaterial.SetFloat(TemperatureProperty, temperature);
     }
 
-    private void OnThermalToggled(bool enabled)
+    protected override void OnThermalToggled(bool enabled)
     {
-        if (uniqueMaterial != null)
-        {
-            if (enabled) uniqueMaterial.EnableKeyword("THERMAL_ON");
-            else uniqueMaterial.DisableKeyword("THERMAL_ON");
-        }
-
-        if (uniqueTrailMaterial != null)
-        {
-            if (enabled) uniqueTrailMaterial.EnableKeyword("THERMAL_ON");
-            else uniqueTrailMaterial.DisableKeyword("THERMAL_ON");
-        }
+        SetThermalKeyword(uniqueMaterial, enabled);
+        SetThermalKeyword(uniqueTrailMaterial, enabled);
     }
 
     public void SetTemperature(float newTemperature)

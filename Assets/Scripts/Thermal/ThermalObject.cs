@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(SpriteRenderer))]
-public class ThermalObject : MonoBehaviour, IHasThermal
+public class ThermalObject : BaseThermalComponent
 // Thermal objects for individual sprites
 {
     [Header("Thermal Vision Parameters")]
@@ -26,11 +26,10 @@ public class ThermalObject : MonoBehaviour, IHasThermal
     private Material uniqueMaterial;
     private float phaseOffset = 0f;
 
-    private static readonly int TemperatureProperty = Shader.PropertyToID("_Temperature");
     private static readonly int FresnelPowerProperty = Shader.PropertyToID("_FresnelPower");
     private static readonly int BrightnessInfluenceProperty = Shader.PropertyToID("_BrightnessInfluence");
-    private static readonly int FresnelCenterProperty = Shader.PropertyToID("_FresnelCenter"); // NEW
-    private static readonly int FresnelRadiusProperty = Shader.PropertyToID("_FresnelRadius"); // NEW
+    private static readonly int FresnelCenterProperty = Shader.PropertyToID("_FresnelCenter");
+    private static readonly int FresnelRadiusProperty = Shader.PropertyToID("_FresnelRadius");
 
     void Awake()
     {
@@ -47,16 +46,12 @@ public class ThermalObject : MonoBehaviour, IHasThermal
         if (useRandomPhase)
             phaseOffset = Random.Range(0f, Mathf.PI * 2f);
 
-        currentTemperature = temperature; // start at target
+        currentTemperature = temperature;
     }
 
     void Start()
     {
         ApplyParameters();
-        if (ThermalManager.Instance != null)
-            OnThermalToggled(ThermalManager.Instance.IsThermalEnabled());
-        else
-            OnThermalToggled(false);
     }
 
     void Update()
@@ -67,14 +62,12 @@ public class ThermalObject : MonoBehaviour, IHasThermal
 
     void OnEnable()
     {
-        ThermalManager.OnThermalToggled += OnThermalToggled;
-        if (ThermalManager.Instance != null)
-            OnThermalToggled(ThermalManager.Instance.IsThermalEnabled());
+        SubscribeToThermalEvents();
     }
 
     void OnDisable()
     {
-        ThermalManager.OnThermalToggled -= OnThermalToggled;
+        UnsubscribeFromThermalEvents();
     }
 
     public void ApplyParameters()
@@ -92,8 +85,8 @@ public class ThermalObject : MonoBehaviour, IHasThermal
         uniqueMaterial.SetFloat(TemperatureProperty, finalTemp);
         uniqueMaterial.SetFloat(FresnelPowerProperty, fresnelPower);
         uniqueMaterial.SetFloat(BrightnessInfluenceProperty, brightnessInfluence);
-        uniqueMaterial.SetVector(FresnelCenterProperty, fresnelCenter); // NEW
-        uniqueMaterial.SetFloat(FresnelRadiusProperty, fresnelRadius); // NEW
+        uniqueMaterial.SetVector(FresnelCenterProperty, fresnelCenter);
+        uniqueMaterial.SetFloat(FresnelRadiusProperty, fresnelRadius); 
     }
 
     // Public API
@@ -116,12 +109,8 @@ public class ThermalObject : MonoBehaviour, IHasThermal
         pulseAmplitude = amplitude;
     }
 
-    private void OnThermalToggled(bool enabled)
+    protected override void OnThermalToggled(bool enabled)
     {
-        if (uniqueMaterial == null) return;
-        if (enabled)
-            uniqueMaterial.EnableKeyword("THERMAL_ON");
-        else
-            uniqueMaterial.DisableKeyword("THERMAL_ON");
+        SetThermalKeyword(uniqueMaterial, enabled);
     }
 }

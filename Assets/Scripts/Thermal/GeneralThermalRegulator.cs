@@ -16,12 +16,16 @@ public class GeneralThermalRegulator : MonoBehaviour, ISaveable
     [SerializeField, Range(0f, 10f)] private float batteryDrainRate = 0.5f;
     [SerializeField, Range(0.1f, 10f)] private float baseTemperatureDriftSpeed = 1f;
 
+    [Header("Critical State (Battery = 0)")]
+    [SerializeField, Range(0f, 10f)] private float criticalDriftSpeed = 2f;
+    [SerializeField] private bool criticalDriftEnabled = true;                
+
     private float currentBatterySmoothed;
 
     private void Start()
     {
         SaveManager.Instance?.Register(this);
-        initialBaseTemperature = baseTemperature; // store initial value
+        initialBaseTemperature = baseTemperature;
         currentTemperature = baseTemperature;
         currentBatterySmoothed = battery;
         ApplyToAllThermalObjects();
@@ -29,6 +33,7 @@ public class GeneralThermalRegulator : MonoBehaviour, ISaveable
 
     private void Update()
     {
+        // Natural battery drain
         if (battery > 0f)
         {
             float drain = batteryDrainRate * Time.deltaTime;
@@ -37,11 +42,24 @@ public class GeneralThermalRegulator : MonoBehaviour, ISaveable
 
         currentBatterySmoothed = Mathf.MoveTowards(currentBatterySmoothed, battery, batterySmoothSpeed * Time.deltaTime);
 
-        // Natural drift of baseTemperature towards initialBaseTemperature if battery > 0
-        if (battery > 0f && !Mathf.Approximately(baseTemperature, initialBaseTemperature))
+        // Temperature drift logic
+        if (battery > 0f)
         {
-            float step = baseTemperatureDriftSpeed * Time.deltaTime;
-            baseTemperature = Mathf.MoveTowards(baseTemperature, initialBaseTemperature, step);
+            // Normal drift: return to initial temperature
+            if (!Mathf.Approximately(baseTemperature, initialBaseTemperature))
+            {
+                float step = baseTemperatureDriftSpeed * Time.deltaTime;
+                baseTemperature = Mathf.MoveTowards(baseTemperature, initialBaseTemperature, step);
+            }
+        }
+        else if (criticalDriftEnabled && battery <= 0f)
+        {
+            // Critical drift: move towards 0°C (freezing) when battery empty
+            if (!Mathf.Approximately(baseTemperature, 0f))
+            {
+                float step = criticalDriftSpeed * Time.deltaTime;
+                baseTemperature = Mathf.MoveTowards(baseTemperature, 0f, step);
+            }
         }
 
         currentTemperature = Mathf.MoveTowards(currentTemperature, baseTemperature, smoothSpeed * Time.deltaTime);

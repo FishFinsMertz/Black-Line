@@ -2,11 +2,10 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 
 [RequireComponent(typeof(TilemapRenderer))]
-public class TilemapThermal : MonoBehaviour
+public class TileMapThermal : BaseThermalComponent
 {
-    [Header("Materials")]
-    [SerializeField] private Material normalMaterial;
-    [SerializeField] private Material thermalMaterial;
+    [Header("Thermal Material")]
+    [SerializeField] private Material thermalMaterial; // Your thermal shader material
 
     [Header("Thermal Settings")]
     [SerializeField, Range(0f, 100f)] private float temperature = 0f;
@@ -16,10 +15,9 @@ public class TilemapThermal : MonoBehaviour
     [SerializeField, Range(0.1f, 5f)] private float fresnelRadius = 1f;
 
     private TilemapRenderer tilemapRenderer;
-    private Material currentMaterial;
+    private Material instanceMaterial; // unique instance of thermalMaterial
     private bool isThermalOn = false;
 
-    private static readonly int TemperatureProperty = Shader.PropertyToID("_Temperature");
     private static readonly int FresnelPowerProperty = Shader.PropertyToID("_FresnelPower");
     private static readonly int BrightnessInfluenceProperty = Shader.PropertyToID("_BrightnessInfluence");
     private static readonly int FresnelCenterProperty = Shader.PropertyToID("_FresnelCenter");
@@ -28,87 +26,80 @@ public class TilemapThermal : MonoBehaviour
     private void Awake()
     {
         tilemapRenderer = GetComponent<TilemapRenderer>();
-        if (normalMaterial == null)
-            normalMaterial = tilemapRenderer.material;
+        if (thermalMaterial == null)
+        {
+            Debug.LogError("TileMapThermal: No thermal material assigned!", this);
+            enabled = false;
+            return;
+        }
+        instanceMaterial = new Material(thermalMaterial);
+        DisableThermalKeyword(instanceMaterial);
+        tilemapRenderer.material = instanceMaterial;
     }
 
     private void OnEnable()
     {
-        ThermalManager.OnThermalToggled += OnThermalToggled;
-        // Apply initial state
-        if (ThermalManager.Instance != null)
-            OnThermalToggled(ThermalManager.Instance.IsThermalEnabled());
-        else
-            OnThermalToggled(false);
+        SubscribeToThermalEvents();
     }
 
     private void OnDisable()
     {
-        ThermalManager.OnThermalToggled -= OnThermalToggled;
+        UnsubscribeFromThermalEvents();
     }
 
-    private void OnThermalToggled(bool enabled)
+    protected override void OnThermalToggled(bool enabled)
     {
-        if (tilemapRenderer == null) return;
-
-        if (enabled && thermalMaterial != null)
+        if (instanceMaterial == null) return;
+        isThermalOn = enabled;
+        SetThermalKeyword(instanceMaterial, enabled);
+        if (enabled)
         {
-            currentMaterial = new Material(thermalMaterial);
-            ApplyParametersToMaterial(currentMaterial);
-            tilemapRenderer.material = currentMaterial;
-            isThermalOn = true;
-        }
-        else
-        {
-            tilemapRenderer.material = normalMaterial;
-            isThermalOn = false;
-            currentMaterial = null;
+            ApplyParameters();
         }
     }
 
-    private void ApplyParametersToMaterial(Material mat)
+    private void ApplyParameters()
     {
-        if (mat == null) return;
-        mat.SetFloat(TemperatureProperty, temperature);
-        mat.SetFloat(FresnelPowerProperty, fresnelPower);
-        mat.SetFloat(BrightnessInfluenceProperty, brightnessInfluence);
-        mat.SetVector(FresnelCenterProperty, fresnelCenter);
-        mat.SetFloat(FresnelRadiusProperty, fresnelRadius);
+        if (instanceMaterial == null) return;
+        instanceMaterial.SetFloat(TemperatureProperty, temperature);
+        instanceMaterial.SetFloat(FresnelPowerProperty, fresnelPower);
+        instanceMaterial.SetFloat(BrightnessInfluenceProperty, brightnessInfluence);
+        instanceMaterial.SetVector(FresnelCenterProperty, fresnelCenter);
+        instanceMaterial.SetFloat(FresnelRadiusProperty, fresnelRadius);
     }
 
-    // Public setters (similar to ThermalObject)
     public void SetTemperature(float newTemp)
     {
         temperature = Mathf.Clamp(newTemp, 0f, 100f);
-        if (isThermalOn && currentMaterial != null)
-            currentMaterial.SetFloat(TemperatureProperty, temperature);
+        if (isThermalOn && instanceMaterial != null)
+            instanceMaterial.SetFloat(TemperatureProperty, temperature);
     }
 
     public void SetFresnelPower(float power)
     {
         fresnelPower = Mathf.Clamp01(power);
-        if (isThermalOn && currentMaterial != null)
-            currentMaterial.SetFloat(FresnelPowerProperty, fresnelPower);
+        if (isThermalOn && instanceMaterial != null)
+            instanceMaterial.SetFloat(FresnelPowerProperty, fresnelPower);
     }
 
     public void SetBrightnessInfluence(float influence)
     {
         brightnessInfluence = Mathf.Clamp01(influence);
-        if (isThermalOn && currentMaterial != null)
-            currentMaterial.SetFloat(BrightnessInfluenceProperty, brightnessInfluence);
+        if (isThermalOn && instanceMaterial != null)
+            instanceMaterial.SetFloat(BrightnessInfluenceProperty, brightnessInfluence);
     }
 
     public void SetFresnelCenter(Vector2 center)
     {
         fresnelCenter = center;
-        if (isThermalOn && currentMaterial != null)
-            currentMaterial.SetVector(FresnelCenterProperty, fresnelCenter);
+        if (isThermalOn && instanceMaterial != null)
+            instanceMaterial.SetVector(FresnelCenterProperty, fresnelCenter);
     }
 
     public void SetFresnelRadius(float radius)
     {
         fresnelRadius = Mathf.Clamp(radius, 0.1f, 5f);
-        if (isThermalOn && currentMaterial != null)
-            currentMaterial.SetFloat(FresnelRadiusProperty, fresnelRadius);
+        if (isThermalOn && instanceMaterial != null)
+            instanceMaterial.SetFloat(FresnelRadiusProperty, fresnelRadius);
     }
 }

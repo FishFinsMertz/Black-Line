@@ -186,7 +186,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3834701d395f3fb4f9415b7789ba40b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  temperature: 100
+  temperature: 70
   currentTemperature: 0
   fresnelPower: 0.876
   brightnessInfluence: 1
@@ -1009,6 +1009,8 @@ MonoBehaviour:
   batterySmoothSpeed: 5
   batteryDrainRate: 0.5
   baseTemperatureDriftSpeed: 5
+  criticalDriftSpeed: 2
+  criticalDriftEnabled: 1
 --- !u!70 &3348807431190664019
 CapsuleCollider2D:
   m_ObjectHideFlags: 0

@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(TrailRenderer))]
-public class BulletTrailThermal : MonoBehaviour
+public class BulletTrailThermal : BaseThermalComponent
 {
     private TrailRenderer trail;
     private Material uniqueMaterial;
@@ -13,30 +13,23 @@ public class BulletTrailThermal : MonoBehaviour
         uniqueMaterial = new Material(trail.material);
         trail.material = uniqueMaterial;
         
-        uniqueMaterial.DisableKeyword("THERMAL_ON");
+        DisableThermalKeyword(uniqueMaterial);
         
-        if (ThermalManager.Instance != null)
-            OnThermalToggled(ThermalManager.Instance.IsThermalEnabled());
-        else
-            OnThermalToggled(false);
+        SubscribeToThermalEvents();
     }
 
     private void OnEnable()
     {
-        ThermalManager.OnThermalToggled += OnThermalToggled;
+        SubscribeToThermalEvents();
     }
 
     private void OnDisable()
     {
-        ThermalManager.OnThermalToggled -= OnThermalToggled;
+        UnsubscribeFromThermalEvents();
     }
 
-    private void OnThermalToggled(bool enabled)
+    protected override void OnThermalToggled(bool enabled)
     {
-        if (uniqueMaterial == null) return;
-        if (enabled)
-            uniqueMaterial.EnableKeyword("THERMAL_ON");
-        else
-            uniqueMaterial.DisableKeyword("THERMAL_ON");
+        SetThermalKeyword(uniqueMaterial, enabled);
     }
 }

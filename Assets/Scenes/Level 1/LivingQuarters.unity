@@ -249,7 +249,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 410bf36765404564d89eb0e2a9404e00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  normalMaterial: {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   thermalMaterial: {fileID: 2100000, guid: 484fb33827467fe44b5a4770d97fa0a0, type: 2}
   temperature: 60.8
   fresnelPower: 0.5
@@ -5623,7 +5622,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 410bf36765404564d89eb0e2a9404e00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  normalMaterial: {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   thermalMaterial: {fileID: 2100000, guid: 484fb33827467fe44b5a4770d97fa0a0, type: 2}
   temperature: 47.6
   fresnelPower: 0.5
@@ -22188,7 +22186,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 410bf36765404564d89eb0e2a9404e00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  normalMaterial: {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   thermalMaterial: {fileID: 2100000, guid: 484fb33827467fe44b5a4770d97fa0a0, type: 2}
   temperature: 51.1
   fresnelPower: 0.5
@@ -22506,7 +22503,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 410bf36765404564d89eb0e2a9404e00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  normalMaterial: {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   thermalMaterial: {fileID: 2100000, guid: 484fb33827467fe44b5a4770d97fa0a0, type: 2}
   temperature: 35.4
   fresnelPower: 0.5
@@ -23538,7 +23534,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 410bf36765404564d89eb0e2a9404e00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  normalMaterial: {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   thermalMaterial: {fileID: 2100000, guid: 484fb33827467fe44b5a4770d97fa0a0, type: 2}
   temperature: 100
   fresnelPower: 0.935
@@ -33462,7 +33457,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 410bf36765404564d89eb0e2a9404e00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  normalMaterial: {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   thermalMaterial: {fileID: 2100000, guid: 484fb33827467fe44b5a4770d97fa0a0, type: 2}
   temperature: 98.9
   fresnelPower: 0.5
