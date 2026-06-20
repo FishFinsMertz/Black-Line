@@ -12,10 +12,10 @@ public class TileMapThermal : BaseThermalComponent
     [SerializeField, Range(0f, 1f)] private float fresnelPower = 0.5f;
     [SerializeField, Range(0f, 1f)] private float brightnessInfluence = 0.08f;
     [SerializeField] private Vector2 fresnelCenter = new Vector2(0.5f, 0.5f);
-    [SerializeField, Range(0.1f, 5f)] private float fresnelRadius = 1f;
+    [SerializeField, Range(0f, 5f)] private float fresnelRadius = 1f;
 
     private TilemapRenderer tilemapRenderer;
-    private Material instanceMaterial; // unique instance of thermalMaterial
+    private Material instanceMaterial;
     private bool isThermalOn = false;
 
     private static readonly int FresnelPowerProperty = Shader.PropertyToID("_FresnelPower");
@@ -98,7 +98,7 @@ public class TileMapThermal : BaseThermalComponent
 
     public void SetFresnelRadius(float radius)
     {
-        fresnelRadius = Mathf.Clamp(radius, 0.1f, 5f);
+        fresnelRadius = Mathf.Clamp(radius, 0f, 5f);
         if (isThermalOn && instanceMaterial != null)
             instanceMaterial.SetFloat(FresnelRadiusProperty, fresnelRadius);
     }
