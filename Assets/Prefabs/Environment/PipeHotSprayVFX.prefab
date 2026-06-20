@@ -4860,7 +4860,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce01f679206ab8a45ad3c4bfff571e08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damagePerHit: 30
+  damagePerHit: 50
   hitCooldown: 0.5
   affectPlayer: 1
   playerTempChange: 15

@@ -128,6 +128,9 @@ MonoBehaviour:
   damage: 20
   hitEffectPrefab: {fileID: 6032955814965413020, guid: 9c67ec2becf93b64f94e30c58fb9a4fa, type: 3}
   surfaceOffset: 0.05
+  hitMask:
+    serializedVersion: 2
+    m_Bits: 320
 --- !u!96 &6775708454615155045
 TrailRenderer:
   serializedVersion: 3

@@ -11,6 +11,9 @@ public class GunBullet : MonoBehaviour
     [SerializeField] private GameObject hitEffectPrefab;
     [SerializeField] private float surfaceOffset = 0.05f;
 
+    [Header("Collision")]
+    [SerializeField] private LayerMask hitMask = -1; // Default: Everything (you should assign in Inspector)
+
     private Vector2 direction;
     private float spawnTime;
     private Rigidbody2D rb;
@@ -36,6 +39,7 @@ public class GunBullet : MonoBehaviour
 
     private void FixedUpdate()
     {
+        // Store the previous position for accurate raycasting
         lastPosition = transform.position;
     }
 
@@ -50,23 +54,21 @@ public class GunBullet : MonoBehaviour
         Vector2 currentPos = transform.position;
         Vector2 toCurrent = currentPos - lastPosition;
         float distance = toCurrent.magnitude;
-        RaycastHit2D hit = Physics2D.Raycast(lastPosition, toCurrent.normalized, distance);
+
+        RaycastHit2D hit = Physics2D.Raycast(lastPosition, toCurrent.normalized, distance, hitMask);
 
         if (hit.collider != null)
         {
-            // Use raycast hit point and normal
             SpawnHitEffect(hit.point, hit.normal);
+
+            // Apply damage if the hit object is an enemy
+            EnemyController enemy = hit.collider.GetComponent<EnemyController>();
+            if (enemy != null)
+                enemy.ChangeBaseTemperature(damage);
         }
         else
         {
             SpawnHitEffect(currentPos, Vector2.zero);
-        }
-
-        // Apply damage if applicable
-        if (other.CompareTag("Enemy"))
-        {
-            EnemyController enemy = other.GetComponent<EnemyController>();
-            if (enemy != null) enemy.ChangeBaseTemperature(damage);
         }
 
         Destroy(gameObject);
@@ -74,6 +76,7 @@ public class GunBullet : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        // Use the first contact point for accurate effect placement
         ContactPoint2D contact = collision.contacts[0];
         Vector2 hitPoint = contact.point;
         Vector2 normal = contact.normal;
