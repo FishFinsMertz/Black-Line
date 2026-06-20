@@ -5,7 +5,7 @@ using UnityEngine.Tilemaps;
 public class TileMapThermal : BaseThermalComponent
 {
     [Header("Thermal Material")]
-    [SerializeField] private Material thermalMaterial; // Your thermal shader material
+    [SerializeField] private Material thermalMaterial;
 
     [Header("Thermal Settings")]
     [SerializeField, Range(0f, 100f)] private float temperature = 0f;
