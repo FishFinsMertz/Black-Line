@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class PartsExploder : MonoBehaviour
 {
@@ -19,8 +20,14 @@ public class PartsExploder : MonoBehaviour
     [Header("Camera Shake")]
     public float shakePower = 2f;
 
+    [Header("Random Delay")]
+    [Tooltip("If > 0, the explosion will be delayed by a random time between min and max.")]
+    public float delayMin = 0f;
+    public float delayMax = 0f;
+
     private CameraController camController;
     private ThermalObject currentThermal;
+    private bool isExploding = false;
 
     private void Start()
     {
@@ -29,6 +36,30 @@ public class PartsExploder : MonoBehaviour
     }
 
     public void Explode()
+    {
+        if (isExploding) return;
+
+        // If no delay, explode immediately
+        if (delayMin <= 0f && delayMax <= 0f)
+        {
+            PerformExplosion();
+        }
+        else
+        {
+            isExploding = true;
+            StartCoroutine(ExplodeWithDelay());
+        }
+    }
+
+    private IEnumerator ExplodeWithDelay()
+    {
+        float delay = Random.Range(delayMin, delayMax);
+        yield return new WaitForSeconds(delay);
+        PerformExplosion();
+        isExploding = false;
+    }
+
+    private void PerformExplosion()
     {
         float currentTemp = 50f;
         if (enableHeatDissipation && currentThermal != null)
@@ -46,7 +77,6 @@ public class PartsExploder : MonoBehaviour
         {
             GameObject piece = Instantiate(piecePrefab, transform.position, Quaternion.identity);
 
-            // Apply current temperature to all thermal objects on the piece if heat dissipation is enabled
             if (enableHeatDissipation)
             {
                 foreach (ThermalObject thermal in piece.GetComponentsInChildren<ThermalObject>())
@@ -68,5 +98,6 @@ public class PartsExploder : MonoBehaviour
         }
 
         gameObject.SetActive(false);
+        isExploding = false;
     }
 }

@@ -170,3 +170,5 @@ MonoBehaviour:
   bloodBurstPrefab: {fileID: 0}
   enableHeatDissipation: 0
   shakePower: 1
+  delayMin: 0
+  delayMax: 0.2

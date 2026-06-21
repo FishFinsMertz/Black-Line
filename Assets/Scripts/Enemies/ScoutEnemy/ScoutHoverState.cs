@@ -158,13 +158,19 @@ public class ScoutHoverState : EnemyState
 
     private void RotateTowardMovement()
     {
-        if (smoothedVelocity.sqrMagnitude < 0.01f) return;
+        if (smoothedVelocity.sqrMagnitude < 0.05f)
+        {
+            scout.transform.rotation = Quaternion.Lerp(scout.transform.rotation, Quaternion.identity, scout.tiltSpeed * Time.deltaTime);
+            return;
+        }
 
         float angle = Mathf.Atan2(smoothedVelocity.y, smoothedVelocity.x) * Mathf.Rad2Deg;
+        
+        // Clamp angle to avoid extreme tilts
         float clampedAngle = Mathf.Clamp(angle, -scout.maxTiltAngle, scout.maxTiltAngle);
 
         Quaternion targetRot = Quaternion.Euler(0f, 0f, clampedAngle);
-        scout.transform.rotation = Quaternion.Lerp(
+        scout.transform.rotation = Quaternion.RotateTowards(
             scout.transform.rotation,
             targetRot,
             scout.tiltSpeed * Time.deltaTime

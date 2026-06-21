@@ -59,6 +59,7 @@ public class GunBullet : MonoBehaviour
 
         if (hit.collider != null)
         {
+            //Debug.Log($"Bullet hit: {hit.collider.name} at {hit.point}");
             SpawnHitEffect(hit.point, hit.normal);
 
             // Apply damage if the hit object is an enemy
