@@ -58,7 +58,7 @@ public class ScoutController : EnemyController
 
     protected override void OnSmokingEnded()
     {
-        Debug.Log($"{name} (Scout) cooled down – returning to normal.");
+        //Debug.Log($"{name} (Scout) cooled down – returning to normal.");
         moveSpeed = originalMoveSpeed;
         hoverRadiusMin = originalHoverRadiusMin;
         hoverRadiusMax = originalHoverRadiusMax;

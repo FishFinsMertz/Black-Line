@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class EnemyDeathExploder : MonoBehaviour
+public class PartsExploder : MonoBehaviour
 {
     [Header("Piece Settings")]
     public GameObject[] piecePrefabs;
@@ -10,24 +10,34 @@ public class EnemyDeathExploder : MonoBehaviour
     public float pieceTorqueMax = 60f;
 
     [Header("Gore VFX")]
+    public bool enableBloodSplatter = true;
     public ParticleSystem bloodBurstPrefab;
 
+    [Header("Heat Dissipation")]
+    public bool enableHeatDissipation = true;
+
+    [Header("Camera Shake")]
+    public float shakePower = 2f;
+
     private CameraController camController;
-    private ThermalObject enemyThermal;
+    private ThermalObject currentThermal;
 
     private void Start()
     {
         camController = Camera.main.GetComponent<CameraController>();
-        enemyThermal = GetComponentInChildren<ThermalObject>();
+        currentThermal = GetComponentInChildren<ThermalObject>();
     }
 
     public void Explode()
     {
-        float currentTemp = enemyThermal != null ? enemyThermal.GetTemperature() : 50f;
+        float currentTemp = 50f;
+        if (enableHeatDissipation && currentThermal != null)
+            currentTemp = currentThermal.GetTemperature();
 
-        if (bloodBurstPrefab != null)
+        if (enableBloodSplatter && bloodBurstPrefab != null)
         {
-            camController.TriggerShake(2f, 0.5f, 1f);
+            if (camController != null)
+                camController.TriggerShake(shakePower, 0.5f, 1f);
             ParticleSystem blood = Instantiate(bloodBurstPrefab, transform.position, Quaternion.identity);
             Destroy(blood.gameObject, blood.main.duration);
         }
@@ -36,10 +46,13 @@ public class EnemyDeathExploder : MonoBehaviour
         {
             GameObject piece = Instantiate(piecePrefab, transform.position, Quaternion.identity);
 
-            // Apply enemy's current temperature to all thermal objects on the piece
-            foreach (ThermalObject thermal in piece.GetComponentsInChildren<ThermalObject>())
+            // Apply current temperature to all thermal objects on the piece if heat dissipation is enabled
+            if (enableHeatDissipation)
             {
-                thermal.SetCurrentTemperature(currentTemp);
+                foreach (ThermalObject thermal in piece.GetComponentsInChildren<ThermalObject>())
+                {
+                    thermal.SetCurrentTemperature(currentTemp);
+                }
             }
 
             Rigidbody2D rb = piece.GetComponent<Rigidbody2D>();

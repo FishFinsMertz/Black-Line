@@ -189,7 +189,7 @@ public abstract class EnemyController : MonoBehaviour
         if (smokeController != null)
             smokeController.OnOwnerDied();
 
-        EnemyDeathExploder exploder = GetComponent<EnemyDeathExploder>();
+        PartsExploder exploder = GetComponent<PartsExploder>();
         if (exploder != null)
             exploder.Explode();
     }
