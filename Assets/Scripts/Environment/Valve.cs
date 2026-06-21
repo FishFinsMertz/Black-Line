@@ -1,188 +1,107 @@
 using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
-using UnityEngine.Rendering.Universal;
 
 public class Valve : MonoBehaviour
 {
-    [Header("Animation")]
+    [Header("Visual State")]
     [SerializeField] private Animator animator;
-    [SerializeField] private string rotateTrigger = "Rotate";
+    [SerializeField] private string openTrigger = "Open";
+    [SerializeField] private string closeTrigger = "Close";
     [SerializeField] private string idleBool = "isIdle";
-    [SerializeField] private float animationCooldown = 0.5f;
-
-    [Header("Smooth Transitions")]
-    [SerializeField] private float transitionDuration = 0.5f;
-    [SerializeField] private float openFresnelRadius = 1f;
-    [SerializeField] private float closedFresnelRadius = 0f;
-    [SerializeField] private float openEmissionRate = 50f;
-    [SerializeField] private float closedEmissionRate = 0f;
-
-    [Header("Light")]
-    [SerializeField] private Light2D valveLight;
-    [SerializeField] private float openLightIntensity = 2f;
-    [SerializeField] private float closedLightIntensity = 0f;
-
-    [Header("References")]
-    [SerializeField] private ParticleSystem sprayParticle;
-    [SerializeField] private List<TileMapThermal> tilemapThermals;
-    [SerializeField] private SpriteRenderer outline;
+    [SerializeField] private float animationDuration = 0.5f;
 
     [Header("State")]
     [SerializeField] private bool startOpen = false;
 
-    private bool isOpen;
-    private bool isAnimating;
-    private float cooldownTimer;
-    private bool playerInRange;
+    [Header("Events")]
+    public UnityEngine.Events.UnityEvent onOpen;
+    public UnityEngine.Events.UnityEvent onClose;
 
-    private ParticleSystem.EmissionModule emissionModule;
-    private float currentEmissionRate;
-    private float currentFresnelRadius;
-    private float currentLightIntensity;
+    private bool isOpen;
+    private Coroutine idleCoroutine;
 
     private void Start()
     {
         isOpen = startOpen;
-        if (sprayParticle != null)
-            emissionModule = sprayParticle.emission;
-        else
-            Debug.LogWarning("Valve: sprayParticle not assigned!");
-
-        currentEmissionRate = isOpen ? openEmissionRate : closedEmissionRate;
-        currentFresnelRadius = isOpen ? openFresnelRadius : closedFresnelRadius;
-        currentLightIntensity = isOpen ? openLightIntensity : closedLightIntensity;
-
         ApplyStateInstant(isOpen);
-
         if (animator != null)
             animator.SetBool(idleBool, true);
-
-        if (outline != null)
-            outline.enabled = false;
     }
 
-    private void Update()
+    public void Toggle()
     {
-        // Update cooldown timer
-        if (cooldownTimer > 0)
-            cooldownTimer -= Time.deltaTime;
+        if (isOpen)
+            Close();
+        else
+            Open();
+    }
 
-        bool showOutline = playerInRange && !isAnimating && cooldownTimer <= 0;
-        if (outline != null && outline.enabled != showOutline)
-            outline.enabled = showOutline;
+    public void Open()
+    {
+        if (isOpen) return;
+        isOpen = true;
 
-        if (playerInRange && Input.GetKeyDown(KeyCode.E))
+        // Stop any pending idle return coroutine
+        if (idleCoroutine != null)
+            StopCoroutine(idleCoroutine);
+
+        if (animator != null)
         {
-            if (!isAnimating && cooldownTimer <= 0)
-                ToggleValve();
+            // Set trigger
+            animator.SetBool(idleBool, false);
+            animator.SetTrigger(openTrigger);
+
+            // Fallback: if trigger fails, use Play
+            // Uncomment the next line if trigger doesn't work reliably
+            // animator.Play("Open", 0, 0f);
         }
+
+        Debug.Log("Valve: Open triggered");
+        onOpen.Invoke();
+
+        // Start coroutine to return to idle after animation
+        idleCoroutine = StartCoroutine(ReturnToIdle());
     }
 
-    private void ToggleValve()
+    public void Close()
     {
-        isAnimating = true;
-        cooldownTimer = animationCooldown;
+        if (!isOpen) return;
+        isOpen = false;
 
-        if (outline != null)
-            outline.enabled = false;
+        if (idleCoroutine != null)
+            StopCoroutine(idleCoroutine);
 
         if (animator != null)
         {
             animator.SetBool(idleBool, false);
-            animator.SetTrigger(rotateTrigger);
+            animator.SetTrigger(closeTrigger);
         }
 
-        isOpen = !isOpen;
-        StartCoroutine(SmoothTransition(isOpen));
-        StartCoroutine(ReturnToIdle());
+        Debug.Log("Valve: Close triggered");
+        onClose.Invoke();
+
+        idleCoroutine = StartCoroutine(ReturnToIdle());
     }
 
     private IEnumerator ReturnToIdle()
     {
-        yield return new WaitForSeconds(animationCooldown);
+        // Wait for the animation to finish (or a little longer for safety)
+        yield return new WaitForSeconds(animationDuration + 0.1f);
         if (animator != null)
             animator.SetBool(idleBool, true);
-        isAnimating = false;
-    }
-
-    private IEnumerator SmoothTransition(bool toOpen)
-    {
-        float targetEmission = toOpen ? openEmissionRate : closedEmissionRate;
-        float targetRadius = toOpen ? openFresnelRadius : closedFresnelRadius;
-        float targetLight = toOpen ? openLightIntensity : closedLightIntensity;
-
-        float startEmission = currentEmissionRate;
-        float startRadius = currentFresnelRadius;
-        float startLight = currentLightIntensity;
-
-        float elapsed = 0f;
-        while (elapsed < transitionDuration)
-        {
-            elapsed += Time.deltaTime;
-            float t = elapsed / transitionDuration;
-            float lerpedEmission = Mathf.Lerp(startEmission, targetEmission, t);
-            float lerpedRadius = Mathf.Lerp(startRadius, targetRadius, t);
-            float lerpedLight = Mathf.Lerp(startLight, targetLight, t);
-
-            if (sprayParticle != null)
-                emissionModule.rateOverTime = lerpedEmission;
-
-            foreach (var tm in tilemapThermals)
-                if (tm != null)
-                    tm.SetFresnelRadius(lerpedRadius);
-
-            if (valveLight != null)
-                valveLight.intensity = lerpedLight;
-
-            yield return null;
-        }
-
-        // Snap to final values
-        currentEmissionRate = targetEmission;
-        currentFresnelRadius = targetRadius;
-        currentLightIntensity = targetLight;
-
-        if (sprayParticle != null)
-            emissionModule.rateOverTime = targetEmission;
-        foreach (var tm in tilemapThermals)
-            if (tm != null)
-                tm.SetFresnelRadius(targetRadius);
-        if (valveLight != null)
-            valveLight.intensity = targetLight;
+        idleCoroutine = null;
     }
 
     private void ApplyStateInstant(bool open)
     {
-        float targetEmission = open ? openEmissionRate : closedEmissionRate;
-        float targetRadius = open ? openFresnelRadius : closedFresnelRadius;
-        float targetLight = open ? openLightIntensity : closedLightIntensity;
-
-        currentEmissionRate = targetEmission;
-        currentFresnelRadius = targetRadius;
-        currentLightIntensity = targetLight;
-
-        if (sprayParticle != null)
-            emissionModule.rateOverTime = targetEmission;
-        foreach (var tm in tilemapThermals)
-            if (tm != null)
-                tm.SetFresnelRadius(targetRadius);
-        if (valveLight != null)
-            valveLight.intensity = targetLight;
-    }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.CompareTag("Player"))
-            playerInRange = true;
-    }
-
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        if (other.CompareTag("Player"))
-            playerInRange = false;
-        if (outline != null)
-            outline.enabled = false;
+        if (animator != null)
+        {
+            // Ensure the idle state is correct
+            animator.SetBool(idleBool, true);
+            // If you have distinct states like "Open" and "Closed", you could force them here:
+            // if (open) animator.Play("Open", 0, 0f);
+            // else animator.Play("Closed", 0, 0f);
+        }
     }
 
     public bool IsOpen() => isOpen;
