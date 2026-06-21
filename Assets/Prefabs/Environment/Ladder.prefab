@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3876363686256159936}
   - component: {fileID: 6426975432257596598}
   - component: {fileID: 5342164755328428194}
+  - component: {fileID: 483578563913743051}
   m_Layer: 0
   m_Name: BottomEntrance
   m_TagString: Untagged
@@ -92,6 +93,38 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isTop: 0
+--- !u!114 &483578563913743051
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2656232382191433826}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb1aa90789ad0c8458c157f7170616fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mode: 1
+  interactionKey: w
+  cooldown: 0.1
+  oneShot: 0
+  outline: {fileID: 0}
+  onInteract:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5342164755328428194}
+        m_TargetAssemblyTypeName: LadderEntrance, Assembly-CSharp
+        m_MethodName: EnterLadder
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &3186035888170880558
 GameObject:
   m_ObjectHideFlags: 0
@@ -228,6 +261,7 @@ GameObject:
   - component: {fileID: 3158604498385211314}
   - component: {fileID: 114188854454146106}
   - component: {fileID: 8984277439619587715}
+  - component: {fileID: 8122096011830933327}
   m_Layer: 0
   m_Name: TopEntrance
   m_TagString: Untagged
@@ -309,3 +343,35 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isTop: 1
+--- !u!114 &8122096011830933327
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7894981668655514025}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb1aa90789ad0c8458c157f7170616fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mode: 1
+  interactionKey: s
+  cooldown: 0.1
+  oneShot: 0
+  outline: {fileID: 0}
+  onInteract:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8984277439619587715}
+        m_TargetAssemblyTypeName: LadderEntrance, Assembly-CSharp
+        m_MethodName: EnterLadder
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2

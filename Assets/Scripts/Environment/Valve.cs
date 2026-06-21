@@ -41,25 +41,18 @@ public class Valve : MonoBehaviour
         if (isOpen) return;
         isOpen = true;
 
-        // Stop any pending idle return coroutine
         if (idleCoroutine != null)
             StopCoroutine(idleCoroutine);
 
         if (animator != null)
         {
-            // Set trigger
             animator.SetBool(idleBool, false);
             animator.SetTrigger(openTrigger);
-
-            // Fallback: if trigger fails, use Play
-            // Uncomment the next line if trigger doesn't work reliably
-            // animator.Play("Open", 0, 0f);
         }
 
-        Debug.Log("Valve: Open triggered");
+        //Debug.Log("Valve: Open triggered");
         onOpen.Invoke();
 
-        // Start coroutine to return to idle after animation
         idleCoroutine = StartCoroutine(ReturnToIdle());
     }
 
@@ -77,7 +70,7 @@ public class Valve : MonoBehaviour
             animator.SetTrigger(closeTrigger);
         }
 
-        Debug.Log("Valve: Close triggered");
+        //Debug.Log("Valve: Close triggered");
         onClose.Invoke();
 
         idleCoroutine = StartCoroutine(ReturnToIdle());
@@ -85,7 +78,6 @@ public class Valve : MonoBehaviour
 
     private IEnumerator ReturnToIdle()
     {
-        // Wait for the animation to finish (or a little longer for safety)
         yield return new WaitForSeconds(animationDuration + 0.1f);
         if (animator != null)
             animator.SetBool(idleBool, true);

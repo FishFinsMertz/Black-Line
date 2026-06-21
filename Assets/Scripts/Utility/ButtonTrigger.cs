@@ -4,7 +4,14 @@ using System.Collections;
 
 public class ButtonTrigger : MonoBehaviour
 {
+    public enum TriggerMode
+    {
+        Press,  // Trigger once when key is pressed down (default)
+        Hold    // Trigger repeatedly while key is held (respects cooldown)
+    }
+
     [Header("Interaction Settings")]
+    [SerializeField] private TriggerMode mode = TriggerMode.Press;
     [SerializeField] private string interactionKey = "e";
     [SerializeField] private float cooldown = 0.5f;
     [SerializeField] private bool oneShot = false;
@@ -31,7 +38,18 @@ public class ButtonTrigger : MonoBehaviour
         if (!playerInRange) return;
         if (isCooldown) return;
 
-        if (Input.GetKeyDown(interactionKey))
+        bool shouldTrigger = false;
+
+        if (mode == TriggerMode.Press)
+        {
+            shouldTrigger = Input.GetKeyDown(interactionKey);
+        }
+        else // Hold
+        {
+            shouldTrigger = Input.GetKey(interactionKey);
+        }
+
+        if (shouldTrigger)
         {
             Interact();
         }
