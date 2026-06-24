@@ -2,9 +2,13 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.Rendering.Universal;
+using System.Linq;
 
-public class SprayPipe : MonoBehaviour
+public class SprayPipe : MonoBehaviour, ISaveable
 {
+    [Header("Save ID (unique per component)")]
+    [SerializeField] private string saveID;
+
     [Header("Spray Settings")]
     [SerializeField] private float activeEmissionRate = 50f;
     [SerializeField] private float inactiveEmissionRate = 0f;
@@ -28,19 +32,26 @@ public class SprayPipe : MonoBehaviour
     private float currentLightIntensity;
     private float currentFresnelRadius;
 
-    private void Start()
+    private void Awake()
     {
-        isActive = startActive;
         if (sprayParticle != null)
             emissionModule = sprayParticle.emission;
-        else
-            Debug.LogWarning("SprayPipe: sprayParticle not assigned!", this);
+    }
 
+    private void Start()
+    {
+        SaveManager.Instance?.Register(this);
+        isActive = startActive;
         currentEmissionRate = isActive ? activeEmissionRate : inactiveEmissionRate;
         currentLightIntensity = isActive ? activeLightIntensity : inactiveLightIntensity;
         currentFresnelRadius = isActive ? activeFresnelRadius : inactiveFresnelRadius;
 
         ApplyStateInstant(isActive);
+    }
+
+    private void OnDestroy()
+    {
+        SaveManager.Instance?.Unregister(this);
     }
 
     // Public API
@@ -96,7 +107,6 @@ public class SprayPipe : MonoBehaviour
             yield return null;
         }
 
-        // Snap to final values
         currentEmissionRate = targetEmission;
         currentLightIntensity = targetLight;
         currentFresnelRadius = targetRadius;
@@ -130,4 +140,23 @@ public class SprayPipe : MonoBehaviour
     }
 
     public bool IsActive() => isActive;
+
+    // --- ISaveable ---
+    public void Save(GameData data)
+    {
+        data.componentStates.RemoveAll(c => c.id == saveID);
+        data.componentStates.Add(new ComponentState { id = saveID, state = isActive ? "Active" : "Inactive" });
+    }
+
+    public void Load(GameData data)
+    {
+        if (string.IsNullOrEmpty(saveID)) return;
+        ComponentState cs = data.componentStates.FirstOrDefault(c => c.id == saveID);
+        if (cs != null)
+        {
+            isActive = cs.state == "Active";
+            // Apply the loaded state instantly (no transition)
+            ApplyStateInstant(isActive);
+        }
+    }
 }

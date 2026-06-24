@@ -1,8 +1,12 @@
 using UnityEngine;
 using System.Collections;
+using System.Linq;
 
-public class Valve : MonoBehaviour
+public class Valve : MonoBehaviour, ISaveable
 {
+    [Header("Save ID (unique per component)")]
+    [SerializeField] private string saveID; // e.g., "valve_room1"
+
     [Header("Visual State")]
     [SerializeField] private Animator animator;
     [SerializeField] private string openTrigger = "Open";
@@ -22,12 +26,19 @@ public class Valve : MonoBehaviour
 
     private void Start()
     {
+        SaveManager.Instance?.Register(this);
         isOpen = startOpen;
         ApplyStateInstant(isOpen);
         if (animator != null)
             animator.SetBool(idleBool, true);
     }
 
+    private void OnDestroy()
+    {
+        SaveManager.Instance?.Unregister(this);
+    }
+
+    // Public API
     public void Toggle()
     {
         if (isOpen)
@@ -50,9 +61,7 @@ public class Valve : MonoBehaviour
             animator.SetTrigger(openTrigger);
         }
 
-        //Debug.Log("Valve: Open triggered");
         onOpen.Invoke();
-
         idleCoroutine = StartCoroutine(ReturnToIdle());
     }
 
@@ -70,9 +79,7 @@ public class Valve : MonoBehaviour
             animator.SetTrigger(closeTrigger);
         }
 
-        //Debug.Log("Valve: Close triggered");
         onClose.Invoke();
-
         idleCoroutine = StartCoroutine(ReturnToIdle());
     }
 
@@ -87,14 +94,31 @@ public class Valve : MonoBehaviour
     private void ApplyStateInstant(bool open)
     {
         if (animator != null)
-        {
-            // Ensure the idle state is correct
             animator.SetBool(idleBool, true);
-            // If you have distinct states like "Open" and "Closed", you could force them here:
-            // if (open) animator.Play("Open", 0, 0f);
-            // else animator.Play("Closed", 0, 0f);
-        }
+        // If you have distinct "Open" and "Closed" states, you could force them:
+        // animator.Play(open ? "Open" : "Closed", 0, 0f);
     }
 
     public bool IsOpen() => isOpen;
+
+    // --- ISaveable ---
+    public void Save(GameData data)
+    {
+        data.componentStates.RemoveAll(c => c.id == saveID);
+        data.componentStates.Add(new ComponentState { id = saveID, state = isOpen ? "Open" : "Closed" });
+    }
+
+    public void Load(GameData data)
+    {
+        ComponentState cs = data.componentStates.FirstOrDefault(c => c.id == saveID);
+        if (cs != null)
+        {
+            isOpen = cs.state == "Open";
+            // Optional: update visual to match loaded state without animation
+            if (animator != null)
+                animator.SetBool(idleBool, true);
+            // If you need to force a specific frame, you can call animator.Play()
+            // animator.Play(isOpen ? "Open" : "Closed", 0, 0f);
+        }
+    }
 }

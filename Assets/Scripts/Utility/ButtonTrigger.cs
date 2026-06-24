@@ -1,13 +1,17 @@
 using UnityEngine;
 using UnityEngine.Events;
 using System.Collections;
+using System.Linq;
 
-public class ButtonTrigger : MonoBehaviour
+public class ButtonTrigger : MonoBehaviour, ISaveable
 {
+    [Header("Save ID (unique per component)")]
+    [SerializeField] private string saveID; // e.g., "button_room1"
+
     public enum TriggerMode
     {
-        Press,  // Trigger once when key is pressed down (default)
-        Hold    // Trigger repeatedly while key is held (respects cooldown)
+        Press,  // Trigger once on key down
+        Hold    // Trigger continuously while key is held (respects cooldown)
     }
 
     [Header("Interaction Settings")]
@@ -28,8 +32,14 @@ public class ButtonTrigger : MonoBehaviour
 
     private void Start()
     {
+        SaveManager.Instance?.Register(this);
         if (outline != null)
             outline.enabled = false;
+    }
+
+    private void OnDestroy()
+    {
+        SaveManager.Instance?.Unregister(this);
     }
 
     private void Update()
@@ -39,20 +49,13 @@ public class ButtonTrigger : MonoBehaviour
         if (isCooldown) return;
 
         bool shouldTrigger = false;
-
         if (mode == TriggerMode.Press)
-        {
             shouldTrigger = Input.GetKeyDown(interactionKey);
-        }
-        else // Hold
-        {
+        else
             shouldTrigger = Input.GetKey(interactionKey);
-        }
 
         if (shouldTrigger)
-        {
             Interact();
-        }
     }
 
     private void Interact()
@@ -95,7 +98,7 @@ public class ButtonTrigger : MonoBehaviour
             outline.enabled = false;
     }
 
-    // Public method to reset (for respawning)
+    // Public reset method (for respawning)
     public void ResetTrigger()
     {
         hasBeenUsed = false;
@@ -103,5 +106,29 @@ public class ButtonTrigger : MonoBehaviour
         playerInRange = false;
         if (outline != null)
             outline.enabled = false;
+    }
+
+    // --- ISaveable ---
+    public void Save(GameData data)
+    {
+        // Only save if oneShot is true (only one-shot buttons need to remember they've been used)
+        if (!oneShot) return;
+
+        data.componentStates.RemoveAll(c => c.id == saveID);
+        data.componentStates.Add(new ComponentState { id = saveID, state = hasBeenUsed ? "Used" : "Unused" });
+    }
+
+    public void Load(GameData data)
+    {
+        // Only load if oneShot is true
+        if (!oneShot) return;
+
+        ComponentState cs = data.componentStates.FirstOrDefault(c => c.id == saveID);
+        if (cs != null)
+        {
+            hasBeenUsed = cs.state == "Used";
+            if (hasBeenUsed && outline != null)
+                outline.enabled = false;
+        }
     }
 }

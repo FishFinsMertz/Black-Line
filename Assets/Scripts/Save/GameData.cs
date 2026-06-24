@@ -2,15 +2,28 @@ using System;
 using System.Collections.Generic;
 
 [Serializable]
+public class ComponentState
+{
+    public string id;      // unique identifier for the component (set in Inspector)
+    public string state;   // flexible string – e.g., "Open", "Closed", "Active", "Inactive", "Used", "90"
+}
+
+[Serializable]
 public class GameData
 {
-    // Inventory data
+    // Player data
     public List<string> ownedItems = new List<string>();
     public string currentEquipment;
     public float playerBaseTemperature = 70f;
-    public List<string> deadEnemyIDs = new List<string>();
     public float playerBatteryAmt = 100f;
 
+    // Enemies
+    public List<string> deadEnemyIDs = new List<string>();
+
+    // Environmental states
+    public List<ComponentState> componentStates = new List<ComponentState>();
+
+    // Future expansions (uncomment as needed)
     // public string currentScene;
     // public Vector3 playerPosition;
     // public List<string> unlockedDoors;
