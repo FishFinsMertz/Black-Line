@@ -39,7 +39,6 @@ public class PartsExploder : MonoBehaviour
     {
         if (isExploding) return;
 
-        // If no delay, explode immediately
         if (delayMin <= 0f && delayMax <= 0f)
         {
             PerformExplosion();
@@ -97,6 +96,13 @@ public class PartsExploder : MonoBehaviour
             }
         }
 
+        gameObject.SetActive(false);
+        isExploding = false;
+    }
+
+    // Public API - Example vents call this to hide it after a vent explodes
+    public void HideWithoutExplosion()
+    {
         gameObject.SetActive(false);
         isExploding = false;
     }

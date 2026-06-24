@@ -45,6 +45,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemiesToSpawn: []
-  spawnDelayMin: 0.2
-  spawnDelayMax: 0.8
-  initialDelay: 0.5
+  spawnDelayMin: 0.5
+  spawnDelayMax: 1
+  initialDelay: 2

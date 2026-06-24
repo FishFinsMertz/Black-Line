@@ -112,7 +112,7 @@ public class ButtonTrigger : MonoBehaviour, ISaveable
     public void Save(GameData data)
     {
         // Only save if oneShot is true (only one-shot buttons need to remember they've been used)
-        if (!oneShot) return;
+        if (!oneShot || string.IsNullOrEmpty(saveID)) return;
 
         data.componentStates.RemoveAll(c => c.id == saveID);
         data.componentStates.Add(new ComponentState { id = saveID, state = hasBeenUsed ? "Used" : "Unused" });
@@ -121,7 +121,7 @@ public class ButtonTrigger : MonoBehaviour, ISaveable
     public void Load(GameData data)
     {
         // Only load if oneShot is true
-        if (!oneShot) return;
+        if (!oneShot || string.IsNullOrEmpty(saveID)) return;
 
         ComponentState cs = data.componentStates.FirstOrDefault(c => c.id == saveID);
         if (cs != null)

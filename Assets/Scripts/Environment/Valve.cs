@@ -95,8 +95,6 @@ public class Valve : MonoBehaviour, ISaveable
     {
         if (animator != null)
             animator.SetBool(idleBool, true);
-        // If you have distinct "Open" and "Closed" states, you could force them:
-        // animator.Play(open ? "Open" : "Closed", 0, 0f);
     }
 
     public bool IsOpen() => isOpen;
@@ -104,21 +102,20 @@ public class Valve : MonoBehaviour, ISaveable
     // --- ISaveable ---
     public void Save(GameData data)
     {
+        if (string.IsNullOrEmpty(saveID)) return;
         data.componentStates.RemoveAll(c => c.id == saveID);
         data.componentStates.Add(new ComponentState { id = saveID, state = isOpen ? "Open" : "Closed" });
     }
 
     public void Load(GameData data)
     {
+        if (string.IsNullOrEmpty(saveID)) return;
         ComponentState cs = data.componentStates.FirstOrDefault(c => c.id == saveID);
         if (cs != null)
         {
             isOpen = cs.state == "Open";
-            // Optional: update visual to match loaded state without animation
             if (animator != null)
                 animator.SetBool(idleBool, true);
-            // If you need to force a specific frame, you can call animator.Play()
-            // animator.Play(isOpen ? "Open" : "Closed", 0, 0f);
         }
     }
 }
