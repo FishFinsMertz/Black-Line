@@ -4860,19 +4860,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce01f679206ab8a45ad3c4bfff571e08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damagePerHit: 50
-  hitCooldown: 0.5
-  affectPlayer: 1
+  enemyTempChange: 10
   playerTempChange: 15
+  hitCooldown: 0.5
   shakeOnPlayerHit: 1
   shakeIntensity: 0.2
   shakeDuration: 0.2
   shakeSmoothness: 0.5
-  enemyLayer:
+  affectedLayerMask:
     serializedVersion: 2
-    m_Bits: 256
-  playerLayer:
-    serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 328
   detectionRadius: 0.1
   maxParticles: 1000

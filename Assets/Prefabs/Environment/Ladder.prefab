@@ -105,6 +105,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb1aa90789ad0c8458c157f7170616fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  saveID: 
   mode: 1
   interactionKey: w
   cooldown: 0.1
@@ -136,7 +137,7 @@ GameObject:
   - component: {fileID: 6851794003695412832}
   - component: {fileID: 314978941135899190}
   - component: {fileID: 8568744377432058503}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: LadderPlatform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -355,6 +356,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb1aa90789ad0c8458c157f7170616fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  saveID: 
   mode: 1
   interactionKey: s
   cooldown: 0.1

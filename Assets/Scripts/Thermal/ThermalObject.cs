@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(SpriteRenderer))]
-public class ThermalObject : BaseThermalComponent
+public class ThermalObject : BaseThermalComponent, ITemperatureChangeable
 // Thermal objects for individual sprites
 {
     [Header("Thermal Vision Parameters")]

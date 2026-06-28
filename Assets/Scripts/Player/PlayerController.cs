@@ -93,7 +93,7 @@ public class PlayerController : MonoBehaviour
 
     public void TakeDamage(float tempChange)
     {
-        thermalRegulator.ChangeGlobalBaseTemperature(tempChange);
+        thermalRegulator.ChangeBaseTemperature(tempChange);
         camController.TriggerShake(0.5f, 0.5f, 1f);
         if (dmgVolume != null)
         {

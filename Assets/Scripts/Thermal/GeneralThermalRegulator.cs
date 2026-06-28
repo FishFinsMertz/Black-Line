@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class GeneralThermalRegulator : MonoBehaviour, ISaveable
+public class GeneralThermalRegulator : MonoBehaviour, ISaveable, ITemperatureChangeable
 {
     [Header("Thermal Settings")]
     [SerializeField, Range(0f, 100f)] private float baseTemperature = 70f; 
@@ -74,7 +74,7 @@ public class GeneralThermalRegulator : MonoBehaviour, ISaveable
             battery = 100f;
     }
 
-    public void ChangeGlobalBaseTemperature(float delta) // Takes from battery first
+    public void ChangeBaseTemperature(float delta) // Takes from battery first
     {
         if (delta == 0) return;
 
@@ -100,7 +100,7 @@ public class GeneralThermalRegulator : MonoBehaviour, ISaveable
 
     private void ApplyToAllThermalObjects()
     {
-        var allThermals = GetComponentsInChildren<IHasThermal>();
+        var allThermals = GetComponentsInChildren<ITemperatureChangeable>();
         foreach (var thermal in allThermals)
         {
             if (thermal is ThermalObject to)

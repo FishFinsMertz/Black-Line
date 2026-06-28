@@ -1,11 +1,12 @@
 using UnityEngine;
 
-public class LadderGapPlatform : MonoBehaviour
+public class LadderGapPlatform : MonoBehaviour, IInteractible
 {
     private Collider2D platformCollider;
     private string playerTag = "Player";
+    private bool isInteractionEnabled = true;
 
-    private void Start()
+    private void Awake()
     {
         if (platformCollider == null)
             platformCollider = GetComponent<Collider2D>();
@@ -13,6 +14,8 @@ public class LadderGapPlatform : MonoBehaviour
 
     private void Update()
     {
+        if (!isInteractionEnabled) return;
+
         GameObject player = GameObject.FindGameObjectWithTag(playerTag);
         if (player == null) return;
 
@@ -21,5 +24,20 @@ public class LadderGapPlatform : MonoBehaviour
 
         bool isClimbing = pc.GetCurrentState() is PlayerClimbingState;
         platformCollider.enabled = !isClimbing;
+    }
+
+    // --- IInteractible implementation ---
+    public void EnableInteraction()
+    {
+        isInteractionEnabled = true;
+        if (platformCollider != null)
+            platformCollider.enabled = false;
+    }
+
+    public void DisableInteraction()
+    {
+        isInteractionEnabled = false;
+        if (platformCollider != null)
+            platformCollider.enabled = true;
     }
 }

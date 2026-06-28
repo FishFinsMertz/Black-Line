@@ -1,5 +1,5 @@
 using UnityEngine;
-public abstract class BaseThermalComponent : MonoBehaviour, IHasThermal
+public abstract class BaseThermalComponent : MonoBehaviour
 {
     protected static readonly int TemperatureProperty = Shader.PropertyToID("_Temperature");
 
