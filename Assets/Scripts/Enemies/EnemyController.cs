@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public abstract class EnemyController : MonoBehaviour
+public abstract class EnemyController : MonoBehaviour, ICanFreeze
 {
     [Header("Identification")]
     [SerializeField] protected string uniqueID;
@@ -35,10 +35,11 @@ public abstract class EnemyController : MonoBehaviour
     [HideInInspector] public SmokeController smokeController;
 
     private GeneralThermalRegulator playerThermal;
-    private bool isFrozen = false;
     private bool isSmoking = false;
     private float initialTemperature;
     private Coroutine criticalStateTimer;
+
+    public bool IsFrozen { get; private set; }
 
     protected virtual void Awake()
     {
@@ -64,7 +65,7 @@ public abstract class EnemyController : MonoBehaviour
     protected virtual void Update()
     {
         // Natural temperature drift towards initial temperature (only if not in critical state)
-        if (!isFrozen && !isSmoking && thermalObject != null)
+        if (!IsFrozen && !isSmoking && thermalObject != null)
         {
             float current = thermalObject.GetTemperature();
             float target = initialTemperature;
@@ -126,7 +127,7 @@ public abstract class EnemyController : MonoBehaviour
         
         thermalObject.ChangeBaseTemperature(damage * damageTakenMultiplier);
 
-        if (isFrozen && damage > 0f)
+        if (IsFrozen && damage > 0f)
         {
             Die();
             return;
@@ -144,11 +145,26 @@ public abstract class EnemyController : MonoBehaviour
             OnSmokingStarted();
             StartCriticalStateTimer(false);
         }
-        if (finalTemp <= 0f && !isFrozen)
+        if (finalTemp <= 0f && !IsFrozen)
         {
-            isFrozen = true;
-            StartCriticalStateTimer(true);
+            Freeze();
         }
+    }
+
+    public void Freeze()
+    {
+        if (IsFrozen) return;
+
+        IsFrozen = true;
+        StartCriticalStateTimer(true);
+    }
+
+    public void Unfreeze()
+    {
+        if (!IsFrozen) return;
+
+        IsFrozen = false;
+        criticalStateTimer = null;
     }
 
     private void StartCriticalStateTimer(bool isFrozenState)
@@ -165,7 +181,7 @@ public abstract class EnemyController : MonoBehaviour
 
         if (isFrozenState)
         {
-            isFrozen = false;
+            Unfreeze();
         }
         else
         {
@@ -201,5 +217,4 @@ public abstract class EnemyController : MonoBehaviour
         Gizmos.DrawLine(transform.position, player.transform.position);
     }
 
-    public bool IsFrozen() => isFrozen;
 }

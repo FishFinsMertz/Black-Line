@@ -105,6 +105,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb1aa90789ad0c8458c157f7170616fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  saveID: 
   mode: 1
   interactionKey: w
   cooldown: 0.1
@@ -135,7 +136,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6851794003695412832}
   - component: {fileID: 314978941135899190}
-  - component: {fileID: 8568744377432058503}
+  - component: {fileID: 3724550066587000077}
   m_Layer: 0
   m_Name: LadderPlatform
   m_TagString: Untagged
@@ -204,7 +205,7 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.0074573, y: 0.11555767}
   m_EdgeRadius: 0
---- !u!114 &8568744377432058503
+--- !u!114 &3724550066587000077
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -213,7 +214,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3186035888170880558}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2859b89c0c1dcff429c8eff612b08728, type: 3}
+  m_Script: {fileID: 11500000, guid: f89988e60ac8fa04fb8b245a75c36689, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &5459132686496573612
@@ -355,6 +356,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb1aa90789ad0c8458c157f7170616fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  saveID: 
   mode: 1
   interactionKey: s
   cooldown: 0.1
