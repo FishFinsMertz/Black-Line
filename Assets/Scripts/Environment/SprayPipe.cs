@@ -55,7 +55,6 @@ public class SprayPipe : MonoBehaviour, ISaveable
         SaveManager.Instance?.Unregister(this);
     }
 
-    // Public API
     public void Activate()
     {
         if (isActive) return;
@@ -102,12 +101,10 @@ public class SprayPipe : MonoBehaviour, ISaveable
             if (sprayLight != null)
                 sprayLight.intensity = lerpedLight;
 
-            // Apply radius to tilemaps
             foreach (var tm in tilemapThermals)
                 if (tm != null)
                     tm.SetFresnelRadius(lerpedRadius);
 
-            // Apply radius to thermal objects
             foreach (var tobj in thermalObjects)
                 if (tobj != null)
                     tobj.SetFresnelRadius(lerpedRadius);
@@ -158,6 +155,8 @@ public class SprayPipe : MonoBehaviour, ISaveable
     // --- ISaveable ---
     public void Save(GameData data)
     {
+        if (string.IsNullOrEmpty(saveID)) return;
+
         data.componentStates.RemoveAll(c => c.id == saveID);
         data.componentStates.Add(new ComponentState { id = saveID, state = isActive ? "Active" : "Inactive" });
     }
