@@ -27,7 +27,7 @@ public class ScoutHoverState : EnemyState
 
     public override void Update()
     {
-        if (scout.IsFrozen)
+        if (scout.IsFrozen())
         {
             scout.ChangeState(new ScoutFreezeState(scout));
         }
