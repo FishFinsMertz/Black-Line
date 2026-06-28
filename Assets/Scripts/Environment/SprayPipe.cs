@@ -22,6 +22,7 @@ public class SprayPipe : MonoBehaviour, ISaveable
     [SerializeField] private ParticleSystem sprayParticle;
     [SerializeField] private Light2D sprayLight;
     [SerializeField] private List<TileMapThermal> tilemapThermals;
+    [SerializeField] private List<ThermalObject> thermalObjects;
 
     [Header("State")]
     [SerializeField] private bool startActive = false;
@@ -100,9 +101,16 @@ public class SprayPipe : MonoBehaviour, ISaveable
                 emissionModule.rateOverTime = lerpedEmission;
             if (sprayLight != null)
                 sprayLight.intensity = lerpedLight;
+
+            // Apply radius to tilemaps
             foreach (var tm in tilemapThermals)
                 if (tm != null)
                     tm.SetFresnelRadius(lerpedRadius);
+
+            // Apply radius to thermal objects
+            foreach (var tobj in thermalObjects)
+                if (tobj != null)
+                    tobj.SetFresnelRadius(lerpedRadius);
 
             yield return null;
         }
@@ -118,6 +126,9 @@ public class SprayPipe : MonoBehaviour, ISaveable
         foreach (var tm in tilemapThermals)
             if (tm != null)
                 tm.SetFresnelRadius(targetRadius);
+        foreach (var tobj in thermalObjects)
+            if (tobj != null)
+                tobj.SetFresnelRadius(targetRadius);
     }
 
     private void ApplyStateInstant(bool active)
@@ -137,6 +148,9 @@ public class SprayPipe : MonoBehaviour, ISaveable
         foreach (var tm in tilemapThermals)
             if (tm != null)
                 tm.SetFresnelRadius(targetRadius);
+        foreach (var tobj in thermalObjects)
+            if (tobj != null)
+                tobj.SetFresnelRadius(targetRadius);
     }
 
     public bool IsActive() => isActive;
@@ -155,7 +169,6 @@ public class SprayPipe : MonoBehaviour, ISaveable
         if (cs != null)
         {
             isActive = cs.state == "Active";
-            // Apply the loaded state instantly (no transition)
             ApplyStateInstant(isActive);
         }
     }

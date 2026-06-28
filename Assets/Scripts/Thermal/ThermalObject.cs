@@ -10,7 +10,7 @@ public class ThermalObject : BaseThermalComponent
     [SerializeField, Range(0f, 1f)] private float fresnelPower = 0.5f;
     [SerializeField, Range(0f, 1f)] private float brightnessInfluence = 0.08f;
     [SerializeField] private Vector2 fresnelCenter = new Vector2(0.5f, 0.5f);
-    [SerializeField, Range(0.1f, 5f)] private float fresnelRadius = 1f;
+    [SerializeField, Range(0f, 5f)] private float fresnelRadius = 1f;
     [SerializeField, Range(0.5f, 20f)] private float temperatureLerpSpeed = 5f; 
 
     [Header("Temperature Pulse (Beating Heart)")]
@@ -99,8 +99,8 @@ public class ThermalObject : BaseThermalComponent
     public void SetTemperatureLerpSpeed(float speed) => temperatureLerpSpeed = Mathf.Max(0.1f, speed);
     public void SetFresnelPower(float newPower) => fresnelPower = Mathf.Clamp01(newPower);
     public void SetBrightnessInfluence(float newInfluence) => brightnessInfluence = Mathf.Clamp01(newInfluence);
-    public void SetFresnelCenter(Vector2 center) => fresnelCenter = center; // NEW
-    public void SetFresnelRadius(float radius) => fresnelRadius = Mathf.Clamp(radius, 0.1f, 5f); // NEW
+    public void SetFresnelCenter(Vector2 center) => fresnelCenter = center;
+    public void SetFresnelRadius(float radius) => fresnelRadius = Mathf.Clamp(radius, 0f, 5f);
 
     public void SetPulse(bool enabled, float speed = 1f, float amplitude = 20f)
     {

@@ -9,6 +9,8 @@ public class TileMapThermal : BaseThermalComponent
 
     [Header("Thermal Settings")]
     [SerializeField, Range(0f, 100f)] private float temperature = 0f;
+    private float currentTemperature;
+    [SerializeField, Range(0.5f, 50f)] private float temperatureLerpSpeed = 5f;
     [SerializeField, Range(0f, 1f)] private float fresnelPower = 0.5f;
     [SerializeField, Range(0f, 1f)] private float brightnessInfluence = 0.08f;
     [SerializeField] private Vector2 fresnelCenter = new Vector2(0.5f, 0.5f);
@@ -35,6 +37,13 @@ public class TileMapThermal : BaseThermalComponent
         instanceMaterial = new Material(thermalMaterial);
         DisableThermalKeyword(instanceMaterial);
         tilemapRenderer.material = instanceMaterial;
+        currentTemperature = temperature;
+    }
+
+    private void Update()
+    {
+        currentTemperature = Mathf.MoveTowards(currentTemperature, temperature, temperatureLerpSpeed * Time.deltaTime);
+        ApplyParameters();
     }
 
     private void OnEnable()
@@ -61,19 +70,29 @@ public class TileMapThermal : BaseThermalComponent
     private void ApplyParameters()
     {
         if (instanceMaterial == null) return;
-        instanceMaterial.SetFloat(TemperatureProperty, temperature);
+        instanceMaterial.SetFloat(TemperatureProperty, currentTemperature);
         instanceMaterial.SetFloat(FresnelPowerProperty, fresnelPower);
         instanceMaterial.SetFloat(BrightnessInfluenceProperty, brightnessInfluence);
         instanceMaterial.SetVector(FresnelCenterProperty, fresnelCenter);
         instanceMaterial.SetFloat(FresnelRadiusProperty, fresnelRadius);
     }
 
+#if UNITY_EDITOR
+    private void OnValidate()
+    {
+        if (Application.isPlaying && isThermalOn && instanceMaterial != null)
+        {
+            ApplyParameters();
+        }
+    }
+#endif
+
     public void SetTemperature(float newTemp)
     {
         temperature = Mathf.Clamp(newTemp, 0f, 100f);
-        if (isThermalOn && instanceMaterial != null)
-            instanceMaterial.SetFloat(TemperatureProperty, temperature);
     }
+
+    public float GetCurrentTemperature() => currentTemperature;
 
     public void SetFresnelPower(float power)
     {
