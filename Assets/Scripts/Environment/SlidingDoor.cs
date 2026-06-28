@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class SlidingDoor : MonoBehaviour
+public class SlidingDoor : MonoBehaviour, IInteractible
 {
     [Header("References")]
     [SerializeField] private BoxCollider2D doorCollider;
@@ -10,6 +10,7 @@ public class SlidingDoor : MonoBehaviour
     private Collider2D detectionCollider;
     private bool isOpen = false;
     private Coroutine pendingCollisionCoroutine = null;
+    private bool interactionEnabled = true;
 
     private void Start()
     {
@@ -25,7 +26,7 @@ public class SlidingDoor : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player") && !isOpen)
+        if (other.CompareTag("Player") && !isOpen && interactionEnabled)
         {
             OpenDoor();
         }
@@ -33,7 +34,7 @@ public class SlidingDoor : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.CompareTag("Player") && isOpen)
+        if (other.CompareTag("Player") && isOpen && interactionEnabled)
         {
             CloseDoor();
         }
@@ -69,5 +70,15 @@ public class SlidingDoor : MonoBehaviour
         if (doorCollider != null)
             doorCollider.enabled = !isOpen;
         pendingCollisionCoroutine = null;
+    }
+
+    public void EnableInteraction()
+    {
+        interactionEnabled = true;
+    }
+
+    public void DisableInteraction()
+    {
+        interactionEnabled = false;
     }
 }
