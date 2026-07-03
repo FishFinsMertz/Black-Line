@@ -6,12 +6,12 @@ using System.Linq;
 public class ButtonTrigger : MonoBehaviour, ISaveable
 {
     [Header("Save ID (unique per component)")]
-    [SerializeField] private string saveID; // e.g., "button_room1"
+    [SerializeField] private string saveID;
 
     public enum TriggerMode
     {
-        Press,  // Trigger once on key down
-        Hold    // Trigger continuously while key is held (respects cooldown)
+        Press,
+        Hold
     }
 
     [Header("Interaction Settings")]
@@ -21,7 +21,7 @@ public class ButtonTrigger : MonoBehaviour, ISaveable
     [SerializeField] private bool oneShot = false;
 
     [Header("Visual Feedback")]
-    [SerializeField] private SpriteRenderer outline; // optional
+    [SerializeField] private SpriteRenderer outline;
 
     [Header("Events")]
     public UnityEvent onInteract;
@@ -98,7 +98,6 @@ public class ButtonTrigger : MonoBehaviour, ISaveable
             outline.enabled = false;
     }
 
-    // Public reset method (for respawning)
     public void ResetTrigger()
     {
         hasBeenUsed = false;
@@ -111,7 +110,6 @@ public class ButtonTrigger : MonoBehaviour, ISaveable
     // --- ISaveable ---
     public void Save(GameData data)
     {
-        // Only save if oneShot is true (only one-shot buttons need to remember they've been used)
         if (!oneShot || string.IsNullOrEmpty(saveID)) return;
 
         data.componentStates.RemoveAll(c => c.id == saveID);
@@ -120,7 +118,6 @@ public class ButtonTrigger : MonoBehaviour, ISaveable
 
     public void Load(GameData data)
     {
-        // Only load if oneShot is true
         if (!oneShot || string.IsNullOrEmpty(saveID)) return;
 
         ComponentState cs = data.componentStates.FirstOrDefault(c => c.id == saveID);
