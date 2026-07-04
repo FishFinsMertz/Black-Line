@@ -23301,6 +23301,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5936878293319122962, guid: e28673c6ddbd0664e9b156194e7a4af3, type: 3}
+      propertyPath: saveID
+      value: LQ-Button6
+      objectReference: {fileID: 0}
     - target: {fileID: 6591264070064536059, guid: e28673c6ddbd0664e9b156194e7a4af3, type: 3}
       propertyPath: m_Size.x
       value: 0.739316
@@ -26347,6 +26351,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5936878293319122962, guid: e28673c6ddbd0664e9b156194e7a4af3, type: 3}
+      propertyPath: saveID
+      value: LQ-Button5
+      objectReference: {fileID: 0}
     - target: {fileID: 6591264070064536059, guid: e28673c6ddbd0664e9b156194e7a4af3, type: 3}
       propertyPath: m_Size.x
       value: 0.7286825
@@ -26365,6 +26373,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3147277212491004887, guid: e28673c6ddbd0664e9b156194e7a4af3, type: 3}
   m_PrefabInstance: {fileID: 939730921}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1035161596 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2392302061453287540, guid: 80af7299234322f49964810c2e0f6533, type: 3}
+  m_PrefabInstance: {fileID: 2331397960422117632}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3834701d395f3fb4f9415b7789ba40b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &1050352736 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6597653024086034807, guid: 0890ca8cd3bdf304d9633b09a4e17b02, type: 3}
@@ -39912,6 +39931,10 @@ PrefabInstance:
       value: LQ-LadderFreeze1
       objectReference: {fileID: 0}
     - target: {fileID: 8260891610387749536, guid: 80af7299234322f49964810c2e0f6533, type: 3}
+      propertyPath: thermalObject
+      value: 
+      objectReference: {fileID: 1035161596}
+    - target: {fileID: 8260891610387749536, guid: 80af7299234322f49964810c2e0f6533, type: 3}
       propertyPath: interactibleBehaviour
       value: 
       objectReference: {fileID: 917242009}
@@ -40314,6 +40337,10 @@ PrefabInstance:
     - target: {fileID: 2594121462843330442, guid: b197d2daabda0f4498a92eadc53e9043, type: 3}
       propertyPath: m_Name
       value: Gate
+      objectReference: {fileID: 0}
+    - target: {fileID: 7977659326147608686, guid: b197d2daabda0f4498a92eadc53e9043, type: 3}
+      propertyPath: saveID
+      value: LQ-Gate1
       objectReference: {fileID: 0}
     - target: {fileID: 7977659326147608686, guid: b197d2daabda0f4498a92eadc53e9043, type: 3}
       propertyPath: closeDuration

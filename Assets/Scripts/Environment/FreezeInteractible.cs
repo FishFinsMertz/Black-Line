@@ -28,18 +28,14 @@ public class FreezeInteractible : MonoBehaviour, ITemperatureChangeable, ISaveab
 
     private void Start()
     {
-        // Register with save system
-        if (!string.IsNullOrEmpty(saveID))
-            SaveManager.Instance?.Register(this);
-
-        // Validate references
+        // Validate references FIRST
         if (thermalObject == null)
             thermalObject = GetComponent<ThermalObject>();
 
         if (interactibleBehaviour != null)
             interactible = interactibleBehaviour as IInteractible;
 
-        // Apply initial state
+        // Apply initial state (sets up interactible, animator, etc.)
         if (startFrozen)
         {
             isFrozen = true;
@@ -52,6 +48,9 @@ public class FreezeInteractible : MonoBehaviour, ITemperatureChangeable, ISaveab
             ApplyUnfreezeState();
             thermalObject.SetBaseTemperature(highTempBound);
         }
+
+        if (!string.IsNullOrEmpty(saveID))
+            SaveManager.Instance?.Register(this);
     }
 
     private void OnDestroy()
@@ -89,7 +88,8 @@ public class FreezeInteractible : MonoBehaviour, ITemperatureChangeable, ISaveab
 
     private void ApplyFreezeState()
     {
-        interactible.DisableInteraction();
+        if (interactible != null)
+            interactible.DisableInteraction();
         if (animator != null)
         {
             animator.SetBool(frozenBool, true);
@@ -99,7 +99,8 @@ public class FreezeInteractible : MonoBehaviour, ITemperatureChangeable, ISaveab
 
     private void ApplyUnfreezeState()
     {
-        interactible.EnableInteraction();
+        if (interactible != null)
+            interactible.EnableInteraction();
         if (animator != null)
         {
             animator.SetBool(frozenBool, false);
