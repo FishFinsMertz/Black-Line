@@ -1127,6 +1127,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6404291444893335388, guid: a95b65bd5aef31449b9eb9c6db55935e, type: 3}
+      propertyPath: enemyTempChange
+      value: -3
+      objectReference: {fileID: 0}
     - target: {fileID: 6626327378587895089, guid: a95b65bd5aef31449b9eb9c6db55935e, type: 3}
       propertyPath: m_Name
       value: SprayVFX
