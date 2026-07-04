@@ -37,7 +37,6 @@ public class SaveManager : MonoBehaviour
         if (!saveableObjects.Contains(saveable))
             saveableObjects.Add(saveable);
 
-        // Auto‑apply cached save data to this new object
         if (hasLoadedSave && cachedSaveData != null)
             saveable.Load(cachedSaveData);
     }
@@ -80,7 +79,6 @@ public class SaveManager : MonoBehaviour
         string json = File.ReadAllText(SavePath);
         cachedSaveData = JsonUtility.FromJson<GameData>(json);
         hasLoadedSave = true;
-        //Debug.Log("Save file loaded into cache.");
     }
 
     public void ReloadAndApplyToAll()
@@ -91,4 +89,6 @@ public class SaveManager : MonoBehaviour
             saveable.Load(cachedSaveData);
         Debug.Log("Reloaded save data to all objects.");
     }
+
+    public GameData GetCurrentData() => cachedSaveData;
 }

@@ -176,10 +176,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3834701d395f3fb4f9415b7789ba40b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  temperature: 91.1
+  temperature: 95.2
   currentTemperature: 0
   fresnelPower: 0
-  brightnessInfluence: 0.916
+  brightnessInfluence: 1
   fresnelCenter: {x: 0.5, y: 0.5}
   fresnelRadius: 0
   temperatureLerpSpeed: 0.5

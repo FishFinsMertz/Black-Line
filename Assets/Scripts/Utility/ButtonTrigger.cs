@@ -65,8 +65,8 @@ public class ButtonTrigger : MonoBehaviour, ISaveable
         isCooldown = true;
         StartCoroutine(CooldownRoutine());
 
-        onInteract.Invoke();
         hasBeenUsed = true;
+        onInteract.Invoke();
 
         if (outline != null)
             outline.enabled = false;
@@ -76,8 +76,11 @@ public class ButtonTrigger : MonoBehaviour, ISaveable
     {
         yield return new WaitForSeconds(cooldown);
         isCooldown = false;
-        if (playerInRange && outline != null)
-            outline.enabled = true;
+        if (!oneShot || !hasBeenUsed)
+        {
+            if (playerInRange && outline != null)
+                outline.enabled = true;
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -102,16 +105,14 @@ public class ButtonTrigger : MonoBehaviour, ISaveable
     {
         hasBeenUsed = false;
         isCooldown = false;
-        playerInRange = false;
-        if (outline != null)
-            outline.enabled = false;
+        if (playerInRange && outline != null)
+            outline.enabled = true;
     }
 
     // --- ISaveable ---
     public void Save(GameData data)
     {
         if (!oneShot || string.IsNullOrEmpty(saveID)) return;
-
         data.componentStates.RemoveAll(c => c.id == saveID);
         data.componentStates.Add(new ComponentState { id = saveID, state = hasBeenUsed ? "Used" : "Unused" });
     }
@@ -119,7 +120,6 @@ public class ButtonTrigger : MonoBehaviour, ISaveable
     public void Load(GameData data)
     {
         if (!oneShot || string.IsNullOrEmpty(saveID)) return;
-
         ComponentState cs = data.componentStates.FirstOrDefault(c => c.id == saveID);
         if (cs != null)
         {

@@ -80,7 +80,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 2.02, y: 1}
+  m_Size: {x: 4, y: 1}
   m_EdgeRadius: 0
 --- !u!114 &6056989068090647621
 MonoBehaviour:
@@ -96,7 +96,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   doorCollider: {fileID: 9060175007156076761}
   animator: {fileID: 1196131749230552239}
-  doorCollisionDelay: 0.4
+  doorCollisionDelay: 0.3
 --- !u!212 &5792351415619710682
 SpriteRenderer:
   m_ObjectHideFlags: 0

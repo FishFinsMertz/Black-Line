@@ -17,6 +17,9 @@ public class GameData
     public float playerBaseTemperature = 70f;
     public float playerBatteryAmt = 100f;
 
+    // Collectibles
+    public List<string> collectedAccessItems = new List<string>();
+
     // Enemies
     public List<string> deadEnemyIDs = new List<string>();
 
