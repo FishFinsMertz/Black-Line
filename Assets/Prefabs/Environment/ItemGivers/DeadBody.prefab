@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1970192701711251485}
   - component: {fileID: 7628820477149372240}
   - component: {fileID: 2628028383186122081}
+  - component: {fileID: 9047625345712237448}
   m_Layer: 0
   m_Name: DeadBody
   m_TagString: Untagged
@@ -136,7 +137,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d9a6d52b46bb974692f5e10b84e0116, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemID: QASecurityCard
+  itemData: {fileID: 0}
 --- !u!61 &2628028383186122081
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -183,6 +184,30 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.21, y: 0.53}
   m_EdgeRadius: 0
+--- !u!114 &9047625345712237448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 301934625112996933}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3834701d395f3fb4f9415b7789ba40b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  temperature: 29.9
+  currentTemperature: 0
+  fresnelPower: 0.5
+  brightnessInfluence: 0.91
+  fresnelCenter: {x: 0.5, y: 0.5}
+  fresnelRadius: 0
+  temperatureLerpSpeed: 5
+  enablePulse: 0
+  pulseSpeed: 1
+  pulseAmplitude: 20
+  useRandomPhase: 1
+  infraredMaterial: {fileID: 2100000, guid: 484fb33827467fe44b5a4770d97fa0a0, type: 2}
 --- !u!1 &7936283943817070329
 GameObject:
   m_ObjectHideFlags: 0
