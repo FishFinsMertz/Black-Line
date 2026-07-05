@@ -8,7 +8,6 @@ public class AccessTerminal : MonoBehaviour
     [SerializeField] private UnityEvent onAccessDenied;
     private bool hasGranted = false;
 
-    // Called by ButtonTrigger.onInteract
     public void CheckAccess()
     {
         if (hasGranted) return;

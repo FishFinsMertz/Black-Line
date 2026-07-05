@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using System.Linq;
 
-public class TriggerEvent : MonoBehaviour, ISaveable
+public class TriggerEvent : MonoBehaviour, ISaveable, IInteractible
 {
     [Header("Save ID (optional, only needed if oneShot is true)")]
     [SerializeField] private string saveID;
@@ -10,6 +10,7 @@ public class TriggerEvent : MonoBehaviour, ISaveable
     [Header("Settings")]
     [SerializeField] private bool oneShot = true;
     [SerializeField] private string requiredTag = "Player";
+    [SerializeField] private bool interactible = true;
 
     [Header("Events")]
     public UnityEvent onTriggerEnter;
@@ -30,6 +31,7 @@ public class TriggerEvent : MonoBehaviour, ISaveable
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (!interactible) return;
         if (oneShot && hasTriggered) return;
         if (!other.CompareTag(requiredTag)) return;
 
@@ -52,5 +54,15 @@ public class TriggerEvent : MonoBehaviour, ISaveable
         ComponentState cs = data.componentStates.FirstOrDefault(c => c.id == saveID);
         if (cs != null)
             hasTriggered = cs.state == "Triggered";
+    }
+
+    public void EnableInteraction()
+    {
+        interactible = true;
+    }
+
+    public void DisableInteraction()
+    {
+        interactible = false;
     }
 }
