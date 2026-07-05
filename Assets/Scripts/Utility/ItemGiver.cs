@@ -2,27 +2,36 @@ using UnityEngine;
 
 public class ItemGiver : MonoBehaviour
 {
-    [SerializeField] private string itemID;
+    [SerializeField] private ItemData itemData;
 
-    // Public API – call this from a trigger, button, or event
     public void GiveAccessItem()
     {
-        if (string.IsNullOrEmpty(itemID))
+        if (itemData == null)
         {
-            Debug.LogWarning($"ItemGiver: {name} has no itemID assigned.");
+            Debug.LogWarning($"ItemGiver: {name} has no ItemData assigned.");
+            return;
+        }
+
+        if (string.IsNullOrEmpty(itemData.itemID))
+        {
+            Debug.LogWarning($"ItemGiver: {name} has empty itemID in ItemData.");
             return;
         }
 
         GameData data = SaveManager.Instance?.GetCurrentData();
+        if (data == null) return;
 
-        if (!data.collectedAccessItems.Contains(itemID))
+        if (!data.collectedAccessItems.Contains(itemData.itemID))
         {
-            data.collectedAccessItems.Add(itemID);
-            Debug.Log($"ItemGiver: '{itemID}' added to collectedAccessItems.");
+            data.collectedAccessItems.Add(itemData.itemID);
+            Debug.Log($"ItemGiver: '{itemData.itemID}' added to collectedAccessItems.");
+
+            if (NotificationManager.Instance != null)
+                NotificationManager.Instance.ShowItemNotification(itemData);
         }
         else
         {
-            Debug.Log($"ItemGiver: '{itemID}' already collected.");
+            Debug.Log($"ItemGiver: '{itemData.itemID}' already collected.");
         }
     }
 }

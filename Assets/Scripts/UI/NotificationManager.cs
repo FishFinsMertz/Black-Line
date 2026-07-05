@@ -1,16 +1,27 @@
 using UnityEngine;
 using TMPro;
 using System.Collections;
+using UnityEngine.UI;
 
 public class NotificationManager : MonoBehaviour
 {
     public static NotificationManager Instance { get; private set; }
 
+    [Header("Simple Text Notification")]
     [SerializeField] private TextMeshProUGUI bottomText;
     [SerializeField] private float fadeDuration = 0.3f;
+    [SerializeField] private float textNotificationDuration = 4f;
+
+    [Header("Item Notification")]
+    [SerializeField] private CanvasGroup itemNotificationGroup;
+    [SerializeField] private TextMeshProUGUI itemNameText;
+    [SerializeField] private Image itemIconImage;
+
+    [SerializeField] private float itemNotificationDuration = 4f;
 
     private CanvasGroup bottomCanvasGroup;
     private Coroutine bottomFadeCoroutine;
+    private Coroutine itemFadeCoroutine;
 
     private void Awake()
     {
@@ -35,9 +46,15 @@ public class NotificationManager : MonoBehaviour
             bottomCanvasGroup.alpha = 0f;
             bottomText.gameObject.SetActive(false);
         }
+
+        if (itemNotificationGroup != null)
+        {
+            itemNotificationGroup.alpha = 0f;
+            itemNotificationGroup.gameObject.SetActive(false);
+        }
     }
 
-    public void NotifyBottom(string msg, float duration)
+    public void NotifyBottom(string msg)
     {
         if (bottomText == null || bottomCanvasGroup == null) return;
 
@@ -48,15 +65,38 @@ public class NotificationManager : MonoBehaviour
         bottomText.gameObject.SetActive(true);
         bottomCanvasGroup.alpha = 0f;
 
-        bottomFadeCoroutine = StartCoroutine(FadeSequence(bottomText, bottomCanvasGroup, duration, () =>
+        bottomFadeCoroutine = StartCoroutine(FadeSequence(bottomCanvasGroup, textNotificationDuration, () =>
         {
             bottomFadeCoroutine = null;
+            bottomText.gameObject.SetActive(false);
         }));
     }
 
-    private IEnumerator FadeSequence(TextMeshProUGUI targetText, CanvasGroup targetGroup, float displayDuration, System.Action onComplete)
+    public void ShowItemNotification(ItemData item)
     {
-        // Fade in
+        if (item == null || itemNotificationGroup == null) return;
+
+        if (itemFadeCoroutine != null)
+            StopCoroutine(itemFadeCoroutine);
+
+        if (itemNameText != null)
+            itemNameText.text = item.itemName;
+        if (itemIconImage != null)
+            itemIconImage.sprite = item.itemIcon;
+
+        itemNotificationGroup.gameObject.SetActive(true);
+        itemNotificationGroup.alpha = 0f;
+
+        float duration = item.displayDuration > 0 ? item.displayDuration : itemNotificationDuration;
+        itemFadeCoroutine = StartCoroutine(FadeSequence(itemNotificationGroup, duration, () =>
+        {
+            itemFadeCoroutine = null;
+            itemNotificationGroup.gameObject.SetActive(false);
+        }));
+    }
+
+    private IEnumerator FadeSequence(CanvasGroup targetGroup, float displayDuration, System.Action onComplete)
+    {
         float elapsed = 0f;
         while (elapsed < fadeDuration)
         {
@@ -76,7 +116,6 @@ public class NotificationManager : MonoBehaviour
             yield return null;
         }
         targetGroup.alpha = 0f;
-        targetText.gameObject.SetActive(false);
 
         onComplete?.Invoke();
     }

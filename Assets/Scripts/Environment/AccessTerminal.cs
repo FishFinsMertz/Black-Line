@@ -21,12 +21,16 @@ public class AccessTerminal : MonoBehaviour
         if (data != null && data.collectedAccessItems.Contains(requiredAccessItemID))
         {
             hasGranted = true;
-            NotificationManager.Instance.NotifyBottom(notificationGranted, 4f);
+            if (NotificationManager.Instance != null)
+                NotificationManager.Instance.NotifyBottom(notificationGranted);
+
             onAccessGranted.Invoke();
         }
         else
         {
-            NotificationManager.Instance.NotifyBottom(notificationDenied, 4f);
+            if (NotificationManager.Instance != null)
+                NotificationManager.Instance.NotifyBottom(notificationDenied);
+
             onAccessDenied.Invoke();
         }
     }
