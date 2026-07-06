@@ -18,6 +18,10 @@ public class SprayPipe : MonoBehaviour, ISaveable
     [SerializeField] private float inactiveFresnelRadius = 0f;
     [SerializeField] private float transitionDuration = 0.5f;
 
+    [Header("Heat Source (Optional)")]
+    [SerializeField] private bool requireSource = false;
+    [SerializeField] private List<TileMapThermal> sourceTilemaps = new List<TileMapThermal>();
+
     [Header("References")]
     [SerializeField] private ParticleSystem sprayParticle;
     [SerializeField] private Light2D sprayLight;
@@ -28,6 +32,7 @@ public class SprayPipe : MonoBehaviour, ISaveable
     [SerializeField] private bool startActive = false;
 
     private bool isActive;
+    private bool isSourceActive = false;
     private ParticleSystem.EmissionModule emissionModule;
     private float currentEmissionRate;
     private float currentLightIntensity;
@@ -50,6 +55,32 @@ public class SprayPipe : MonoBehaviour, ISaveable
         ApplyStateInstant(isActive);
     }
 
+    private void Update()
+    {
+        if (requireSource)
+        {
+            bool currentlyActive = CheckSourceActive();
+            if (currentlyActive != isSourceActive)
+            {
+                isSourceActive = currentlyActive;
+                ApplyStateInstant(isActive && isSourceActive);
+            }
+        }
+    }
+
+    private bool CheckSourceActive()
+    {
+        if (!requireSource || sourceTilemaps.Count == 0)
+            return true;
+
+        foreach (var tm in sourceTilemaps)
+        {
+            if (tm != null && tm.GetCurrentTemperature() > 50f)
+                return true;
+        }
+        return false;
+    }
+
     private void OnDestroy()
     {
         SaveManager.Instance?.Unregister(this);
@@ -59,7 +90,14 @@ public class SprayPipe : MonoBehaviour, ISaveable
     {
         if (isActive) return;
         isActive = true;
-        StartCoroutine(SmoothTransition(true));
+
+        if (requireSource)
+            isSourceActive = CheckSourceActive();
+
+        if (isSourceActive || !requireSource)
+            StartCoroutine(SmoothTransition(true));
+        else
+            Debug.Log($"SprayPipe '{name}' requires heat source but none is active.");
     }
 
     public void Deactivate()
@@ -79,6 +117,12 @@ public class SprayPipe : MonoBehaviour, ISaveable
 
     private IEnumerator SmoothTransition(bool toActive)
     {
+        bool canActivate = toActive && (!requireSource || isSourceActive);
+        if (toActive && !canActivate)
+        {
+            yield break;
+        }
+
         float targetEmission = toActive ? activeEmissionRate : inactiveEmissionRate;
         float targetLight = toActive ? activeLightIntensity : inactiveLightIntensity;
         float targetRadius = toActive ? activeFresnelRadius : inactiveFresnelRadius;
@@ -130,9 +174,11 @@ public class SprayPipe : MonoBehaviour, ISaveable
 
     private void ApplyStateInstant(bool active)
     {
-        float targetEmission = active ? activeEmissionRate : inactiveEmissionRate;
-        float targetLight = active ? activeLightIntensity : inactiveLightIntensity;
-        float targetRadius = active ? activeFresnelRadius : inactiveFresnelRadius;
+        bool canActivate = active && (!requireSource || isSourceActive);
+
+        float targetEmission = canActivate ? activeEmissionRate : inactiveEmissionRate;
+        float targetLight = canActivate ? activeLightIntensity : inactiveLightIntensity;
+        float targetRadius = canActivate ? activeFresnelRadius : inactiveFresnelRadius;
 
         currentEmissionRate = targetEmission;
         currentLightIntensity = targetLight;
@@ -168,6 +214,7 @@ public class SprayPipe : MonoBehaviour, ISaveable
         if (cs != null)
         {
             isActive = cs.state == "Active";
+            isSourceActive = CheckSourceActive();
             ApplyStateInstant(isActive);
         }
     }
