@@ -16,6 +16,7 @@ public class Gate : MonoBehaviour, IInteractible, ISaveable
     [Header("Gate Settings")]
     [SerializeField] private float openDuration = 1.5f;
     [SerializeField] private float closeDuration = 0f;
+    [SerializeField] private float openDelay = 0f;
     [SerializeField] private GateState gateState = GateState.Open;
     private Animator animator;
     private BoxCollider2D gateCollider;
@@ -49,6 +50,14 @@ public class Gate : MonoBehaviour, IInteractible, ISaveable
     {
         if (!interactible) return;
         gateState = GateState.Open;
+        StartCoroutine(OpenSequence());
+    }
+
+    private IEnumerator OpenSequence()
+    {
+        interactible = false;
+        if (openDelay > 0f)
+            yield return new WaitForSeconds(openDelay);
         animator.SetTrigger("Open");
         StartCoroutine(ColliderCoroutine(openDuration, false));
     }
