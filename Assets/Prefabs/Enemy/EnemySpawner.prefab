@@ -47,4 +47,4 @@ MonoBehaviour:
   enemiesToSpawn: []
   spawnDelayMin: 0.5
   spawnDelayMax: 1
-  initialDelay: 2
+  initialDelay: 4
