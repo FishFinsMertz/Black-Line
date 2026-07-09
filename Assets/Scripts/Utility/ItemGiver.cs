@@ -9,19 +9,26 @@ public class ItemGiver : MonoBehaviour, ISaveable, IInteractible
 
     private bool wasGiven = false;
     private bool interactible = false;
-    private ButtonTrigger buttonTrigger; // <-- add this
+    private ButtonTrigger buttonTrigger;
 
     private void Start()
     {
-        buttonTrigger = GetComponent<ButtonTrigger>(); // <-- cache reference
+        buttonTrigger = GetComponent<ButtonTrigger>();
 
         if (!string.IsNullOrEmpty(saveID))
             SaveManager.Instance?.Register(this);
 
         if (wasGiven && hideAfterPickup)
+        {
             gameObject.SetActive(false);
-        else if (!wasGiven)
-            DisableInteraction(); // start with interaction disabled
+        }
+        else
+        {
+            if (hideAfterPickup)
+                DisableInteraction();
+            else
+                EnableInteraction();
+        }
     }
 
     private void OnDestroy()
@@ -65,10 +72,11 @@ public class ItemGiver : MonoBehaviour, ISaveable, IInteractible
 
         wasGiven = true;
         if (hideAfterPickup)
+        {
             gameObject.SetActive(false);
+        }
     }
 
-    // --- IInteractible ---
     public void EnableInteraction()
     {
         interactible = true;
@@ -83,7 +91,6 @@ public class ItemGiver : MonoBehaviour, ISaveable, IInteractible
             buttonTrigger.enabled = false;
     }
 
-    // --- ISaveable ---
     public void Save(GameData data)
     {
         if (string.IsNullOrEmpty(saveID)) return;
@@ -98,11 +105,17 @@ public class ItemGiver : MonoBehaviour, ISaveable, IInteractible
         if (cs != null)
         {
             wasGiven = cs.state == "Given";
-            if (wasGiven && hideAfterPickup) {
+            if (wasGiven && hideAfterPickup)
+            {
                 gameObject.SetActive(false);
             }
             else
-                DisableInteraction();
+            {
+                if (hideAfterPickup)
+                    DisableInteraction();
+                else
+                    EnableInteraction();
+            }
         }
     }
 
