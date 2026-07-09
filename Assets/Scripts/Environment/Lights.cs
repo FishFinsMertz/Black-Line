@@ -1,9 +1,13 @@
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using System.Collections;
+using System.Linq;
 
-public class Lights : MonoBehaviour
+public class Lights : MonoBehaviour, ISaveable
 {
+    [Header("Save ID")]
+    [SerializeField] private string saveID;
+
     [Header("Light References")]
     [SerializeField] private Light2D[] lights;
 
@@ -34,9 +38,20 @@ public class Lights : MonoBehaviour
                 Debug.LogWarning($"{name}: No Light2D components found in children.");
         }
 
+        // Register with save system
+        if (!string.IsNullOrEmpty(saveID))
+            SaveManager.Instance?.Register(this);
+
+        // Apply default state (will be overridden by Load if a save exists)
         isOn = startOn;
         currentMultiplier = startOn ? 1f : 0f;
         targetMultiplier = startOn ? 1f : 0f;
+    }
+
+    private void OnDestroy()
+    {
+        if (!string.IsNullOrEmpty(saveID))
+            SaveManager.Instance?.Unregister(this);
     }
 
     private void Update()
@@ -107,4 +122,30 @@ public class Lights : MonoBehaviour
     }
 
     public bool IsOn() => isOn;
+
+    // --- ISaveable ---
+    public void Save(GameData data)
+    {
+        if (string.IsNullOrEmpty(saveID)) return;
+        data.componentStates.RemoveAll(c => c.id == saveID);
+        data.componentStates.Add(new ComponentState { id = saveID, state = isOn ? "On" : "Off" });
+    }
+
+    public void Load(GameData data)
+    {
+        if (string.IsNullOrEmpty(saveID)) return;
+        ComponentState cs = data.componentStates.FirstOrDefault(c => c.id == saveID);
+        if (cs != null)
+        {
+            bool loadedOn = cs.state == "On";
+            if (pendingTransition != null)
+            {
+                StopCoroutine(pendingTransition);
+                pendingTransition = null;
+            }
+            isOn = loadedOn;
+            currentMultiplier = loadedOn ? 1f : 0f;
+            targetMultiplier = loadedOn ? 1f : 0f;
+        }
+    }
 }

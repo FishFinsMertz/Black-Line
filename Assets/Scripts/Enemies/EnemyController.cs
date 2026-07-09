@@ -39,6 +39,7 @@ public abstract class EnemyController : MonoBehaviour, ITemperatureChangeable
     private bool isSmoking = false;
     private float initialTemperature;
     private Coroutine criticalStateTimer;
+    public string GetUniqueID() => uniqueID;
 
     protected virtual void Awake()
     {

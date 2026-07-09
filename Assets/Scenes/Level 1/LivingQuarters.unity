@@ -23600,6 +23600,7 @@ Transform:
   - {fileID: 750734078}
   - {fileID: 1364175689}
   - {fileID: 870307131}
+  - {fileID: 1466257952}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &377664546
@@ -25369,7 +25370,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &660406359
 Transform:
   m_ObjectHideFlags: 0
@@ -25471,6 +25472,10 @@ PrefabInstance:
     - target: {fileID: 6768033638115759503, guid: 13293d5dc52c07c4c84d1397f8073bf8, type: 3}
       propertyPath: explosionDelayMin
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7237686989694033627, guid: 13293d5dc52c07c4c84d1397f8073bf8, type: 3}
+      propertyPath: saveID
+      value: LQ-ScoutSpawner2
       objectReference: {fileID: 0}
     - target: {fileID: 7237686989694033627, guid: 13293d5dc52c07c4c84d1397f8073bf8, type: 3}
       propertyPath: enemiesToSpawn.Array.size
@@ -27561,6 +27566,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37e9a23f1ad3c5a4c95db2bbf3c6d3d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  saveID: LQA-DistributorLights
   lights: []
   enablePulse: 0
   minIntensity: 0.1
@@ -29676,6 +29682,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 37e9a23f1ad3c5a4c95db2bbf3c6d3d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  saveID: LQA-EmergencyLights
   lights: []
   enablePulse: 1
   minIntensity: 0
@@ -29686,6 +29693,11 @@ MonoBehaviour:
   transitionSpeed: 100
   turnOnDelay: 0
   turnOffDelay: 0
+--- !u!4 &1466257952 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4060370594316072153, guid: eeab6f7bfff22db43bc93f437aca6e65, type: 3}
+  m_PrefabInstance: {fileID: 5511817668780985227}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1482758539 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7977659326147608686, guid: b197d2daabda0f4498a92eadc53e9043, type: 3}
@@ -41864,6 +41876,10 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7237686989694033627, guid: 13293d5dc52c07c4c84d1397f8073bf8, type: 3}
+      propertyPath: saveID
+      value: LQ-ScoutSpawner3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7237686989694033627, guid: 13293d5dc52c07c4c84d1397f8073bf8, type: 3}
       propertyPath: enemiesToSpawn.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -43765,6 +43781,10 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7237686989694033627, guid: 13293d5dc52c07c4c84d1397f8073bf8, type: 3}
+      propertyPath: saveID
+      value: LQ-ScoutSpawner1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7237686989694033627, guid: 13293d5dc52c07c4c84d1397f8073bf8, type: 3}
       propertyPath: enemiesToSpawn.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -44274,7 +44294,7 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 0}
+    m_TransformParent: {fileID: 338593682}
     m_Modifications:
     - target: {fileID: 301934625112996933, guid: eeab6f7bfff22db43bc93f437aca6e65, type: 3}
       propertyPath: m_Name
@@ -44342,15 +44362,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4060370594316072153, guid: eeab6f7bfff22db43bc93f437aca6e65, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 28.53
+      value: 29.926298
       objectReference: {fileID: 0}
     - target: {fileID: 4060370594316072153, guid: eeab6f7bfff22db43bc93f437aca6e65, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -21.503
+      value: -8.953077
       objectReference: {fileID: 0}
     - target: {fileID: 4060370594316072153, guid: eeab6f7bfff22db43bc93f437aca6e65, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.009601058
+      value: -0.042224653
       objectReference: {fileID: 0}
     - target: {fileID: 4060370594316072153, guid: eeab6f7bfff22db43bc93f437aca6e65, type: 3}
       propertyPath: m_LocalRotation.w
@@ -44358,15 +44378,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4060370594316072153, guid: eeab6f7bfff22db43bc93f437aca6e65, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4060370594316072153, guid: eeab6f7bfff22db43bc93f437aca6e65, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4060370594316072153, guid: eeab6f7bfff22db43bc93f437aca6e65, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4060370594316072153, guid: eeab6f7bfff22db43bc93f437aca6e65, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -45076,6 +45096,5 @@ SceneRoots:
   - {fileID: 338593682}
   - {fileID: 87856747}
   - {fileID: 627027635}
-  - {fileID: 5511817668780985227}
   - {fileID: 4347230022179922386}
   - {fileID: 582928997}
