@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 83caebcf95772a84ea756a50c97bbe1c, type: 3}
-  m_Name: LQASecurityCard
+  m_Name: LQAMainKey
   m_EditorClassIdentifier: 
-  itemID: LQASecurityCard
-  itemName: LQA Security Card
-  itemIcon: {fileID: -6627232372091993551, guid: 99ed1c4a34c767247a684404fd2e1916, type: 3}
+  itemID: LQAMainKey
+  itemName: LQA Main Key
+  itemIcon: {fileID: 3125364096066246149, guid: b5617035e978ca148ad119fa62e6cfe4, type: 3}
   description: 
   displayDuration: 2

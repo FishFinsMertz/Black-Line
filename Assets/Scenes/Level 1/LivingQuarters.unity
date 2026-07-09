@@ -43093,7 +43093,7 @@ Transform:
   m_GameObject: {fileID: 2003924538}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.7, y: -12.49, z: -10}
+  m_LocalPosition: {x: 24.87, y: -21.48, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -43213,11 +43213,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1608731299875015705, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.7000003
+      value: 24.87
       objectReference: {fileID: 0}
     - target: {fileID: 1608731299875015705, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -12.49
+      value: -21.48
       objectReference: {fileID: 0}
     - target: {fileID: 1608731299875015705, guid: 9bc600ebcca275740956b3390f79ca11, type: 3}
       propertyPath: m_LocalPosition.z
@@ -43827,15 +43827,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4487641313947780719, guid: df0e287eba791a641abcbbe71f86311b, type: 3}
       propertyPath: notificationDenied
-      value: This door requires the LQA security card.
+      value: This door requires the LQA Main Key.
       objectReference: {fileID: 0}
     - target: {fileID: 4487641313947780719, guid: df0e287eba791a641abcbbe71f86311b, type: 3}
       propertyPath: notificationGranted
-      value: Used the LQA Security card.
+      value: Used the LQA Main Key.
       objectReference: {fileID: 0}
     - target: {fileID: 4487641313947780719, guid: df0e287eba791a641abcbbe71f86311b, type: 3}
       propertyPath: requiredAccessItemID
-      value: LQASecurityCard
+      value: LQAMainKey
       objectReference: {fileID: 0}
     - target: {fileID: 4487641313947780719, guid: df0e287eba791a641abcbbe71f86311b, type: 3}
       propertyPath: onAccessDenied.m_PersistentCalls.m_Calls.Array.size
@@ -44386,7 +44386,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7628820477149372240, guid: eeab6f7bfff22db43bc93f437aca6e65, type: 3}
       propertyPath: saveID
-      value: 
+      value: LQAMainKey
       objectReference: {fileID: 0}
     - target: {fileID: 7628820477149372240, guid: eeab6f7bfff22db43bc93f437aca6e65, type: 3}
       propertyPath: itemData
