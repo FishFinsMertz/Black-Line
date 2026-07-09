@@ -20,28 +20,24 @@ public class Inventory : MonoBehaviour, ISaveable
         SaveManager.Instance?.Register(this);
         if (!ownedItems.Contains("None"))
             ownedItems.Add("None");
-        //Equip(EquipmentType.None);
     }
 
-    // Called by SaveManager when loading
     public void Load(GameData data)
     {
         ownedItems.Clear();
         if (data.ownedItems != null)
             ownedItems.UnionWith(data.ownedItems);
-        
+
         EquipmentType loadedEquip = EquipmentType.None;
         if (data.currentEquipment == "Gun") loadedEquip = EquipmentType.Gun;
         else if (data.currentEquipment == "Spray") loadedEquip = EquipmentType.Spray;
-        
+
         if (!ownedItems.Contains("None"))
             ownedItems.Add("None");
-        
-        //Debug.Log($"Inventory loaded. Owned items: {string.Join(", ", ownedItems)}. Current equip: {loadedEquip}");
+
         Equip(loadedEquip);
     }
 
-    // Called by SaveManager when saving
     public void Save(GameData data)
     {
         data.ownedItems = new List<string>(ownedItems);
@@ -54,12 +50,12 @@ public class Inventory : MonoBehaviour, ISaveable
         else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             if (ownedItems.Contains("Gun")) Equip(EquipmentType.Gun);
-            else Debug.Log("Gun not owned. Press G to give yourself the gun.");
+            else Debug.Log("Gun not owned.");
         }
         else if (Input.GetKeyDown(KeyCode.Alpha3))
         {
             if (ownedItems.Contains("Spray")) Equip(EquipmentType.Spray);
-            else Debug.Log("Spray not owned. Press Y to give yourself the spray gun.");
+            else Debug.Log("Spray not owned.");
         }
 
         if (Input.GetKeyDown(KeyCode.G)) GiveGun();
@@ -72,6 +68,7 @@ public class Inventory : MonoBehaviour, ISaveable
         if (emptyHandArm) emptyHandArm.SetActive(false);
         if (gunArm) gunArm.SetActive(false);
         if (sprayArm) sprayArm.SetActive(false);
+
         switch (type)
         {
             case EquipmentType.None:
@@ -87,12 +84,11 @@ public class Inventory : MonoBehaviour, ISaveable
                 currentEquipment = EquipmentType.Spray;
                 break;
         }
-        
-        // Reset animation on current player state to reflect equipment change
+
         playerController.bodyAnimator.Play(0);
     }
 
-    private void GiveGun()
+    public void GiveGun()
     {
         if (!ownedItems.Contains("Gun"))
         {
@@ -102,7 +98,7 @@ public class Inventory : MonoBehaviour, ISaveable
         }
     }
 
-    private void GiveSpray()
+    public void GiveSpray()
     {
         if (!ownedItems.Contains("Spray"))
         {
@@ -125,5 +121,25 @@ public class Inventory : MonoBehaviour, ISaveable
     public void EquipType(EquipmentType type)
     {
         Equip(type);
+    }
+
+    public bool IsItemOwned(string itemName)
+    {
+        return ownedItems.Contains(itemName);
+    }
+
+    public void AddItem(string itemName)
+    {
+        if (!ownedItems.Contains(itemName))
+        {
+            ownedItems.Add(itemName);
+            SaveManager.Instance?.RequestSave();
+        }
+    }
+
+    public void EquipByName(string itemName)
+    {
+        if (itemName == "Gun") Equip(EquipmentType.Gun);
+        else if (itemName == "Spray") Equip(EquipmentType.Spray);
     }
 }

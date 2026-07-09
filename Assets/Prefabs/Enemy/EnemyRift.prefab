@@ -77,7 +77,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingOrder: 4
   m_Sprite: {fileID: -494793427112769548, guid: 4b56775f3f290ae4583af4dd7e6971d0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -396,7 +396,12 @@ MonoBehaviour:
   pieceForceMax: {x: 1.5, y: 2.5}
   pieceTorqueMin: -60
   pieceTorqueMax: 60
+  enableBloodSplatter: 1
   bloodBurstPrefab: {fileID: 588043819693885274, guid: 555ecd0420cbfc246abbd90b7d981c43, type: 3}
+  enableHeatDissipation: 1
+  shakePower: 2
+  delayMin: 0
+  delayMax: 0
 --- !u!1001 &5133581514795942600
 PrefabInstance:
   m_ObjectHideFlags: 0

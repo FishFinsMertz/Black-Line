@@ -3,31 +3,36 @@ using System.Linq;
 
 public class ItemGiver : MonoBehaviour, ISaveable, IInteractible
 {
+    public enum ItemType { AccessItem, Weapon }
+
     [SerializeField] private string saveID;
     [SerializeField] private ItemData itemData;
+    [SerializeField] private ItemType itemType = ItemType.AccessItem;
     [SerializeField] private bool hideAfterPickup = true;
+    [SerializeField] private bool startInteractible = true; // NEW
 
     private bool wasGiven = false;
     private bool interactible = false;
     private ButtonTrigger buttonTrigger;
+    private Inventory playerInventory;
 
     private void Start()
     {
         buttonTrigger = GetComponent<ButtonTrigger>();
+        playerInventory = FindFirstObjectByType<Inventory>();
 
         if (!string.IsNullOrEmpty(saveID))
             SaveManager.Instance?.Register(this);
 
         if (wasGiven && hideAfterPickup)
-        {
             gameObject.SetActive(false);
-        }
         else
         {
-            if (hideAfterPickup)
-                DisableInteraction();
-            else
+            // Use startInteractible to decide initial state
+            if (startInteractible)
                 EnableInteraction();
+            else
+                DisableInteraction();
         }
     }
 
@@ -42,15 +47,9 @@ public class ItemGiver : MonoBehaviour, ISaveable, IInteractible
         if (!interactible) return;
         if (wasGiven) return;
 
-        if (itemData == null)
+        if (itemData == null || string.IsNullOrEmpty(itemData.itemID))
         {
-            Debug.LogWarning($"ItemGiver: {name} has no ItemData assigned.");
-            return;
-        }
-
-        if (string.IsNullOrEmpty(itemData.itemID))
-        {
-            Debug.LogWarning($"ItemGiver: {name} has empty itemID in ItemData.");
+            Debug.LogWarning($"ItemGiver: {name} invalid ItemData.");
             return;
         }
 
@@ -60,20 +59,36 @@ public class ItemGiver : MonoBehaviour, ISaveable, IInteractible
         if (!data.collectedAccessItems.Contains(itemData.itemID))
         {
             data.collectedAccessItems.Add(itemData.itemID);
-            Debug.Log($"ItemGiver: '{itemData.itemID}' added to collectedAccessItems.");
-
-            if (NotificationManager.Instance != null)
-                NotificationManager.Instance.ShowItemNotification(itemData);
+            NotificationManager.Instance?.ShowItemNotification(itemData);
+            wasGiven = true;
+            if (hideAfterPickup) gameObject.SetActive(false);
         }
-        else
+    }
+
+    public void GiveWeapon()
+    {
+        if (!interactible) return;
+        if (wasGiven) return;
+
+        if (itemData == null || string.IsNullOrEmpty(itemData.itemID))
         {
-            Debug.Log($"ItemGiver: '{itemData.itemID}' already collected.");
+            Debug.LogWarning($"ItemGiver: {name} invalid ItemData.");
+            return;
         }
 
-        wasGiven = true;
-        if (hideAfterPickup)
+        if (playerInventory == null)
         {
-            gameObject.SetActive(false);
+            Debug.LogError($"ItemGiver: {name} no Inventory found.");
+            return;
+        }
+
+        if (!playerInventory.IsItemOwned(itemData.itemID))
+        {
+            playerInventory.AddItem(itemData.itemID);
+            playerInventory.EquipByName(itemData.itemID);
+            NotificationManager.Instance?.ShowItemNotification(itemData);
+            wasGiven = true;
+            if (hideAfterPickup) gameObject.SetActive(false);
         }
     }
 
@@ -106,15 +121,13 @@ public class ItemGiver : MonoBehaviour, ISaveable, IInteractible
         {
             wasGiven = cs.state == "Given";
             if (wasGiven && hideAfterPickup)
-            {
                 gameObject.SetActive(false);
-            }
             else
             {
-                if (hideAfterPickup)
-                    DisableInteraction();
-                else
+                if (startInteractible)
                     EnableInteraction();
+                else
+                    DisableInteraction();
             }
         }
     }
