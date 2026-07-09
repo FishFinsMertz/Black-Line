@@ -40,22 +40,7 @@ public class TriggerEvent : MonoBehaviour, ISaveable, IInteractible
             hasTriggered = true;
     }
 
-    // --- ISaveable ---
-    public void Save(GameData data)
-    {
-        if (!oneShot || string.IsNullOrEmpty(saveID)) return;
-        data.componentStates.RemoveAll(c => c.id == saveID);
-        data.componentStates.Add(new ComponentState { id = saveID, state = hasTriggered ? "Triggered" : "NotTriggered" });
-    }
-
-    public void Load(GameData data)
-    {
-        if (!oneShot || string.IsNullOrEmpty(saveID)) return;
-        ComponentState cs = data.componentStates.FirstOrDefault(c => c.id == saveID);
-        if (cs != null)
-            hasTriggered = cs.state == "Triggered";
-    }
-
+    // --- IInteractible ---
     public void EnableInteraction()
     {
         interactible = true;
@@ -64,5 +49,35 @@ public class TriggerEvent : MonoBehaviour, ISaveable, IInteractible
     public void DisableInteraction()
     {
         interactible = false;
+    }
+
+    // --- ISaveable ---
+    public void Save(GameData data)
+    {
+        if (!oneShot || string.IsNullOrEmpty(saveID)) return;
+        data.componentStates.RemoveAll(c => c.id == saveID);
+        // Save both triggered state and interactible state
+        string state = $"{hasTriggered}:{interactible}";
+        data.componentStates.Add(new ComponentState { id = saveID, state = state });
+    }
+
+    public void Load(GameData data)
+    {
+        if (!oneShot || string.IsNullOrEmpty(saveID)) return;
+        ComponentState cs = data.componentStates.FirstOrDefault(c => c.id == saveID);
+        if (cs != null)
+        {
+            string[] parts = cs.state.Split(':');
+            if (parts.Length == 2)
+            {
+                hasTriggered = parts[0] == "True";
+                interactible = parts[1] == "True";
+            }
+            else
+            {
+                // Fallback for older save format
+                hasTriggered = cs.state == "Triggered";
+            }
+        }
     }
 }
