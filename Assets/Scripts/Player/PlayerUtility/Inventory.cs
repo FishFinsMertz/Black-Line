@@ -47,15 +47,15 @@ public class Inventory : MonoBehaviour, ISaveable
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1)) Equip(EquipmentType.None);
-        else if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            if (ownedItems.Contains("Gun")) Equip(EquipmentType.Gun);
-            else Debug.Log("Gun not owned.");
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha3))
+                else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             if (ownedItems.Contains("Spray")) Equip(EquipmentType.Spray);
             else Debug.Log("Spray not owned.");
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            if (ownedItems.Contains("Gun")) Equip(EquipmentType.Gun);
+            else Debug.Log("Gun not owned.");
         }
 
         if (Input.GetKeyDown(KeyCode.G)) GiveGun();
