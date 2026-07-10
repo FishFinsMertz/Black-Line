@@ -106,7 +106,7 @@ MonoBehaviour:
   temperature: 51.8
   currentTemperature: 0
   fresnelPower: 0.32
-  brightnessInfluence: 1
+  brightnessInfluence: 0.638
   fresnelCenter: {x: 0.45, y: 0.06}
   fresnelRadius: 5
   temperatureLerpSpeed: 10
