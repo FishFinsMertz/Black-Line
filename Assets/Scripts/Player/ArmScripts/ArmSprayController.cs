@@ -13,8 +13,10 @@ public class ArmSprayController : ArmController
     [SerializeField] private float emissionRate = 50f;
 
     [SerializeField] private float ammoPerSecond = 10f;
-
     [SerializeField] private float tempDrainPerSecond = 10f;
+
+    [Header("Reload")]
+    [SerializeField] private float reloadDuration = 1.5f;
 
     [SerializeField] private float recoilOffset = 0.2f;
     [SerializeField] private float recoilReturnSpeed = 10f;
@@ -36,6 +38,10 @@ public class ArmSprayController : ArmController
     private ParticleSystem.EmissionModule emissionModule;
     private float ammoTimer = 0f;
 
+    private bool isReloading = false;
+    private float reloadTimer = 0f;
+    private Quaternion idleRotation;
+
     protected override void Start()
     {
         base.Start();
@@ -47,6 +53,7 @@ public class ArmSprayController : ArmController
 
         sprayOriginalLocalPosition = transform.localPosition;
         recoilTargetPosition = sprayOriginalLocalPosition + Vector3.left * recoilOffset;
+        idleRotation = Quaternion.identity;
 
         if (sprayEffect != null)
         {
@@ -64,12 +71,21 @@ public class ArmSprayController : ArmController
         isReturning = false;
         if (emissionModule.enabled)
             emissionModule.rateOverTime = 0f;
+        isReloading = false;
     }
 
     protected override void Update()
     {
         base.Update();
         if (!armEnabled) return;
+
+        UpdateReload();
+
+        if (isReloading)
+        {
+            transform.localRotation = Quaternion.Lerp(transform.localRotation, idleRotation, Time.deltaTime * 10f);
+            return;
+        }
 
         AimAtMouse();
         HandleShooting();
@@ -147,6 +163,7 @@ public class ArmSprayController : ArmController
 
     private void HandleShooting()
     {
+        if (isReloading) return;
         bool wantsSpray = Input.GetMouseButton(0);
         if (wantsSpray && !isSpraying)
         {
@@ -167,8 +184,50 @@ public class ArmSprayController : ArmController
         if (Input.GetKeyDown(KeyCode.R))
         {
             if (player != null && player.inventory != null)
+            {
+                var ammo = player.inventory.GetAmmo("Spray");
+                if (ammo.reserve > 0 && ammo.magazine < 30 && !isReloading)
+                {
+                    if (isSpraying) StopSpray();
+                    isReloading = true;
+                    reloadTimer = reloadDuration;
+                    StartCoroutine(SmoothResetToIdle());
+                }
+            }
+        }
+    }
+
+    private void UpdateReload()
+    {
+        if (!isReloading) return;
+        reloadTimer -= Time.deltaTime;
+        if (reloadTimer <= 0f)
+        {
+            isReloading = false;
+            if (player != null && player.inventory != null)
                 player.inventory.Reload("Spray");
         }
+    }
+
+    private IEnumerator SmoothResetToIdle()
+    {
+        float elapsed = 0f;
+        float duration = 0.15f;
+        Vector3 startPos = transform.localPosition;
+        Quaternion startRot = transform.localRotation;
+        Vector3 targetPos = sprayOriginalLocalPosition;
+        Quaternion targetRot = idleRotation;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / duration;
+            transform.localPosition = Vector3.Lerp(startPos, targetPos, t);
+            transform.localRotation = Quaternion.Slerp(startRot, targetRot, t);
+            yield return null;
+        }
+        transform.localPosition = targetPos;
+        transform.localRotation = targetRot;
     }
 
     private void UpdateSprayDirection()

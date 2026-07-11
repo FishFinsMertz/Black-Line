@@ -11,6 +11,12 @@ public class Inventory : MonoBehaviour, ISaveable
     [SerializeField] private GameObject sprayArm;
     [SerializeField] private GameObject gunArm;
 
+    [Header("Starting Ammo")]
+    [SerializeField] private int gunStartingMagazine = 12;
+    [SerializeField] private int gunStartingReserve = 24;
+    [SerializeField] private int sprayStartingMagazine = 30;
+    [SerializeField] private int sprayStartingReserve = 60;
+
     private EquipmentType currentEquipment = EquipmentType.None;
     private HashSet<string> ownedItems = new HashSet<string>();
     private Dictionary<string, (int magazine, int reserve)> ammoData = new Dictionary<string, (int, int)>();
@@ -99,7 +105,6 @@ public class Inventory : MonoBehaviour, ISaveable
             }
         }
 
-        // Scroll wheel cycling
         float scroll = Input.GetAxis("Mouse ScrollWheel");
         if (scroll != 0)
         {
@@ -149,7 +154,7 @@ public class Inventory : MonoBehaviour, ISaveable
         if (!ownedItems.Contains("Gun"))
         {
             ownedItems.Add("Gun");
-            ammoData["Gun"] = (12, 24);
+            AddAmmo("Gun", gunStartingMagazine, gunStartingReserve);
             UpdateOwnedWeaponsList();
             Equip(EquipmentType.Gun);
             SaveManager.Instance?.RequestSave();
@@ -161,7 +166,7 @@ public class Inventory : MonoBehaviour, ISaveable
         if (!ownedItems.Contains("Spray"))
         {
             ownedItems.Add("Spray");
-            ammoData["Spray"] = (30, 60);
+            AddAmmo("Spray", sprayStartingMagazine, sprayStartingReserve);
             UpdateOwnedWeaponsList();
             Equip(EquipmentType.Spray);
             SaveManager.Instance?.RequestSave();
@@ -201,17 +206,21 @@ public class Inventory : MonoBehaviour, ISaveable
 
     public void AddAmmo(string weaponID, int magAdd, int reserveAdd)
     {
-        if (!ammoData.ContainsKey(weaponID)) return;
+        if (!ammoData.ContainsKey(weaponID))
+        {
+            ammoData[weaponID] = (0, 0);
+        }
         var ammo = ammoData[weaponID];
-        ammo.magazine = Mathf.Min(GetWeaponCapacity(weaponID), ammo.magazine + magAdd);
+        int capacity = GetWeaponCapacity(weaponID);
+        ammo.magazine = Mathf.Min(capacity, ammo.magazine + magAdd);
         ammo.reserve += reserveAdd;
         ammoData[weaponID] = ammo;
     }
 
     private int GetWeaponCapacity(string weaponID)
     {
-        if (weaponID == "Gun") return 12;
-        if (weaponID == "Spray") return 30;
+        if (weaponID == "Gun") return gunStartingMagazine;
+        if (weaponID == "Spray") return sprayStartingMagazine;
         return 0;
     }
 

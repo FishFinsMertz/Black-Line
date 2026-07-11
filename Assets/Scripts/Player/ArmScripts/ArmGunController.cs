@@ -13,6 +13,9 @@ public class ArmGunController : ArmController
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private float fireRate = 5f;
 
+    [Header("Reload")]
+    [SerializeField] private float reloadDuration = 1.5f;
+
     [Header("Recoil")]
     [SerializeField] private float recoilStrength = 0.2f;
     [SerializeField] private float recoilDuration = 0.1f;
@@ -27,12 +30,16 @@ public class ArmGunController : ArmController
     private CameraController camController;
     private float nextFireTime = 0f;
     private bool isRecoiling = false;
+    private bool isReloading = false;
+    private float reloadTimer = 0f;
+    private Quaternion idleRotation;
 
     protected override void Start()
     {
         base.Start();
         camController = Camera.main.GetComponent<CameraController>();
         originalLocalPosition = transform.localPosition;
+        idleRotation = Quaternion.identity;
     }
 
     private void OnDisable()
@@ -43,12 +50,21 @@ public class ArmGunController : ArmController
             transform.localPosition = originalLocalPosition;
             isRecoiling = false;
         }
+        isReloading = false;
     }
 
     protected override void Update()
     {
         base.Update();
         if (!armEnabled) return;
+
+        UpdateReload();
+
+        if (isReloading)
+        {
+            transform.localRotation = Quaternion.Lerp(transform.localRotation, idleRotation, Time.deltaTime * 10f);
+            return;
+        }
 
         AimAtMouse();
         HandleShooting();
@@ -79,6 +95,7 @@ public class ArmGunController : ArmController
 
     private void HandleShooting()
     {
+        if (isReloading) return;
         if (!Input.GetMouseButtonDown(0)) return;
         if (bulletPrefab == null || firePoint == null) return;
         if (Time.time < nextFireTime) return;
@@ -95,7 +112,7 @@ public class ArmGunController : ArmController
         if (bulletScript != null)
         {
             if (camController != null)
-                camController.TriggerShake(0.7f, 0.5f, 1f);
+                camController.TriggerShake(0.5f, 0.3f, 1f);
             bulletScript.Initialize(direction);
         }
 
@@ -116,8 +133,49 @@ public class ArmGunController : ArmController
         if (Input.GetKeyDown(KeyCode.R))
         {
             if (player != null && player.inventory != null)
+            {
+                var ammo = player.inventory.GetAmmo("Gun");
+                if (ammo.reserve > 0 && ammo.magazine < 12 && !isReloading)
+                {
+                    isReloading = true;
+                    reloadTimer = reloadDuration;
+                    StartCoroutine(SmoothResetToIdle());
+                }
+            }
+        }
+    }
+
+    private void UpdateReload()
+    {
+        if (!isReloading) return;
+        reloadTimer -= Time.deltaTime;
+        if (reloadTimer <= 0f)
+        {
+            isReloading = false;
+            if (player != null && player.inventory != null)
                 player.inventory.Reload("Gun");
         }
+    }
+
+    private IEnumerator SmoothResetToIdle()
+    {
+        float elapsed = 0f;
+        float duration = 0.15f;
+        Vector3 startPos = transform.localPosition;
+        Quaternion startRot = transform.localRotation;
+        Vector3 targetPos = originalLocalPosition;
+        Quaternion targetRot = idleRotation;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = elapsed / duration;
+            transform.localPosition = Vector3.Lerp(startPos, targetPos, t);
+            transform.localRotation = Quaternion.Slerp(startRot, targetRot, t);
+            yield return null;
+        }
+        transform.localPosition = targetPos;
+        transform.localRotation = targetRot;
     }
 
     private IEnumerator Recoil()
