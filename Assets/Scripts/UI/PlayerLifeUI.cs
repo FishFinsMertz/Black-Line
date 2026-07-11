@@ -45,17 +45,18 @@ public class PlayerLifeUI : MonoBehaviour
     {
         if (thermal == null) return;
 
-        float batteryPercent = thermal.GetSmoothedBattery() / 100f;
+        float batteryRaw = thermal.GetBatteryLevel();
+        float batteryPercent = batteryRaw / 100f;
         float temperature = thermal.GetCurrentTemperature();
 
         if (batteryBarImage != null)
             batteryBarImage.fillAmount = batteryPercent;
 
         if (batteryText != null)
-            batteryText.text = Mathf.Round(thermal.GetSmoothedBattery()).ToString() + "%";
+            batteryText.text = Mathf.Round(batteryRaw).ToString() + "%";
 
         Color targetColor = batteryColor;
-        if (batteryPercent <= 0.01f)
+        if (batteryRaw <= 0.5f)
             targetColor = GetTemperatureColor(temperature);
 
         if (bodyImage != null)
@@ -63,8 +64,7 @@ public class PlayerLifeUI : MonoBehaviour
 
         if (outlineImage != null)
         {
-            float batteryValue = batteryPercent * 100f;
-            if (batteryValue <= flashThreshold)
+            if (batteryRaw <= flashThreshold)
             {
                 flashTimer += Time.deltaTime * flashSpeed;
                 float t = (Mathf.Sin(flashTimer * Mathf.PI * 2f) + 1f) * 0.5f;
