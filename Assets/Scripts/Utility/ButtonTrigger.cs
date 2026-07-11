@@ -35,6 +35,12 @@ public class ButtonTrigger : MonoBehaviour, ISaveable
         SaveManager.Instance?.Register(this);
         if (outline != null)
             outline.enabled = false;
+        RefreshInteraction();
+    }
+
+    private void OnEnable()
+    {
+        RefreshInteraction();
     }
 
     private void OnDestroy()
@@ -107,6 +113,28 @@ public class ButtonTrigger : MonoBehaviour, ISaveable
         isCooldown = false;
         if (playerInRange && outline != null)
             outline.enabled = true;
+    }
+
+    public void RefreshInteraction()
+    {
+        Collider2D triggerCollider = GetComponent<Collider2D>();
+        if (triggerCollider == null) return;
+
+        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+        if (playerObj == null) return;
+
+        if (triggerCollider.OverlapPoint(playerObj.transform.position))
+        {
+            playerInRange = true;
+            if (!(oneShot && hasBeenUsed) && !isCooldown && outline != null)
+                outline.enabled = true;
+        }
+        else
+        {
+            playerInRange = false;
+            if (outline != null)
+                outline.enabled = false;
+        }
     }
 
     // --- ISaveable ---

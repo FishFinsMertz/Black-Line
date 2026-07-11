@@ -56,7 +56,9 @@ MonoBehaviour:
   fireDirection: {fileID: 6459871279835489012}
   spraySpeed: 40
   emissionRate: 1000
+  ammoPerSecond: 10
   tempDrainPerSecond: 25
+  reloadDuration: 1.5
   recoilOffset: 0.05
   recoilReturnSpeed: 20
   shakeIntensity: 0.2
@@ -725,6 +727,7 @@ MonoBehaviour:
   directionIndicator: {fileID: 8106077944697287082}
   bulletPrefab: {fileID: 132753738356837407, guid: 4ffda103b120de64cba3cb8826825267, type: 3}
   fireRate: 2
+  reloadDuration: 1.5
   recoilStrength: 0.05
   recoilDuration: 0.1
   muzzleFlashAnimator: {fileID: 4658165770266886540}
@@ -989,8 +992,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   emptyHandArm: {fileID: 7433923514042709585}
-  gunArm: {fileID: 7205983957010132467}
   sprayArm: {fileID: 1445098853941115052}
+  gunArm: {fileID: 7205983957010132467}
+  gunStartingMagazine: 12
+  gunStartingReserve: 24
+  sprayStartingMagazine: 60
+  sprayStartingReserve: 60
 --- !u!114 &6441694374667590470
 MonoBehaviour:
   m_ObjectHideFlags: 0

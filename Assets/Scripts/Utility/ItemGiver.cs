@@ -3,13 +3,17 @@ using System.Linq;
 
 public class ItemGiver : MonoBehaviour, ISaveable, IInteractible
 {
-    public enum ItemType { AccessItem, Weapon }
+    public enum ItemType { AccessItem, Weapon, Ammo }
 
     [SerializeField] private string saveID;
     [SerializeField] private ItemData itemData;
     [SerializeField] private ItemType itemType = ItemType.AccessItem;
     [SerializeField] private bool hideAfterPickup = true;
-    [SerializeField] private bool startInteractible = true; // NEW
+    [SerializeField] private bool startInteractible = true;
+
+    [Header("Ammo Settings")]
+    [SerializeField] private string weaponID = "Gun";
+    [SerializeField] private int ammoAmount = 10;
 
     private bool wasGiven = false;
     private bool interactible = false;
@@ -28,7 +32,6 @@ public class ItemGiver : MonoBehaviour, ISaveable, IInteractible
             gameObject.SetActive(false);
         else
         {
-            // Use startInteractible to decide initial state
             if (startInteractible)
                 EnableInteraction();
             else
@@ -90,6 +93,43 @@ public class ItemGiver : MonoBehaviour, ISaveable, IInteractible
             wasGiven = true;
             if (hideAfterPickup) gameObject.SetActive(false);
         }
+    }
+
+    public void GiveAmmo()
+    {
+        if (!interactible) return;
+        if (wasGiven) return;
+
+        if (playerInventory == null)
+        {
+            Debug.LogError($"ItemGiver: {name} no Inventory found.");
+            return;
+        }
+
+        if (string.IsNullOrEmpty(weaponID))
+        {
+            Debug.LogWarning($"ItemGiver: {name} no weaponID set for ammo pickup.");
+            return;
+        }
+
+        if (ammoAmount <= 0)
+        {
+            Debug.LogWarning($"ItemGiver: {name} ammoAmount is 0 or negative.");
+            return;
+        }
+
+        playerInventory.AddAmmo(weaponID, 0, ammoAmount);
+
+        if (NotificationManager.Instance != null)
+        {
+            string displayName = weaponID;
+            if (weaponID == "Gun") displayName = "Pistol";
+            else if (weaponID == "Spray") displayName = "Spray";
+            NotificationManager.Instance.NotifyBottom($"+{ammoAmount} {displayName} Ammo");
+        }
+
+        wasGiven = true;
+        if (hideAfterPickup) gameObject.SetActive(false);
     }
 
     public void EnableInteraction()
