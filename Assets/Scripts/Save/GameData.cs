@@ -8,6 +8,14 @@ public class ComponentState
     public string state;   // flexible string – e.g., "Open", "Closed", "Active", "Inactive", "Used", "90"
 }
 
+[System.Serializable]
+public class AmmoEntry
+{
+    public string weaponID;
+    public int magazine;
+    public int reserve;
+}
+
 [Serializable]
 public class GameData
 {
@@ -16,6 +24,9 @@ public class GameData
     public string currentEquipment;
     public float playerBaseTemperature = 70f;
     public float playerBatteryAmt = 100f;
+
+    // Ammo
+    public List<AmmoEntry> weaponAmmo = new List<AmmoEntry>();
 
     // Collectibles
     public List<string> collectedAccessItems = new List<string>();
@@ -29,5 +40,4 @@ public class GameData
     // Future expansions (uncomment as needed)
     // public string currentScene;
     // public Vector3 playerPosition;
-    // public List<string> unlockedDoors;
 }

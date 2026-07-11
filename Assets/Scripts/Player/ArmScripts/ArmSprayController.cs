@@ -1,29 +1,27 @@
 using UnityEngine;
+using System.Collections;
+using UnityEngine.Rendering.Universal;
 
 public class ArmSprayController : ArmController
 {
-    [Header("Spray Settings")]
     [SerializeField] private float minAngle = -20f;
     [SerializeField] private float maxAngle = 80f;
 
-    [Header("Spray Effect")]
     [SerializeField] private ParticleSystem sprayEffect;
     [SerializeField] private Transform fireDirection;
     [SerializeField] private float spraySpeed = 5f;
     [SerializeField] private float emissionRate = 50f;
 
-    [Header("Temperature Drain")]
+    [SerializeField] private float ammoPerSecond = 10f;
+
     [SerializeField] private float tempDrainPerSecond = 10f;
 
-    [Header("Recoil")]
     [SerializeField] private float recoilOffset = 0.2f;
     [SerializeField] private float recoilReturnSpeed = 10f;
 
-    [Header("Screen Shake")]
     [SerializeField] private float shakeIntensity = 0.3f;
     [SerializeField] private float shakeFrequency = 60f;
 
-    [Header("Thermal")]
     [SerializeField] private ThermalObject armThermalObject;
     [SerializeField] private ThermalObject bodyThermalObject;
 
@@ -36,6 +34,7 @@ public class ArmSprayController : ArmController
     private float returnT = 0f;
     private float shakeTimer = 0f;
     private ParticleSystem.EmissionModule emissionModule;
+    private float ammoTimer = 0f;
 
     protected override void Start()
     {
@@ -74,14 +73,29 @@ public class ArmSprayController : ArmController
 
         AimAtMouse();
         HandleShooting();
+        HandleReload();
 
         if (isSpraying)
         {
             UpdateSprayDirection();
 
-            // Drain temperature each second while spraying
             if (thermalRegulator != null)
                 thermalRegulator.ChangeGlobalCurrentTemperature(-tempDrainPerSecond * Time.deltaTime);
+
+            if (player != null && player.inventory != null)
+            {
+                ammoTimer += Time.deltaTime;
+                float interval = 1f / ammoPerSecond;
+                if (ammoTimer >= interval)
+                {
+                    if (!player.inventory.UseAmmo("Spray", 1))
+                    {
+                        StopSpray();
+                        return;
+                    }
+                    ammoTimer = 0f;
+                }
+            }
         }
 
         if (isReturning)
@@ -135,9 +149,26 @@ public class ArmSprayController : ArmController
     {
         bool wantsSpray = Input.GetMouseButton(0);
         if (wantsSpray && !isSpraying)
-            StartSpray();
+        {
+            if (player != null && player.inventory != null)
+            {
+                var ammo = player.inventory.GetAmmo("Spray");
+                if (ammo.magazine <= 0) return;
+                StartSpray();
+            }
+            else StartSpray();
+        }
         else if (!wantsSpray && isSpraying)
             StopSpray();
+    }
+
+    private void HandleReload()
+    {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            if (player != null && player.inventory != null)
+                player.inventory.Reload("Spray");
+        }
     }
 
     private void UpdateSprayDirection()
@@ -156,6 +187,7 @@ public class ArmSprayController : ArmController
     {
         isSpraying = true;
         isReturning = false;
+        ammoTimer = 0f;
 
         if (sprayEffect != null)
         {

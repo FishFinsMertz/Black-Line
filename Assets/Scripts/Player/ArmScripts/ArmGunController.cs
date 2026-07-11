@@ -52,6 +52,7 @@ public class ArmGunController : ArmController
 
         AimAtMouse();
         HandleShooting();
+        HandleReload();
     }
 
     private void AimAtMouse()
@@ -82,10 +83,12 @@ public class ArmGunController : ArmController
         if (bulletPrefab == null || firePoint == null) return;
         if (Time.time < nextFireTime) return;
 
+        if (player == null || player.inventory == null) return;
+        if (!player.inventory.UseAmmo("Gun")) return;
+
         float fireDelay = fireRate > 0 ? 1f / fireRate : 0f;
         nextFireTime = Time.time + fireDelay;
 
-        // Spawn bullet
         Vector2 direction = (firePoint.position - directionIndicator.position).normalized;
         GameObject bullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
         GunBullet bulletScript = bullet.GetComponent<GunBullet>();
@@ -96,7 +99,6 @@ public class ArmGunController : ArmController
             bulletScript.Initialize(direction);
         }
 
-        // Increase temperature
         if (armThermalObject != null)
             armThermalObject.ChangeCurrentTemperature(20f);
         if (bodyThermalObject != null)
@@ -109,6 +111,15 @@ public class ArmGunController : ArmController
             StartCoroutine(Recoil());
     }
 
+    private void HandleReload()
+    {
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            if (player != null && player.inventory != null)
+                player.inventory.Reload("Gun");
+        }
+    }
+
     private IEnumerator Recoil()
     {
         isRecoiling = true;
@@ -116,7 +127,6 @@ public class ArmGunController : ArmController
         float elapsed = 0f;
         float halfDuration = recoilDuration / 2f;
 
-        // Move backward
         Vector3 startPos = originalLocalPosition;
         Vector3 recoilPos = startPos + Vector3.left * recoilStrength;
 
@@ -129,7 +139,6 @@ public class ArmGunController : ArmController
         }
         transform.localPosition = recoilPos;
 
-        // Return to original
         elapsed = 0f;
         while (elapsed < halfDuration)
         {
