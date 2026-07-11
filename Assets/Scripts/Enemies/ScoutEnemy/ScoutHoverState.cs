@@ -9,6 +9,7 @@ public class ScoutHoverState : EnemyState
     private float retargetTimer;
     private float attackCooldownTimer;
     private Vector2 smoothedVelocity;
+    private float spinTimer;
 
     public ScoutHoverState(ScoutController scout) : base(scout)
     {
@@ -20,6 +21,7 @@ public class ScoutHoverState : EnemyState
         retargetTimer = 0f;
         attackCooldownTimer = 0f;
         smoothedVelocity = Vector2.zero;
+        spinTimer = 0f;
         scout.animator.SetBool("isIdle", true);
         FindHoverTarget();
         GenerateOrbitOffset();
@@ -78,7 +80,7 @@ public class ScoutHoverState : EnemyState
 
             Vector2 direction = t.transform.position - scout.transform.position;
             RaycastHit2D hit = Physics2D.Raycast(scout.transform.position, direction, dist, scout.obstacleMask);
-            if (hit.collider != null) continue; 
+            if (hit.collider != null) continue;
 
             float temp = t.GetCurrentTemperature();
             if (temp > bestTemp)
@@ -106,7 +108,6 @@ public class ScoutHoverState : EnemyState
         );
     }
 
-    // Cast rays in 8 directions and push away from nearby walls
     private Vector2 GetWallRepulsion()
     {
         Vector2 repulsion = Vector2.zero;
@@ -158,23 +159,43 @@ public class ScoutHoverState : EnemyState
 
     private void RotateTowardMovement()
     {
-        if (smoothedVelocity.sqrMagnitude < 0.05f)
+        Vector2 actualVelocity = scout.rb.linearVelocity;
+
+        if (actualVelocity.sqrMagnitude < 0.05f)
         {
-            scout.transform.rotation = Quaternion.Lerp(scout.transform.rotation, Quaternion.identity, scout.tiltSpeed * Time.deltaTime);
+            scout.transform.rotation = Quaternion.Lerp(scout.transform.rotation, Quaternion.identity, 5f * Time.deltaTime);
+            spinTimer = 0f;
             return;
         }
 
-        float angle = Mathf.Atan2(smoothedVelocity.y, smoothedVelocity.x) * Mathf.Rad2Deg;
-        
-        // Clamp angle to avoid extreme tilts
+        float angle = Mathf.Atan2(actualVelocity.y, actualVelocity.x) * Mathf.Rad2Deg;
         float clampedAngle = Mathf.Clamp(angle, -scout.maxTiltAngle, scout.maxTiltAngle);
 
         Quaternion targetRot = Quaternion.Euler(0f, 0f, clampedAngle);
+
+        float currentAngle = scout.transform.eulerAngles.z;
+        float angleDelta = Mathf.DeltaAngle(currentAngle, clampedAngle);
+        if (Mathf.Abs(angleDelta) > 45f && actualVelocity.sqrMagnitude < 0.2f)
+        {
+            scout.transform.rotation = Quaternion.Lerp(scout.transform.rotation, Quaternion.identity, 3f * Time.deltaTime);
+            spinTimer = 0f;
+            return;
+        }
+
+        float maxDegreesPerSec = scout.tiltSpeed * 60f;
         scout.transform.rotation = Quaternion.RotateTowards(
             scout.transform.rotation,
             targetRot,
-            scout.tiltSpeed * Time.deltaTime
+            maxDegreesPerSec * Time.deltaTime
         );
+
+        // Emergency reset if spinning too long
+        spinTimer += Time.deltaTime;
+        if (spinTimer > 2f)
+        {
+            scout.transform.rotation = Quaternion.identity;
+            spinTimer = 0f;
+        }
     }
 
     private void TryAttackPlayer()
@@ -186,7 +207,6 @@ public class ScoutHoverState : EnemyState
         if (pc != null)
             pc.TakeDamage(scout.damage);
 
-        //Debug.Log($"[Scout] Attacked player for {scout.damage} damage.");
         attackCooldownTimer = scout.attackCooldown;
     }
 
