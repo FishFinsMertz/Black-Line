@@ -95,7 +95,7 @@ public class ArmGunController : ArmController
         if (bulletScript != null)
         {
             if (camController != null)
-                camController.TriggerShake(0.5f, 0.3f, 1f);
+                camController.TriggerShake(0.7f, 0.5f, 1f);
             bulletScript.Initialize(direction);
         }
 

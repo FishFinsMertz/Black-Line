@@ -4,17 +4,19 @@ using System.Linq;
 
 public class Inventory : MonoBehaviour, ISaveable
 {
-    public enum EquipmentType { None, Gun, Spray }
+    public enum EquipmentType { None, Spray, Gun }
 
     [Header("Arm References")]
     [SerializeField] private GameObject emptyHandArm;
-    [SerializeField] private GameObject gunArm;
     [SerializeField] private GameObject sprayArm;
+    [SerializeField] private GameObject gunArm;
 
     private EquipmentType currentEquipment = EquipmentType.None;
     private HashSet<string> ownedItems = new HashSet<string>();
     private Dictionary<string, (int magazine, int reserve)> ammoData = new Dictionary<string, (int, int)>();
     private PlayerController playerController;
+
+    private List<EquipmentType> ownedWeapons = new List<EquipmentType>();
 
     private void Start()
     {
@@ -22,6 +24,15 @@ public class Inventory : MonoBehaviour, ISaveable
         SaveManager.Instance?.Register(this);
         if (!ownedItems.Contains("None"))
             ownedItems.Add("None");
+        UpdateOwnedWeaponsList();
+    }
+
+    private void UpdateOwnedWeaponsList()
+    {
+        ownedWeapons.Clear();
+        ownedWeapons.Add(EquipmentType.None);
+        if (ownedItems.Contains("Spray")) ownedWeapons.Add(EquipmentType.Spray);
+        if (ownedItems.Contains("Gun")) ownedWeapons.Add(EquipmentType.Gun);
     }
 
     public void Load(GameData data)
@@ -38,12 +49,13 @@ public class Inventory : MonoBehaviour, ISaveable
         }
 
         EquipmentType loadedEquip = EquipmentType.None;
-        if (data.currentEquipment == "Gun") loadedEquip = EquipmentType.Gun;
-        else if (data.currentEquipment == "Spray") loadedEquip = EquipmentType.Spray;
+        if (data.currentEquipment == "Spray") loadedEquip = EquipmentType.Spray;
+        else if (data.currentEquipment == "Gun") loadedEquip = EquipmentType.Gun;
 
         if (!ownedItems.Contains("None"))
             ownedItems.Add("None");
 
+        UpdateOwnedWeaponsList();
         Equip(loadedEquip);
     }
 
@@ -66,16 +78,41 @@ public class Inventory : MonoBehaviour, ISaveable
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1)) Equip(EquipmentType.None);
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            if (ownedItems.Contains("Spray"))
+            {
+                if (currentEquipment == EquipmentType.Spray)
+                    Equip(EquipmentType.None);
+                else
+                    Equip(EquipmentType.Spray);
+            }
+        }
         else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            if (ownedItems.Contains("Spray")) Equip(EquipmentType.Spray);
-            else Debug.Log("Spray not owned.");
+            if (ownedItems.Contains("Gun"))
+            {
+                if (currentEquipment == EquipmentType.Gun)
+                    Equip(EquipmentType.None);
+                else
+                    Equip(EquipmentType.Gun);
+            }
         }
-        else if (Input.GetKeyDown(KeyCode.Alpha3))
+
+        // Scroll wheel cycling
+        float scroll = Input.GetAxis("Mouse ScrollWheel");
+        if (scroll != 0)
         {
-            if (ownedItems.Contains("Gun")) Equip(EquipmentType.Gun);
-            else Debug.Log("Gun not owned.");
+            if (ownedWeapons.Count > 0)
+            {
+                int index = ownedWeapons.IndexOf(currentEquipment);
+                if (index < 0) index = 0;
+                if (scroll > 0)
+                    index = (index + 1) % ownedWeapons.Count;
+                else
+                    index = (index - 1 + ownedWeapons.Count) % ownedWeapons.Count;
+                Equip(ownedWeapons[index]);
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.G)) GiveGun();
@@ -85,26 +122,25 @@ public class Inventory : MonoBehaviour, ISaveable
     private void Equip(EquipmentType type)
     {
         if (currentEquipment == type) return;
+
         if (emptyHandArm) emptyHandArm.SetActive(false);
-        if (gunArm) gunArm.SetActive(false);
         if (sprayArm) sprayArm.SetActive(false);
+        if (gunArm) gunArm.SetActive(false);
 
         switch (type)
         {
             case EquipmentType.None:
                 if (emptyHandArm) emptyHandArm.SetActive(true);
-                currentEquipment = EquipmentType.None;
-                break;
-            case EquipmentType.Gun:
-                if (gunArm) gunArm.SetActive(true);
-                currentEquipment = EquipmentType.Gun;
                 break;
             case EquipmentType.Spray:
                 if (sprayArm) sprayArm.SetActive(true);
-                currentEquipment = EquipmentType.Spray;
+                break;
+            case EquipmentType.Gun:
+                if (gunArm) gunArm.SetActive(true);
                 break;
         }
 
+        currentEquipment = type;
         playerController.bodyAnimator.Play(0);
     }
 
@@ -114,6 +150,7 @@ public class Inventory : MonoBehaviour, ISaveable
         {
             ownedItems.Add("Gun");
             ammoData["Gun"] = (12, 24);
+            UpdateOwnedWeaponsList();
             Equip(EquipmentType.Gun);
             SaveManager.Instance?.RequestSave();
         }
@@ -125,12 +162,12 @@ public class Inventory : MonoBehaviour, ISaveable
         {
             ownedItems.Add("Spray");
             ammoData["Spray"] = (30, 60);
+            UpdateOwnedWeaponsList();
             Equip(EquipmentType.Spray);
             SaveManager.Instance?.RequestSave();
         }
     }
 
-    // ---- Ammo API ----
     public (int magazine, int reserve) GetAmmo(string weaponID)
     {
         if (ammoData.TryGetValue(weaponID, out var ammo))
@@ -184,6 +221,7 @@ public class Inventory : MonoBehaviour, ISaveable
         if (!ownedItems.Contains(itemName))
         {
             ownedItems.Add(itemName);
+            UpdateOwnedWeaponsList();
             SaveManager.Instance?.RequestSave();
         }
     }
