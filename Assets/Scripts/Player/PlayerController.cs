@@ -24,11 +24,6 @@ public class PlayerController : MonoBehaviour
     public float damageFlashRiseDuration = 0.1f;
     public float damageFlashFallDuration = 0.4f;
 
-    [Header("Consumables")]
-    [SerializeField] private string rechargerID = "BatteryRecharger";
-    [SerializeField] private float rechargeAmount = 20f;
-    [SerializeField] private KeyCode useRechargerKey = KeyCode.U;
-
     private GeneralThermalRegulator thermalRegulator;
     [HideInInspector] public Rigidbody2D rb { get; private set; }
     private PlayerState currentState;
@@ -69,9 +64,6 @@ public class PlayerController : MonoBehaviour
         }
 
         currentState?.Update();
-
-        if (Input.GetKeyDown(useRechargerKey))
-            TryUseRecharger();
     }
 
     void FixedUpdate()
@@ -138,29 +130,5 @@ public class PlayerController : MonoBehaviour
     public PlayerState GetPlayerCurrentState()
     {
         return currentState;
-    }
-
-    private void TryUseRecharger()
-    {
-        if (inventory == null || thermalRegulator == null) return;
-
-        if (inventory.GetConsumableCount(rechargerID) <= 0)
-        {
-            NotificationManager.Instance?.NotifyBottom("No battery rechargers left.");
-            return;
-        }
-
-        if (thermalRegulator.GetBatteryLevel() >= 100f)
-        {
-            NotificationManager.Instance?.NotifyBottom("Battery already full!");
-            return;
-        }
-
-        if (inventory.UseConsumable(rechargerID, 1))
-        {
-            thermalRegulator.AddBattery(rechargeAmount);
-            NotificationManager.Instance?.NotifyBottom($"Battery +{rechargeAmount}%");
-            SaveManager.Instance?.RequestSave();
-        }
     }
 }

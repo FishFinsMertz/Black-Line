@@ -17,11 +17,18 @@ public class Inventory : MonoBehaviour, ISaveable
     [SerializeField] private int sprayStartingMagazine = 30;
     [SerializeField] private int sprayStartingReserve = 60;
 
+    [Header("Recharger Settings")]
+    [SerializeField] private string rechargerID = "BatteryRecharger";
+    [SerializeField] private int maxRechargers = 5;
+    [SerializeField] private float rechargeAmount = 20f;
+    [SerializeField] private KeyCode useRechargerKey = KeyCode.F;
+
     private EquipmentType currentEquipment = EquipmentType.None;
     private HashSet<string> ownedItems = new HashSet<string>();
     private Dictionary<string, (int magazine, int reserve)> ammoData = new Dictionary<string, (int, int)>();
     private Dictionary<string, int> consumables = new Dictionary<string, int>();
     private PlayerController playerController;
+    private GeneralThermalRegulator thermalRegulator;
     private List<EquipmentType> ownedWeapons = new List<EquipmentType>();
 
     public System.Action OnConsumablesChanged;
@@ -30,6 +37,7 @@ public class Inventory : MonoBehaviour, ISaveable
     private void Start()
     {
         playerController = GetComponent<PlayerController>();
+        thermalRegulator = GetComponent<GeneralThermalRegulator>();
         SaveManager.Instance?.Register(this);
         if (!ownedItems.Contains("None"))
             ownedItems.Add("None");
@@ -106,20 +114,81 @@ public class Inventory : MonoBehaviour, ISaveable
     // ---- Consumable API ----
     public int GetConsumableCount(string id)
     {
+        if (string.IsNullOrEmpty(id))
+            return 0;
+
         return consumables.TryGetValue(id, out int count) ? count : 0;
     }
 
-    public void AddConsumable(string id, int amount)
+    public string RechargerID => rechargerID;
+    public float RechargeAmount => rechargeAmount;
+    public int MaxRechargers => maxRechargers;
+
+    public bool TryAddConsumable(string id, int amount)
     {
+        if (string.IsNullOrEmpty(id))
+            return false;
+
+        if (id == rechargerID)
+        {
+            int currentCount = consumables.TryGetValue(id, out int count) ? count : 0;
+            int availableSlots = maxRechargers - currentCount;
+            if (availableSlots <= 0)
+            {
+                NotificationManager.Instance?.NotifyBottom($"You already have the maximum {maxRechargers} rechargers.");
+                OnConsumablesChanged?.Invoke();
+                return false;
+            }
+
+            amount = Mathf.Min(amount, availableSlots);
+            if (amount <= 0)
+            {
+                NotificationManager.Instance?.NotifyBottom($"You already have the maximum {maxRechargers} rechargers.");
+                OnConsumablesChanged?.Invoke();
+                return false;
+            }
+        }
+
         if (consumables.ContainsKey(id))
             consumables[id] += amount;
         else
             consumables[id] = amount;
         OnConsumablesChanged?.Invoke();
+        return true;
+    }
+
+    public bool TryUseRecharger()
+    {
+        if (thermalRegulator == null) return false;
+
+        if (GetConsumableCount(rechargerID) <= 0)
+        {
+            NotificationManager.Instance?.NotifyBottom("No battery rechargers left.");
+            return false;
+        }
+
+        if (thermalRegulator.GetBatteryLevel() >= 100f)
+        {
+            NotificationManager.Instance?.NotifyBottom("Battery already full!");
+            return false;
+        }
+
+        if (UseConsumable(rechargerID, 1))
+        {
+            thermalRegulator.AddBattery(rechargeAmount);
+            NotificationManager.Instance?.NotifyBottom($"Battery +{rechargeAmount}%");
+            SaveManager.Instance?.RequestSave();
+            return true;
+        }
+
+        return false;
     }
 
     public bool UseConsumable(string id, int amount = 1)
     {
+        if (string.IsNullOrEmpty(id))
+            return false;
+
         if (!consumables.ContainsKey(id) || consumables[id] < amount)
             return false;
         consumables[id] -= amount;
@@ -203,6 +272,9 @@ public class Inventory : MonoBehaviour, ISaveable
                     Equip(EquipmentType.Gun);
             }
         }
+
+        if (Input.GetKeyDown(useRechargerKey))
+            TryUseRecharger();
 
         float scroll = Input.GetAxis("Mouse ScrollWheel");
         if (scroll != 0)

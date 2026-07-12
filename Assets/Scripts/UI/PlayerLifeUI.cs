@@ -13,7 +13,6 @@ public class PlayerLifeUI : MonoBehaviour
     [Header("Recharger UI")]
     [SerializeField] private CanvasGroup rechargerGroup;
     [SerializeField] private TextMeshProUGUI rechargerCountText;
-    [SerializeField] private string rechargerID = "BatteryRecharger";
 
     [Header("Body Colors")]
     [SerializeField] private Color batteryColor = Color.white;
@@ -38,6 +37,7 @@ public class PlayerLifeUI : MonoBehaviour
     private Inventory inventory;
     private float flashTimer = 0f;
     private Coroutine damageFlashCoroutine;
+    private string rechargerID;
 
     private void Awake()
     {
@@ -47,6 +47,8 @@ public class PlayerLifeUI : MonoBehaviour
             Debug.LogWarning("PlayerLifeUI: No GeneralThermalRegulator found.");
         if (inventory == null)
             Debug.LogWarning("PlayerLifeUI: No Inventory found.");
+        else
+            rechargerID = inventory.RechargerID;
     }
 
     private void OnEnable()
@@ -54,6 +56,7 @@ public class PlayerLifeUI : MonoBehaviour
         PlayerController.OnPlayerDamaged += FlashDamage;
         if (inventory != null)
         {
+            rechargerID = inventory.RechargerID;
             inventory.OnConsumablesChanged += UpdateRechargerUI;
             inventory.OnConsumableUsed += OnConsumableUsed;
             UpdateRechargerUI();
@@ -125,6 +128,9 @@ public class PlayerLifeUI : MonoBehaviour
     private void UpdateRechargerUI()
     {
         if (inventory == null) return;
+        if (string.IsNullOrEmpty(rechargerID))
+            rechargerID = inventory.RechargerID;
+
         int count = inventory.GetConsumableCount(rechargerID);
         bool hasAny = count > 0;
 

@@ -159,16 +159,19 @@ public class ItemGiver : MonoBehaviour, ISaveable, IInteractible
             return;
         }
 
-        playerInventory.AddConsumable(consumableID, consumableAmount);
+        bool accepted = playerInventory.TryAddConsumable(consumableID, consumableAmount);
 
-        if (NotificationManager.Instance != null)
+        if (accepted)
         {
-            string displayName = consumableID == "BatteryRecharger" ? "Battery Recharger" : consumableID;
-            NotificationManager.Instance.NotifyBottom($"+{consumableAmount} {displayName}");
-        }
+            if (NotificationManager.Instance != null)
+            {
+                string displayName = consumableID == "BatteryRecharger" ? "Battery Recharger" : consumableID;
+                NotificationManager.Instance.NotifyBottom($"+{consumableAmount} {displayName}");
+            }
 
-        wasGiven = true;
-        if (hideAfterPickup) gameObject.SetActive(false);
+            wasGiven = true;
+            if (hideAfterPickup) gameObject.SetActive(false);
+        }
     }
 
     public void EnableInteraction()
