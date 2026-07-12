@@ -416,15 +416,14 @@ MonoBehaviour:
   parentGroup: {fileID: 6135226944858480306}
   fadeDelay: 3
   fadeDuration: 0.25
-  spraySlot: {fileID: 4302289286464867702}
-  gunSlot: {fileID: 4074373445084849510}
+  hideFadeDuration: 0.2
+  spraySlot: {fileID: 7228142189144964507}
+  gunSlot: {fileID: 7492281328566990998}
   dimAlpha: 0.1
   sprayIcon: {fileID: 8754335884897886203}
   gunIcon: {fileID: 9064456445409331181}
   weaponNameText: {fileID: 6459408669372784020}
   ammoText: {fileID: 4350009412515524544}
-  unequippedName: 
-  unequippedAmmo: 
   sprayDisplayName: Cryospray
   gunDisplayName: Vycor THR-12
 --- !u!1 &1693181863959262002
@@ -1261,7 +1260,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1162767936347061119}
-  - component: {fileID: 4074373445084849510}
+  - component: {fileID: 7492281328566990998}
   m_Layer: 5
   m_Name: Box2
   m_TagString: Untagged
@@ -1291,7 +1290,7 @@ RectTransform:
   m_AnchoredPosition: {x: 10, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!225 &4074373445084849510
+--- !u!225 &7492281328566990998
 CanvasGroup:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1301,7 +1300,7 @@ CanvasGroup:
   m_Enabled: 1
   m_Alpha: 0.1
   m_Interactable: 1
-  m_BlocksRaycasts: 0
+  m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
 --- !u!1 &3705908823871989921
 GameObject:
@@ -2142,7 +2141,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2447605125132793248}
-  - component: {fileID: 1946193675817740119}
+  - component: {fileID: 5435557228141681055}
   m_Layer: 5
   m_Name: Box3
   m_TagString: Untagged
@@ -2171,7 +2170,7 @@ RectTransform:
   m_AnchoredPosition: {x: 20, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!225 &1946193675817740119
+--- !u!225 &5435557228141681055
 CanvasGroup:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2181,7 +2180,7 @@ CanvasGroup:
   m_Enabled: 1
   m_Alpha: 0.1
   m_Interactable: 1
-  m_BlocksRaycasts: 0
+  m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
 --- !u!1 &7775017616710806013
 GameObject:
@@ -2192,7 +2191,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1750146228827166695}
-  - component: {fileID: 4302289286464867702}
+  - component: {fileID: 7228142189144964507}
   m_Layer: 5
   m_Name: Box1
   m_TagString: Untagged
@@ -2222,7 +2221,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!225 &4302289286464867702
+--- !u!225 &7228142189144964507
 CanvasGroup:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2232,7 +2231,7 @@ CanvasGroup:
   m_Enabled: 1
   m_Alpha: 0.1
   m_Interactable: 1
-  m_BlocksRaycasts: 0
+  m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
 --- !u!1 &8113917587659872988
 GameObject:
@@ -2367,7 +2366,6 @@ MonoBehaviour:
   outlineImage: {fileID: 4345386908757260774}
   rechargerGroup: {fileID: 5331138619875409873}
   rechargerCountText: {fileID: 2546872426505492203}
-  rechargerID: BatteryRecharger
   batteryColor: {r: 1, g: 0.80784315, b: 0.3764706, a: 1}
   neutralColor: {r: 1, g: 1, b: 1, a: 1}
   coldColor: {r: 0.07058824, g: 0.29803923, b: 0.54901963, a: 1}

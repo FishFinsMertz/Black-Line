@@ -22,18 +22,14 @@ public class WeaponUI : MonoBehaviour
     [Header("Ammo & Name")]
     [SerializeField] private TextMeshProUGUI weaponNameText;
     [SerializeField] private TextMeshProUGUI ammoText;
-    [SerializeField] private string unequippedName = "None";
-    [SerializeField] private string unequippedAmmo = "∞";
     [SerializeField] private string sprayDisplayName = "Spray";
     [SerializeField] private string gunDisplayName = "Gun";
 
     private Inventory inventory;
     private PlayerController player;
-    private Inventory.EquipmentType lastEquipment;
     private float inactivityTimer = 0f;
     private float targetAlpha = 0f;
     private bool wasClimbing = false;
-    private bool suppressNextEquipmentChange = false;
 
     private bool lastSprayOwned = false;
     private bool lastGunOwned = false;
@@ -49,68 +45,77 @@ public class WeaponUI : MonoBehaviour
             return;
         }
 
-        lastEquipment = inventory.GetCurrentEquipment();
+        inventory.OnEquipmentChanged += OnEquipmentChanged;
+
         parentGroup.alpha = 0f;
         inactivityTimer = 0f;
         targetAlpha = 0f;
 
         ApplyOwnershipIcons();
-        UpdateSlots();
-        UpdateAmmoDisplay();
+        UpdateSlots(inventory.GetCurrentEquipment());
+        UpdateAmmoDisplay(inventory.GetCurrentEquipment());
+    }
+
+    private void OnDestroy()
+    {
+        if (inventory != null)
+            inventory.OnEquipmentChanged -= OnEquipmentChanged;
+    }
+
+    private void OnEquipmentChanged(Inventory.EquipmentType newEquipment)
+    {
+        UpdateSlots(newEquipment);
+        UpdateAmmoDisplay(newEquipment);
+
+        if (newEquipment == Inventory.EquipmentType.None)
+        {
+            inactivityTimer = 0f;
+            targetAlpha = 0f;
+            parentGroup.alpha = 0f;
+        }
+        else
+        {
+            bool isClimbing = player != null && player.GetCurrentState() is PlayerClimbingState;
+            if (!isClimbing && !wasClimbing)
+                inactivityTimer = fadeDelay;
+        }
+
+        ApplyOwnershipIcons();
     }
 
     private void Update()
     {
         if (inventory == null) return;
 
-        bool isClimbing = player != null && player.GetCurrentState() is PlayerClimbingState;
         var current = inventory.GetCurrentEquipment();
+        bool isClimbing = player != null && player.GetCurrentState() is PlayerClimbingState;
 
         if (isClimbing)
         {
             targetAlpha = 0f;
+            inactivityTimer = 0f;
             wasClimbing = true;
-            suppressNextEquipmentChange = true;
+        }
+        else if (wasClimbing)
+        {
+            wasClimbing = false;
+            inactivityTimer = 0f;
+            targetAlpha = 0f;
+        }
+        else if (current == Inventory.EquipmentType.None)
+        {
+            targetAlpha = 0f;
+            inactivityTimer = 0f;
         }
         else
         {
-            if (wasClimbing)
-            {
-                inactivityTimer = 0f;
-                targetAlpha = 0f;
-                wasClimbing = false;
-                suppressNextEquipmentChange = true;
-            }
-
-            if (current != lastEquipment)
-            {
-                lastEquipment = current;
-                UpdateSlots();
-                UpdateAmmoDisplay();
-
-                if (suppressNextEquipmentChange)
-                {
-                    suppressNextEquipmentChange = false;
-                }
-                else
-                {
-                    inactivityTimer = fadeDelay;
-                }
-            }
-
-            if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Alpha2) || Input.GetAxis("Mouse ScrollWheel") != 0)
-            {
-                inactivityTimer = fadeDelay;
-            }
-
-            UpdateAmmoDisplay();
+            UpdateAmmoDisplay(current);
             CheckOwnershipChange();
 
-            if (current == Inventory.EquipmentType.None)
-            {
-                targetAlpha = 0f;
-            }
-            else if (inactivityTimer > 0)
+            if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Alpha2) || Input.GetAxis("Mouse ScrollWheel") != 0)
+                inactivityTimer = fadeDelay;
+
+            if (inactivityTimer > 0)
             {
                 inactivityTimer -= Time.deltaTime;
                 targetAlpha = 1f;
@@ -127,9 +132,9 @@ public class WeaponUI : MonoBehaviour
             parentGroup.alpha = 0f;
     }
 
-    private void UpdateSlots()
+    private void UpdateSlots(Inventory.EquipmentType current)
     {
-        var current = inventory.GetCurrentEquipment();
+        if (current == Inventory.EquipmentType.None) return;
         SetSlotAlpha(spraySlot, current == Inventory.EquipmentType.Spray);
         SetSlotAlpha(gunSlot, current == Inventory.EquipmentType.Gun);
     }
@@ -140,10 +145,8 @@ public class WeaponUI : MonoBehaviour
         slot.alpha = isEquipped ? 1f : dimAlpha;
     }
 
-    private void UpdateAmmoDisplay()
+    private void UpdateAmmoDisplay(Inventory.EquipmentType current)
     {
-        var current = inventory.GetCurrentEquipment();
-
         if (current == Inventory.EquipmentType.None)
         {
             if (weaponNameText != null) weaponNameText.text = "";
@@ -189,7 +192,6 @@ public class WeaponUI : MonoBehaviour
         {
             lastSprayOwned = sprayOwned;
             lastGunOwned = gunOwned;
-
             if (sprayIcon != null) sprayIcon.enabled = sprayOwned;
             if (gunIcon != null) gunIcon.enabled = gunOwned;
         }

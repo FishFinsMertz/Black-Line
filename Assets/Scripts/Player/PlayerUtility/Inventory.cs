@@ -33,6 +33,7 @@ public class Inventory : MonoBehaviour, ISaveable
 
     public System.Action OnConsumablesChanged;
     public System.Action<string, int> OnConsumableUsed;
+    public System.Action<EquipmentType> OnEquipmentChanged;
 
     private void Start()
     {
@@ -60,17 +61,13 @@ public class Inventory : MonoBehaviour, ISaveable
 
         ammoData.Clear();
         if (data.weaponAmmo != null)
-        {
             foreach (var entry in data.weaponAmmo)
                 ammoData[entry.weaponID] = (entry.magazine, entry.reserve);
-        }
 
         consumables.Clear();
         if (data.consumables != null)
-        {
             foreach (var entry in data.consumables)
                 consumables[entry.id] = entry.amount;
-        }
 
         EquipmentType loadedEquip = EquipmentType.None;
         if (data.currentEquipment == "Spray") loadedEquip = EquipmentType.Spray;
@@ -91,32 +88,16 @@ public class Inventory : MonoBehaviour, ISaveable
 
         data.weaponAmmo = new List<AmmoEntry>();
         foreach (var kvp in ammoData)
-        {
-            data.weaponAmmo.Add(new AmmoEntry
-            {
-                weaponID = kvp.Key,
-                magazine = kvp.Value.magazine,
-                reserve = kvp.Value.reserve
-            });
-        }
+            data.weaponAmmo.Add(new AmmoEntry { weaponID = kvp.Key, magazine = kvp.Value.magazine, reserve = kvp.Value.reserve });
 
         data.consumables = new List<ConsumableEntry>();
         foreach (var kvp in consumables)
-        {
-            data.consumables.Add(new ConsumableEntry
-            {
-                id = kvp.Key,
-                amount = kvp.Value
-            });
-        }
+            data.consumables.Add(new ConsumableEntry { id = kvp.Key, amount = kvp.Value });
     }
 
-    // ---- Consumable API ----
     public int GetConsumableCount(string id)
     {
-        if (string.IsNullOrEmpty(id))
-            return 0;
-
+        if (string.IsNullOrEmpty(id)) return 0;
         return consumables.TryGetValue(id, out int count) ? count : 0;
     }
 
@@ -126,8 +107,7 @@ public class Inventory : MonoBehaviour, ISaveable
 
     public bool TryAddConsumable(string id, int amount)
     {
-        if (string.IsNullOrEmpty(id))
-            return false;
+        if (string.IsNullOrEmpty(id)) return false;
 
         if (id == rechargerID)
         {
@@ -139,7 +119,6 @@ public class Inventory : MonoBehaviour, ISaveable
                 OnConsumablesChanged?.Invoke();
                 return false;
             }
-
             amount = Mathf.Min(amount, availableSlots);
             if (amount <= 0)
             {
@@ -186,11 +165,8 @@ public class Inventory : MonoBehaviour, ISaveable
 
     public bool UseConsumable(string id, int amount = 1)
     {
-        if (string.IsNullOrEmpty(id))
-            return false;
-
-        if (!consumables.ContainsKey(id) || consumables[id] < amount)
-            return false;
+        if (string.IsNullOrEmpty(id)) return false;
+        if (!consumables.ContainsKey(id) || consumables[id] < amount) return false;
         consumables[id] -= amount;
         if (consumables[id] <= 0)
             consumables.Remove(id);
@@ -199,11 +175,9 @@ public class Inventory : MonoBehaviour, ISaveable
         return true;
     }
 
-    // ---- Ammo API ----
     public (int magazine, int reserve) GetAmmo(string weaponID)
     {
-        if (ammoData.TryGetValue(weaponID, out var ammo))
-            return ammo;
+        if (ammoData.TryGetValue(weaponID, out var ammo)) return ammo;
         return (0, 0);
     }
 
@@ -249,7 +223,6 @@ public class Inventory : MonoBehaviour, ISaveable
         return 0;
     }
 
-    // ---- Equipment & Inventory ----
     private void Update()
     {
         bool isClimbing = playerController != null && playerController.GetCurrentState() is PlayerClimbingState;
@@ -263,40 +236,26 @@ public class Inventory : MonoBehaviour, ISaveable
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             if (ownedItems.Contains("Spray"))
-            {
-                if (currentEquipment == EquipmentType.Spray)
-                    Equip(EquipmentType.None);
-                else
-                    Equip(EquipmentType.Spray);
-            }
+                Equip(currentEquipment == EquipmentType.Spray ? EquipmentType.None : EquipmentType.Spray);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             if (ownedItems.Contains("Gun"))
-            {
-                if (currentEquipment == EquipmentType.Gun)
-                    Equip(EquipmentType.None);
-                else
-                    Equip(EquipmentType.Gun);
-            }
+                Equip(currentEquipment == EquipmentType.Gun ? EquipmentType.None : EquipmentType.Gun);
         }
 
         if (Input.GetKeyDown(useRechargerKey))
             TryUseRecharger();
 
         float scroll = Input.GetAxis("Mouse ScrollWheel");
-        if (scroll != 0)
+        if (scroll != 0 && ownedWeapons.Count > 0)
         {
-            if (ownedWeapons.Count > 0)
-            {
-                int index = ownedWeapons.IndexOf(currentEquipment);
-                if (index < 0) index = 0;
-                if (scroll > 0)
-                    index = (index + 1) % ownedWeapons.Count;
-                else
-                    index = (index - 1 + ownedWeapons.Count) % ownedWeapons.Count;
-                Equip(ownedWeapons[index]);
-            }
+            int index = ownedWeapons.IndexOf(currentEquipment);
+            if (index < 0) index = 0;
+            index = scroll > 0
+                ? (index + 1) % ownedWeapons.Count
+                : (index - 1 + ownedWeapons.Count) % ownedWeapons.Count;
+            Equip(ownedWeapons[index]);
         }
 
         if (Input.GetKeyDown(KeyCode.G)) GiveGun();
@@ -309,6 +268,7 @@ public class Inventory : MonoBehaviour, ISaveable
             return;
 
         if (currentEquipment == type) return;
+
         if (emptyHandArm) emptyHandArm.SetActive(false);
         if (sprayArm) sprayArm.SetActive(false);
         if (gunArm) gunArm.SetActive(false);
@@ -328,6 +288,7 @@ public class Inventory : MonoBehaviour, ISaveable
 
         currentEquipment = type;
         playerController.bodyAnimator.Play(0);
+        OnEquipmentChanged?.Invoke(currentEquipment);
     }
 
     public void GiveGun()
@@ -355,6 +316,7 @@ public class Inventory : MonoBehaviour, ISaveable
     }
 
     public bool IsItemOwned(string itemName) => ownedItems.Contains(itemName);
+
     public void AddItem(string itemName)
     {
         if (!ownedItems.Contains(itemName))
