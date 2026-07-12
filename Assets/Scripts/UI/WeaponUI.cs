@@ -8,6 +8,7 @@ public class WeaponUI : MonoBehaviour
     [SerializeField] private CanvasGroup parentGroup;
     [SerializeField] private float fadeDelay = 3f;
     [SerializeField] private float fadeDuration = 0.5f;
+    [SerializeField] private float hideFadeDuration = 0.2f;
 
     [Header("Slots")]
     [SerializeField] private CanvasGroup spraySlot;
@@ -21,15 +22,18 @@ public class WeaponUI : MonoBehaviour
     [Header("Ammo & Name")]
     [SerializeField] private TextMeshProUGUI weaponNameText;
     [SerializeField] private TextMeshProUGUI ammoText;
-    [SerializeField] private string unequippedName;
-    [SerializeField] private string unequippedAmmo;
-    [SerializeField] private string sprayDisplayName;
-    [SerializeField] private string gunDisplayName;
+    [SerializeField] private string unequippedName = "None";
+    [SerializeField] private string unequippedAmmo = "∞";
+    [SerializeField] private string sprayDisplayName = "Spray";
+    [SerializeField] private string gunDisplayName = "Gun";
 
     private Inventory inventory;
+    private PlayerController player;
     private Inventory.EquipmentType lastEquipment;
     private float inactivityTimer = 0f;
-    private bool isFadingOut = false;
+    private float targetAlpha = 0f;
+    private bool wasClimbing = false;
+    private bool suppressNextEquipmentChange = false;
 
     private bool lastSprayOwned = false;
     private bool lastGunOwned = false;
@@ -37,6 +41,8 @@ public class WeaponUI : MonoBehaviour
     private void Start()
     {
         inventory = FindFirstObjectByType<Inventory>();
+        player = FindFirstObjectByType<PlayerController>();
+
         if (inventory == null)
         {
             Debug.LogWarning("WeaponUI: No Inventory found.");
@@ -44,10 +50,9 @@ public class WeaponUI : MonoBehaviour
         }
 
         lastEquipment = inventory.GetCurrentEquipment();
-
-        // Start hidden
         parentGroup.alpha = 0f;
         inactivityTimer = 0f;
+        targetAlpha = 0f;
 
         ApplyOwnershipIcons();
         UpdateSlots();
@@ -58,48 +63,68 @@ public class WeaponUI : MonoBehaviour
     {
         if (inventory == null) return;
 
+        bool isClimbing = player != null && player.GetCurrentState() is PlayerClimbingState;
         var current = inventory.GetCurrentEquipment();
-        if (current != lastEquipment)
+
+        if (isClimbing)
         {
-            lastEquipment = current;
-            UpdateSlots();
+            targetAlpha = 0f;
+            wasClimbing = true;
+            suppressNextEquipmentChange = true;
+        }
+        else
+        {
+            if (wasClimbing)
+            {
+                inactivityTimer = 0f;
+                targetAlpha = 0f;
+                wasClimbing = false;
+                suppressNextEquipmentChange = true;
+            }
+
+            if (current != lastEquipment)
+            {
+                lastEquipment = current;
+                UpdateSlots();
+                UpdateAmmoDisplay();
+
+                if (suppressNextEquipmentChange)
+                {
+                    suppressNextEquipmentChange = false;
+                }
+                else
+                {
+                    inactivityTimer = fadeDelay;
+                }
+            }
+
+            if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Alpha2) || Input.GetAxis("Mouse ScrollWheel") != 0)
+            {
+                inactivityTimer = fadeDelay;
+            }
+
             UpdateAmmoDisplay();
-            ShowUI();
-        }
+            CheckOwnershipChange();
 
-        if (Input.GetKeyDown(KeyCode.Alpha1) || Input.GetKeyDown(KeyCode.Alpha2) || Input.GetAxis("Mouse ScrollWheel") != 0)
-        {
-            ShowUI();
-        }
-
-        UpdateAmmoDisplay();
-        CheckOwnershipChange();
-
-        if (inactivityTimer > 0)
-        {
-            inactivityTimer -= Time.deltaTime;
-            if (inactivityTimer <= 0 && !isFadingOut)
+            if (current == Inventory.EquipmentType.None)
             {
-                isFadingOut = true;
+                targetAlpha = 0f;
+            }
+            else if (inactivityTimer > 0)
+            {
+                inactivityTimer -= Time.deltaTime;
+                targetAlpha = 1f;
+            }
+            else
+            {
+                targetAlpha = 0f;
             }
         }
 
-        if (isFadingOut)
-        {
-            parentGroup.alpha = Mathf.Lerp(parentGroup.alpha, 0f, Time.deltaTime / fadeDuration);
-            if (parentGroup.alpha <= 0.01f)
-            {
-                parentGroup.alpha = 0f;
-                isFadingOut = false;
-            }
-        }
-    }
-
-    private void ShowUI()
-    {
-        inactivityTimer = fadeDelay;
-        isFadingOut = false;
-        parentGroup.alpha = 1f;
+        float duration = targetAlpha > parentGroup.alpha ? fadeDuration : hideFadeDuration;
+        parentGroup.alpha = Mathf.Lerp(parentGroup.alpha, targetAlpha, Time.deltaTime / duration);
+        if (parentGroup.alpha < 0.001f && targetAlpha == 0f)
+            parentGroup.alpha = 0f;
     }
 
     private void UpdateSlots()
@@ -121,8 +146,8 @@ public class WeaponUI : MonoBehaviour
 
         if (current == Inventory.EquipmentType.None)
         {
-            if (weaponNameText != null) weaponNameText.text = unequippedName;
-            if (ammoText != null) ammoText.text = unequippedAmmo;
+            if (weaponNameText != null) weaponNameText.text = "";
+            if (ammoText != null) ammoText.text = "";
             return;
         }
 

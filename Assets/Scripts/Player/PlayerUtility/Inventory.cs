@@ -252,6 +252,14 @@ public class Inventory : MonoBehaviour, ISaveable
     // ---- Equipment & Inventory ----
     private void Update()
     {
+        bool isClimbing = playerController != null && playerController.GetCurrentState() is PlayerClimbingState;
+        if (isClimbing)
+        {
+            if (Input.GetKeyDown(useRechargerKey))
+                TryUseRecharger();
+            return;
+        }
+
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             if (ownedItems.Contains("Spray"))
@@ -295,8 +303,11 @@ public class Inventory : MonoBehaviour, ISaveable
         if (Input.GetKeyDown(KeyCode.Y)) GiveSpray();
     }
 
-    private void Equip(EquipmentType type)
+    private void Equip(EquipmentType type, bool force = false)
     {
+        if (!force && playerController != null && playerController.GetCurrentState() is PlayerClimbingState)
+            return;
+
         if (currentEquipment == type) return;
         if (emptyHandArm) emptyHandArm.SetActive(false);
         if (sprayArm) sprayArm.SetActive(false);
@@ -361,7 +372,7 @@ public class Inventory : MonoBehaviour, ISaveable
     }
 
     public EquipmentType GetCurrentEquipment() => currentEquipment;
-    public void EquipType(EquipmentType type) => Equip(type);
+    public void EquipType(EquipmentType type, bool force = false) => Equip(type, force);
 
     private void OnDestroy()
     {

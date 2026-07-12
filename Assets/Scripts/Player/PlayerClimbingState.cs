@@ -24,7 +24,7 @@ public class PlayerClimbingState : PlayerState
     {
         //Debug.Log("Entered Climbing State");
         previousEquipment = player.inventory.GetCurrentEquipment();
-        player.inventory.EquipType(Inventory.EquipmentType.None);
+        player.inventory.EquipType(Inventory.EquipmentType.None, true);
         defaultGravityScale = player.rb.gravityScale;
         player.rb.gravityScale = 0f;
         player.rb.linearVelocity = Vector2.zero;
@@ -92,6 +92,6 @@ public class PlayerClimbingState : PlayerState
         player.bodyAnimator.SetFloat("Mode", 0f);
         player.rb.gravityScale = defaultGravityScale;
         player.currentSubState = PlayerController.SubState.None;
-        player.inventory.EquipType(previousEquipment);
+        player.inventory.EquipType(previousEquipment, true);
     }
 }
