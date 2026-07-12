@@ -10,6 +10,11 @@ public class PlayerLifeUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI batteryText;
     [SerializeField] private Image outlineImage;
 
+    [Header("Recharger UI")]
+    [SerializeField] private CanvasGroup rechargerGroup;
+    [SerializeField] private TextMeshProUGUI rechargerCountText;
+    [SerializeField] private string rechargerID = "BatteryRecharger";
+
     [Header("Body Colors")]
     [SerializeField] private Color batteryColor = Color.white;
     [SerializeField] private Color neutralColor = Color.white;
@@ -30,28 +35,45 @@ public class PlayerLifeUI : MonoBehaviour
     [SerializeField] private float damageFlashDuration = 0.2f;
 
     private GeneralThermalRegulator thermal;
+    private Inventory inventory;
     private float flashTimer = 0f;
     private Coroutine damageFlashCoroutine;
+
+    private void Awake()
+    {
+        thermal = FindFirstObjectByType<GeneralThermalRegulator>();
+        inventory = FindFirstObjectByType<Inventory>();
+        if (thermal == null)
+            Debug.LogWarning("PlayerLifeUI: No GeneralThermalRegulator found.");
+        if (inventory == null)
+            Debug.LogWarning("PlayerLifeUI: No Inventory found.");
+    }
 
     private void OnEnable()
     {
         PlayerController.OnPlayerDamaged += FlashDamage;
+        if (inventory != null)
+        {
+            inventory.OnConsumablesChanged += UpdateRechargerUI;
+            inventory.OnConsumableUsed += OnConsumableUsed;
+            UpdateRechargerUI();
+        }
     }
 
     private void OnDisable()
     {
         PlayerController.OnPlayerDamaged -= FlashDamage;
+        if (inventory != null)
+        {
+            inventory.OnConsumablesChanged -= UpdateRechargerUI;
+            inventory.OnConsumableUsed -= OnConsumableUsed;
+        }
     }
 
     private void Start()
     {
-        thermal = FindFirstObjectByType<GeneralThermalRegulator>();
-        if (thermal == null)
-            Debug.LogWarning("PlayerLifeUI: No GeneralThermalRegulator found in scene.");
-
         if (bodyImage != null)
             bodyImage.color = batteryColor;
-
         if (outlineImage != null)
             outlineImage.color = flashNormalColor;
     }
@@ -92,6 +114,29 @@ public class PlayerLifeUI : MonoBehaviour
                 flashTimer = 0f;
             }
         }
+    }
+
+    private void OnConsumableUsed(string id, int amount)
+    {
+        if (id == rechargerID)
+            UpdateRechargerUI();
+    }
+
+    private void UpdateRechargerUI()
+    {
+        if (inventory == null) return;
+        int count = inventory.GetConsumableCount(rechargerID);
+        bool hasAny = count > 0;
+
+        if (rechargerGroup != null)
+        {
+            rechargerGroup.alpha = hasAny ? 1f : 0f;
+            rechargerGroup.interactable = hasAny;
+            rechargerGroup.blocksRaycasts = hasAny;
+        }
+
+        if (rechargerCountText != null)
+            rechargerCountText.text = $"x{count}";
     }
 
     private Color GetTemperatureColor(float temperature)
@@ -142,7 +187,6 @@ public class PlayerLifeUI : MonoBehaviour
 
         if (bodyImage != null) bodyImage.color = origBody;
         if (outlineImage != null) outlineImage.color = origOutline;
-
         damageFlashCoroutine = null;
     }
 }

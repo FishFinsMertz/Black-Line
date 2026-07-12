@@ -3,7 +3,7 @@ using System.Linq;
 
 public class ItemGiver : MonoBehaviour, ISaveable, IInteractible
 {
-    public enum ItemType { AccessItem, Weapon, Ammo }
+    public enum ItemType { AccessItem, Weapon, Ammo, Consumable }
 
     [SerializeField] private string saveID;
     [SerializeField] private ItemData itemData;
@@ -14,6 +14,10 @@ public class ItemGiver : MonoBehaviour, ISaveable, IInteractible
     [Header("Ammo Settings")]
     [SerializeField] private string weaponID = "Gun";
     [SerializeField] private int ammoAmount = 10;
+
+    [Header("Consumable Settings")]
+    [SerializeField] private string consumableID = "BatteryRecharger";
+    [SerializeField] private int consumableAmount = 1;
 
     private bool wasGiven = false;
     private bool interactible = false;
@@ -132,11 +136,49 @@ public class ItemGiver : MonoBehaviour, ISaveable, IInteractible
         if (hideAfterPickup) gameObject.SetActive(false);
     }
 
+    public void GiveConsumable()
+    {
+        if (!interactible) return;
+        if (wasGiven) return;
+
+        if (playerInventory == null)
+        {
+            Debug.LogError($"ItemGiver: {name} no Inventory found.");
+            return;
+        }
+
+        if (string.IsNullOrEmpty(consumableID))
+        {
+            Debug.LogWarning($"ItemGiver: {name} no consumableID set.");
+            return;
+        }
+
+        if (consumableAmount <= 0)
+        {
+            Debug.LogWarning($"ItemGiver: {name} consumableAmount is 0 or negative.");
+            return;
+        }
+
+        playerInventory.AddConsumable(consumableID, consumableAmount);
+
+        if (NotificationManager.Instance != null)
+        {
+            string displayName = consumableID == "BatteryRecharger" ? "Battery Recharger" : consumableID;
+            NotificationManager.Instance.NotifyBottom($"+{consumableAmount} {displayName}");
+        }
+
+        wasGiven = true;
+        if (hideAfterPickup) gameObject.SetActive(false);
+    }
+
     public void EnableInteraction()
     {
         interactible = true;
         if (buttonTrigger != null)
+        {
             buttonTrigger.enabled = true;
+            buttonTrigger.RefreshInteraction();
+        }
     }
 
     public void DisableInteraction()

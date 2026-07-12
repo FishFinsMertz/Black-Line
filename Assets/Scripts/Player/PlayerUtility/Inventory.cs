@@ -20,9 +20,12 @@ public class Inventory : MonoBehaviour, ISaveable
     private EquipmentType currentEquipment = EquipmentType.None;
     private HashSet<string> ownedItems = new HashSet<string>();
     private Dictionary<string, (int magazine, int reserve)> ammoData = new Dictionary<string, (int, int)>();
+    private Dictionary<string, int> consumables = new Dictionary<string, int>();
     private PlayerController playerController;
-
     private List<EquipmentType> ownedWeapons = new List<EquipmentType>();
+
+    public System.Action OnConsumablesChanged;
+    public System.Action<string, int> OnConsumableUsed;
 
     private void Start()
     {
@@ -54,6 +57,13 @@ public class Inventory : MonoBehaviour, ISaveable
                 ammoData[entry.weaponID] = (entry.magazine, entry.reserve);
         }
 
+        consumables.Clear();
+        if (data.consumables != null)
+        {
+            foreach (var entry in data.consumables)
+                consumables[entry.id] = entry.amount;
+        }
+
         EquipmentType loadedEquip = EquipmentType.None;
         if (data.currentEquipment == "Spray") loadedEquip = EquipmentType.Spray;
         else if (data.currentEquipment == "Gun") loadedEquip = EquipmentType.Gun;
@@ -63,6 +73,7 @@ public class Inventory : MonoBehaviour, ISaveable
 
         UpdateOwnedWeaponsList();
         Equip(loadedEquip);
+        OnConsumablesChanged?.Invoke();
     }
 
     public void Save(GameData data)
@@ -80,8 +91,96 @@ public class Inventory : MonoBehaviour, ISaveable
                 reserve = kvp.Value.reserve
             });
         }
+
+        data.consumables = new List<ConsumableEntry>();
+        foreach (var kvp in consumables)
+        {
+            data.consumables.Add(new ConsumableEntry
+            {
+                id = kvp.Key,
+                amount = kvp.Value
+            });
+        }
     }
 
+    // ---- Consumable API ----
+    public int GetConsumableCount(string id)
+    {
+        return consumables.TryGetValue(id, out int count) ? count : 0;
+    }
+
+    public void AddConsumable(string id, int amount)
+    {
+        if (consumables.ContainsKey(id))
+            consumables[id] += amount;
+        else
+            consumables[id] = amount;
+        OnConsumablesChanged?.Invoke();
+    }
+
+    public bool UseConsumable(string id, int amount = 1)
+    {
+        if (!consumables.ContainsKey(id) || consumables[id] < amount)
+            return false;
+        consumables[id] -= amount;
+        if (consumables[id] <= 0)
+            consumables.Remove(id);
+        OnConsumablesChanged?.Invoke();
+        OnConsumableUsed?.Invoke(id, amount);
+        return true;
+    }
+
+    // ---- Ammo API ----
+    public (int magazine, int reserve) GetAmmo(string weaponID)
+    {
+        if (ammoData.TryGetValue(weaponID, out var ammo))
+            return ammo;
+        return (0, 0);
+    }
+
+    public bool UseAmmo(string weaponID, int amount = 1)
+    {
+        if (!ammoData.ContainsKey(weaponID)) return false;
+        var ammo = ammoData[weaponID];
+        if (ammo.magazine < amount) return false;
+        ammo.magazine -= amount;
+        ammoData[weaponID] = ammo;
+        return true;
+    }
+
+    public void Reload(string weaponID)
+    {
+        if (!ammoData.ContainsKey(weaponID)) return;
+        var ammo = ammoData[weaponID];
+        if (ammo.reserve <= 0) return;
+        int capacity = GetWeaponCapacity(weaponID);
+        int needed = capacity - ammo.magazine;
+        if (needed <= 0) return;
+        int transfer = Mathf.Min(needed, ammo.reserve);
+        ammo.magazine += transfer;
+        ammo.reserve -= transfer;
+        ammoData[weaponID] = ammo;
+    }
+
+    public void AddAmmo(string weaponID, int magAdd, int reserveAdd)
+    {
+        if (!ammoData.ContainsKey(weaponID))
+            ammoData[weaponID] = (0, 0);
+        var ammo = ammoData[weaponID];
+        int capacity = GetWeaponCapacity(weaponID);
+        ammo.magazine = Mathf.Min(capacity, ammo.magazine + magAdd);
+        ammo.reserve += reserveAdd;
+        ammoData[weaponID] = ammo;
+    }
+
+    private int GetWeaponCapacity(string weaponID)
+    {
+        if (weaponID == "Gun") return gunStartingMagazine;
+        if (weaponID == "Spray") return sprayStartingMagazine;
+        return 0;
+    }
+
+    // ---- Equipment & Inventory ----
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
@@ -127,7 +226,6 @@ public class Inventory : MonoBehaviour, ISaveable
     private void Equip(EquipmentType type)
     {
         if (currentEquipment == type) return;
-
         if (emptyHandArm) emptyHandArm.SetActive(false);
         if (sprayArm) sprayArm.SetActive(false);
         if (gunArm) gunArm.SetActive(false);
@@ -171,57 +269,6 @@ public class Inventory : MonoBehaviour, ISaveable
             Equip(EquipmentType.Spray);
             SaveManager.Instance?.RequestSave();
         }
-    }
-
-    public (int magazine, int reserve) GetAmmo(string weaponID)
-    {
-        if (ammoData.TryGetValue(weaponID, out var ammo))
-            return ammo;
-        return (0, 0);
-    }
-
-    public bool UseAmmo(string weaponID, int amount = 1)
-    {
-        if (!ammoData.ContainsKey(weaponID)) return false;
-        var ammo = ammoData[weaponID];
-        if (ammo.magazine < amount) return false;
-        ammo.magazine -= amount;
-        ammoData[weaponID] = ammo;
-        return true;
-    }
-
-    public void Reload(string weaponID)
-    {
-        if (!ammoData.ContainsKey(weaponID)) return;
-        var ammo = ammoData[weaponID];
-        if (ammo.reserve <= 0) return;
-        int capacity = GetWeaponCapacity(weaponID);
-        int needed = capacity - ammo.magazine;
-        if (needed <= 0) return;
-        int transfer = Mathf.Min(needed, ammo.reserve);
-        ammo.magazine += transfer;
-        ammo.reserve -= transfer;
-        ammoData[weaponID] = ammo;
-    }
-
-    public void AddAmmo(string weaponID, int magAdd, int reserveAdd)
-    {
-        if (!ammoData.ContainsKey(weaponID))
-        {
-            ammoData[weaponID] = (0, 0);
-        }
-        var ammo = ammoData[weaponID];
-        int capacity = GetWeaponCapacity(weaponID);
-        ammo.magazine = Mathf.Min(capacity, ammo.magazine + magAdd);
-        ammo.reserve += reserveAdd;
-        ammoData[weaponID] = ammo;
-    }
-
-    private int GetWeaponCapacity(string weaponID)
-    {
-        if (weaponID == "Gun") return gunStartingMagazine;
-        if (weaponID == "Spray") return sprayStartingMagazine;
-        return 0;
     }
 
     public bool IsItemOwned(string itemName) => ownedItems.Contains(itemName);

@@ -17,6 +17,13 @@ public class AmmoEntry
 }
 
 [Serializable]
+public class ConsumableEntry
+{
+    public string id;
+    public int amount;
+}
+
+[Serializable]
 public class GameData
 {
     // Player data
@@ -27,6 +34,9 @@ public class GameData
 
     // Ammo
     public List<AmmoEntry> weaponAmmo = new List<AmmoEntry>();
+
+    // Consumables
+    public List<ConsumableEntry> consumables = new List<ConsumableEntry>();
 
     // Collectibles
     public List<string> collectedAccessItems = new List<string>();

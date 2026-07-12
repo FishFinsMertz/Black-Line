@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
     public bool isFacingRight = true;
 
     [Header("Mouse Flip")]
-    [SerializeField] private float flipThreshold = 0.5f;   // deadzone for mouse flip
+    [SerializeField] private float flipThreshold = 0.5f;
 
     [Header("Misc")]
     public Animator bodyAnimator;
@@ -24,6 +24,11 @@ public class PlayerController : MonoBehaviour
     public float damageFlashRiseDuration = 0.1f;
     public float damageFlashFallDuration = 0.4f;
 
+    [Header("Consumables")]
+    [SerializeField] private string rechargerID = "BatteryRecharger";
+    [SerializeField] private float rechargeAmount = 20f;
+    [SerializeField] private KeyCode useRechargerKey = KeyCode.U;
+
     private GeneralThermalRegulator thermalRegulator;
     [HideInInspector] public Rigidbody2D rb { get; private set; }
     private PlayerState currentState;
@@ -32,11 +37,9 @@ public class PlayerController : MonoBehaviour
     private Coroutine damageFlashCoroutine;
     private Camera mainCam;
 
-    // Substates
     public enum SubState { None, WalkBack, ClimbDown, ClimbPause }
     public SubState currentSubState = SubState.None;
 
-    // Events
     public static event System.Action OnPlayerDamaged;
 
     void Start()
@@ -54,7 +57,6 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        // Flip based on mouse position
         if (!(currentState is PlayerClimbingState) && mainCam != null)
         {
             Vector3 mousePos = mainCam.ScreenToWorldPoint(Input.mousePosition);
@@ -67,6 +69,9 @@ public class PlayerController : MonoBehaviour
         }
 
         currentState?.Update();
+
+        if (Input.GetKeyDown(useRechargerKey))
+            TryUseRecharger();
     }
 
     void FixedUpdate()
@@ -133,5 +138,29 @@ public class PlayerController : MonoBehaviour
     public PlayerState GetPlayerCurrentState()
     {
         return currentState;
+    }
+
+    private void TryUseRecharger()
+    {
+        if (inventory == null || thermalRegulator == null) return;
+
+        if (inventory.GetConsumableCount(rechargerID) <= 0)
+        {
+            NotificationManager.Instance?.NotifyBottom("No battery rechargers left.");
+            return;
+        }
+
+        if (thermalRegulator.GetBatteryLevel() >= 100f)
+        {
+            NotificationManager.Instance?.NotifyBottom("Battery already full!");
+            return;
+        }
+
+        if (inventory.UseConsumable(rechargerID, 1))
+        {
+            thermalRegulator.AddBattery(rechargeAmount);
+            NotificationManager.Instance?.NotifyBottom($"Battery +{rechargeAmount}%");
+            SaveManager.Instance?.RequestSave();
+        }
     }
 }
