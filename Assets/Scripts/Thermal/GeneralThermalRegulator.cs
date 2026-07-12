@@ -18,9 +18,13 @@ public class GeneralThermalRegulator : MonoBehaviour, ISaveable, ITemperatureCha
 
     [Header("Critical State (Battery = 0)")]
     [SerializeField, Range(0f, 10f)] private float criticalDriftSpeed = 2f;
-    [SerializeField] private bool criticalDriftEnabled = true;                
+    [SerializeField] private bool criticalDriftEnabled = true;
+
+    [Header("Safe Room Recovery")]
+    [SerializeField, Range(0.1f, 10f)] private float safeRoomRecoverySpeed = 3f;
 
     private float currentBatterySmoothed;
+    private bool isInSafeRoom = false;
 
     private void Start()
     {
@@ -33,39 +37,44 @@ public class GeneralThermalRegulator : MonoBehaviour, ISaveable, ITemperatureCha
 
     private void Update()
     {
-        // Natural battery drain
-        if (battery > 0f)
+        if (isInSafeRoom)
         {
-            float drain = batteryDrainRate * Time.deltaTime;
-            battery = Mathf.Max(0f, battery - drain);
-        }
-
-        currentBatterySmoothed = Mathf.MoveTowards(currentBatterySmoothed, battery, batterySmoothSpeed * Time.deltaTime);
-
-        // Temperature drift logic
-        if (battery > 0f)
-        {
-            // Normal drift: return to initial temperature
             if (!Mathf.Approximately(baseTemperature, initialBaseTemperature))
             {
-                float step = baseTemperatureDriftSpeed * Time.deltaTime;
+                float step = safeRoomRecoverySpeed * Time.deltaTime;
                 baseTemperature = Mathf.MoveTowards(baseTemperature, initialBaseTemperature, step);
             }
         }
-        else if (criticalDriftEnabled && battery <= 0f)
+        else
         {
-            // Critical drift: move towards 0°C (freezing) when battery empty
-            if (!Mathf.Approximately(baseTemperature, 0f))
+            if (battery > 0f)
             {
-                float step = criticalDriftSpeed * Time.deltaTime;
-                baseTemperature = Mathf.MoveTowards(baseTemperature, 0f, step);
+                float drain = batteryDrainRate * Time.deltaTime;
+                battery = Mathf.Max(0f, battery - drain);
+            }
+
+            if (battery > 0f)
+            {
+                if (!Mathf.Approximately(baseTemperature, initialBaseTemperature))
+                {
+                    float step = baseTemperatureDriftSpeed * Time.deltaTime;
+                    baseTemperature = Mathf.MoveTowards(baseTemperature, initialBaseTemperature, step);
+                }
+            }
+            else if (criticalDriftEnabled && battery <= 0f)
+            {
+                if (!Mathf.Approximately(baseTemperature, 0f))
+                {
+                    float step = criticalDriftSpeed * Time.deltaTime;
+                    baseTemperature = Mathf.MoveTowards(baseTemperature, 0f, step);
+                }
             }
         }
 
+        currentBatterySmoothed = Mathf.MoveTowards(currentBatterySmoothed, battery, batterySmoothSpeed * Time.deltaTime);
         currentTemperature = Mathf.MoveTowards(currentTemperature, baseTemperature, smoothSpeed * Time.deltaTime);
         ApplyToAllThermalObjects();
 
-        // Testing input – battery changes
         if (Input.GetKeyDown(KeyCode.J))
             AddBattery(20f);
         if (Input.GetKeyDown(KeyCode.K))
@@ -74,7 +83,7 @@ public class GeneralThermalRegulator : MonoBehaviour, ISaveable, ITemperatureCha
             battery = 100f;
     }
 
-    public void ChangeBaseTemperature(float delta) // Takes from battery first
+    public void ChangeBaseTemperature(float delta)
     {
         if (delta == 0) return;
 
@@ -108,6 +117,11 @@ public class GeneralThermalRegulator : MonoBehaviour, ISaveable, ITemperatureCha
                 to.SetBaseTemperature(currentTemperature);
             }
         }
+    }
+
+    public void SetInSafeRoom(bool inSafeRoom)
+    {
+        isInSafeRoom = inSafeRoom;
     }
 
     public void Save(GameData data)
