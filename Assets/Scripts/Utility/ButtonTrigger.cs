@@ -19,6 +19,7 @@ public class ButtonTrigger : MonoBehaviour, ISaveable
     [SerializeField] private string interactionKey = "e";
     [SerializeField] private float cooldown = 0.5f;
     [SerializeField] private bool oneShot = false;
+    [SerializeField] private bool startInteractible = true;
 
     [Header("Visual Feedback")]
     [SerializeField] private SpriteRenderer outline;
@@ -29,18 +30,33 @@ public class ButtonTrigger : MonoBehaviour, ISaveable
     private bool playerInRange = false;
     private bool isCooldown = false;
     private bool hasBeenUsed = false;
+    private bool interactible = true;
+
+    private void Awake()
+    {
+        if (outline != null)
+            outline.enabled = false;
+        interactible = startInteractible;
+        if (!interactible)
+            enabled = false;
+    }
 
     private void Start()
     {
         SaveManager.Instance?.Register(this);
-        if (outline != null)
-            outline.enabled = false;
         RefreshInteraction();
     }
 
     private void OnEnable()
     {
         RefreshInteraction();
+    }
+
+    private void OnDisable()
+    {
+        if (outline != null)
+            outline.enabled = false;
+        playerInRange = false;
     }
 
     private void OnDestroy()
@@ -50,6 +66,7 @@ public class ButtonTrigger : MonoBehaviour, ISaveable
 
     private void Update()
     {
+        if (!interactible) return;
         if (oneShot && hasBeenUsed) return;
         if (!playerInRange) return;
         if (isCooldown) return;
@@ -66,6 +83,7 @@ public class ButtonTrigger : MonoBehaviour, ISaveable
 
     private void Interact()
     {
+        if (!interactible) return;
         if (oneShot && hasBeenUsed) return;
 
         isCooldown = true;
@@ -82,7 +100,7 @@ public class ButtonTrigger : MonoBehaviour, ISaveable
     {
         yield return new WaitForSeconds(cooldown);
         isCooldown = false;
-        if (!oneShot || !hasBeenUsed)
+        if (interactible && (!oneShot || !hasBeenUsed))
         {
             if (playerInRange && outline != null)
                 outline.enabled = true;
@@ -95,7 +113,7 @@ public class ButtonTrigger : MonoBehaviour, ISaveable
         if (oneShot && hasBeenUsed) return;
 
         playerInRange = true;
-        if (!isCooldown && outline != null)
+        if (interactible && !isCooldown && outline != null)
             outline.enabled = true;
     }
 
@@ -111,7 +129,7 @@ public class ButtonTrigger : MonoBehaviour, ISaveable
     {
         hasBeenUsed = false;
         isCooldown = false;
-        if (playerInRange && outline != null)
+        if (interactible && playerInRange && outline != null)
             outline.enabled = true;
     }
 
@@ -126,7 +144,7 @@ public class ButtonTrigger : MonoBehaviour, ISaveable
         if (triggerCollider.OverlapPoint(playerObj.transform.position))
         {
             playerInRange = true;
-            if (!(oneShot && hasBeenUsed) && !isCooldown && outline != null)
+            if (interactible && !(oneShot && hasBeenUsed) && !isCooldown && outline != null)
                 outline.enabled = true;
         }
         else
@@ -137,17 +155,35 @@ public class ButtonTrigger : MonoBehaviour, ISaveable
         }
     }
 
+    public void EnableInteraction()
+    {
+        interactible = true;
+        enabled = true;
+        RefreshInteraction();
+    }
+
+    public void DisableInteraction()
+    {
+        interactible = false;
+        if (outline != null)
+            outline.enabled = false;
+        playerInRange = false;
+        enabled = false;
+    }
+
+    public bool IsInteractible() => interactible;
+
     // --- ISaveable ---
     public void Save(GameData data)
     {
-        if (!oneShot || string.IsNullOrEmpty(saveID)) return;
+        if (string.IsNullOrEmpty(saveID)) return;
         data.componentStates.RemoveAll(c => c.id == saveID);
         data.componentStates.Add(new ComponentState { id = saveID, state = hasBeenUsed ? "Used" : "Unused" });
     }
 
     public void Load(GameData data)
     {
-        if (!oneShot || string.IsNullOrEmpty(saveID)) return;
+        if (string.IsNullOrEmpty(saveID)) return;
         ComponentState cs = data.componentStates.FirstOrDefault(c => c.id == saveID);
         if (cs != null)
         {

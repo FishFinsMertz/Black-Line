@@ -175,17 +175,14 @@ public class ItemGiver : MonoBehaviour, ISaveable, IInteractible
     {
         interactible = true;
         if (buttonTrigger != null)
-        {
-            buttonTrigger.enabled = true;
-            buttonTrigger.RefreshInteraction();
-        }
+            buttonTrigger.EnableInteraction();
     }
 
     public void DisableInteraction()
     {
         interactible = false;
         if (buttonTrigger != null)
-            buttonTrigger.enabled = false;
+            buttonTrigger.DisableInteraction();
     }
 
     public void Save(GameData data)
