@@ -16,12 +16,19 @@ public class NotificationManager : MonoBehaviour
     [SerializeField] private CanvasGroup itemNotificationGroup;
     [SerializeField] private TextMeshProUGUI itemNameText;
     [SerializeField] private Image itemIconImage;
-
     [SerializeField] private float itemNotificationDuration = 4f;
+
+    [Header("Top Notification")]
+    [SerializeField] private TextMeshProUGUI topText;
+    [SerializeField] private Color goodColor = Color.green;
+    [SerializeField] private Color badColor = Color.red;
+    [SerializeField] private float flashCycleDuration = 0.5f;
+    [SerializeField] private int defaultFlashCycles = 6;
 
     private CanvasGroup bottomCanvasGroup;
     private Coroutine bottomFadeCoroutine;
     private Coroutine itemFadeCoroutine;
+    private Coroutine topFlashCoroutine;
 
     private void Awake()
     {
@@ -51,6 +58,12 @@ public class NotificationManager : MonoBehaviour
         {
             itemNotificationGroup.alpha = 0f;
             itemNotificationGroup.gameObject.SetActive(false);
+        }
+
+        if (topText != null)
+        {
+            topText.gameObject.SetActive(false);
+            topText.alpha = 0f;
         }
     }
 
@@ -93,6 +106,53 @@ public class NotificationManager : MonoBehaviour
             itemFadeCoroutine = null;
             itemNotificationGroup.gameObject.SetActive(false);
         }));
+    }
+
+    public void NotifyTop(string message, bool isGood = true, int cycles = -1)
+    {
+        if (topText == null) return;
+
+        if (topFlashCoroutine != null)
+            StopCoroutine(topFlashCoroutine);
+
+        topText.text = message;
+        topText.color = isGood ? goodColor : badColor;
+        topText.gameObject.SetActive(true);
+        topText.alpha = 1f;
+
+        int cycleCount = cycles > 0 ? cycles : defaultFlashCycles;
+        topFlashCoroutine = StartCoroutine(FlashTop(cycleCount));
+    }
+
+    private IEnumerator FlashTop(int totalCycles)
+    {
+        float halfCycle = flashCycleDuration / 2f;
+
+        for (int i = 0; i < totalCycles; i++)
+        {
+            // Fade in
+            float elapsed = 0f;
+            while (elapsed < halfCycle)
+            {
+                elapsed += Time.deltaTime;
+                topText.alpha = Mathf.Lerp(0f, 1f, elapsed / halfCycle);
+                yield return null;
+            }
+            topText.alpha = 1f;
+
+            // Fade out
+            elapsed = 0f;
+            while (elapsed < halfCycle)
+            {
+                elapsed += Time.deltaTime;
+                topText.alpha = Mathf.Lerp(1f, 0f, elapsed / halfCycle);
+                yield return null;
+            }
+            topText.alpha = 0f;
+        }
+
+        topText.gameObject.SetActive(false);
+        topFlashCoroutine = null;
     }
 
     private IEnumerator FadeSequence(CanvasGroup targetGroup, float displayDuration, System.Action onComplete)

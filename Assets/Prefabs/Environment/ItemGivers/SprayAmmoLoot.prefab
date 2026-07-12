@@ -100,6 +100,7 @@ GameObject:
   - component: {fileID: 2340314461488866575}
   - component: {fileID: 2317798385512299657}
   - component: {fileID: 757204340372739065}
+  - component: {fileID: 8057531604667799317}
   m_Layer: 0
   m_Name: SprayAmmoLoot
   m_TagString: Untagged
@@ -195,6 +196,7 @@ MonoBehaviour:
   interactionKey: e
   cooldown: 0.5
   oneShot: 0
+  startInteractible: 1
   outline: {fileID: 4709864831978246081}
   onInteract:
     m_PersistentCalls:
@@ -230,6 +232,8 @@ MonoBehaviour:
   startInteractible: 1
   weaponID: Spray
   ammoAmount: 60
+  consumableID: BatteryRecharger
+  consumableAmount: 1
 --- !u!61 &757204340372739065
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -276,3 +280,27 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 0.75, y: 0.92}
   m_EdgeRadius: 0
+--- !u!114 &8057531604667799317
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1790256993044602745}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3834701d395f3fb4f9415b7789ba40b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  temperature: 79.9
+  currentTemperature: 0
+  fresnelPower: 0
+  brightnessInfluence: 0.888
+  fresnelCenter: {x: 0.5, y: 0.5}
+  fresnelRadius: 0
+  temperatureLerpSpeed: 5
+  enablePulse: 0
+  pulseSpeed: 1
+  pulseAmplitude: 20
+  useRandomPhase: 1
+  infraredMaterial: {fileID: 2100000, guid: 484fb33827467fe44b5a4770d97fa0a0, type: 2}

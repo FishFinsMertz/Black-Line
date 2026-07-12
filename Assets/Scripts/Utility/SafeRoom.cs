@@ -4,9 +4,12 @@ public class SafeRoom : MonoBehaviour
 {
     [Header("Safe Room Settings")]
     [SerializeField] private bool isActive = true;
+    [SerializeField] private string enterMessage = "Ambient Temperature Stabilizing";
+    [SerializeField] private int flashCycles = 6;
 
     private Collider2D triggerCollider;
     private GeneralThermalRegulator thermal;
+    private bool hasNotifiedOnLoad = false;
 
     private void Start()
     {
@@ -19,7 +22,6 @@ public class SafeRoom : MonoBehaviour
             return;
         }
 
-        // Check if the player is already inside this safe room on scene load
         CheckPlayerInside();
     }
 
@@ -33,6 +35,11 @@ public class SafeRoom : MonoBehaviour
         if (triggerCollider.OverlapPoint(player.transform.position))
         {
             thermal.SetInSafeRoom(true);
+            if (!hasNotifiedOnLoad)
+            {
+                NotificationManager.Instance?.NotifyTop(enterMessage, true, flashCycles);
+                hasNotifiedOnLoad = true;
+            }
         }
     }
 
@@ -41,7 +48,10 @@ public class SafeRoom : MonoBehaviour
         if (!isActive) return;
         if (!other.CompareTag("Player")) return;
         if (thermal != null)
+        {
             thermal.SetInSafeRoom(true);
+            NotificationManager.Instance?.NotifyTop(enterMessage, true, flashCycles);
+        }
     }
 
     private void OnTriggerExit2D(Collider2D other)
@@ -50,5 +60,6 @@ public class SafeRoom : MonoBehaviour
         if (!other.CompareTag("Player")) return;
         if (thermal != null)
             thermal.SetInSafeRoom(false);
+        hasNotifiedOnLoad = false;
     }
 }
