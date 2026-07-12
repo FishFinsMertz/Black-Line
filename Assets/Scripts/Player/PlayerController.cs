@@ -36,6 +36,9 @@ public class PlayerController : MonoBehaviour
     public enum SubState { None, WalkBack, ClimbDown, ClimbPause }
     public SubState currentSubState = SubState.None;
 
+    // Events
+    public static event System.Action OnPlayerDamaged;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -95,6 +98,7 @@ public class PlayerController : MonoBehaviour
     {
         thermalRegulator.ChangeBaseTemperature(tempChange);
         camController.TriggerShake(0.5f, 0.5f, 1f);
+        OnPlayerDamaged?.Invoke();
         if (dmgVolume != null)
         {
             if (damageFlashCoroutine != null)
