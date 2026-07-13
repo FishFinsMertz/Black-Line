@@ -156,7 +156,6 @@ public class Inventory : MonoBehaviour, ISaveable
         {
             thermalRegulator.AddBattery(rechargeAmount);
             NotificationManager.Instance?.NotifyBottom($"Battery +{rechargeAmount}%");
-            SaveManager.Instance?.RequestSave();
             return true;
         }
 
@@ -299,7 +298,6 @@ public class Inventory : MonoBehaviour, ISaveable
             AddAmmo("Gun", gunStartingMagazine, gunStartingReserve);
             UpdateOwnedWeaponsList();
             Equip(EquipmentType.Gun);
-            SaveManager.Instance?.RequestSave();
         }
     }
 
@@ -311,7 +309,6 @@ public class Inventory : MonoBehaviour, ISaveable
             AddAmmo("Spray", sprayStartingMagazine, sprayStartingReserve);
             UpdateOwnedWeaponsList();
             Equip(EquipmentType.Spray);
-            SaveManager.Instance?.RequestSave();
         }
     }
 
@@ -323,7 +320,6 @@ public class Inventory : MonoBehaviour, ISaveable
         {
             ownedItems.Add(itemName);
             UpdateOwnedWeaponsList();
-            SaveManager.Instance?.RequestSave();
         }
     }
 

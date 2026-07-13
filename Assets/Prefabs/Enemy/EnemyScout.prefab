@@ -260,7 +260,7 @@ MonoBehaviour:
   uniqueID: 
   playerDetectionRadius: 5
   attackRadius: 1
-  damage: -10
+  damage: -4
   damageTakenMultiplier: 2
   temperatureSteal: 20
   frozenTime: 10
