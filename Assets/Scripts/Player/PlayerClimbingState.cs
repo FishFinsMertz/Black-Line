@@ -30,6 +30,13 @@ public class PlayerClimbingState : PlayerState
         player.rb.linearVelocity = Vector2.zero;
         player.bodyAnimator.speed = 1f;
 
+        if (player.audioSource != null && player.climbSound != null)
+        {
+            player.audioSource.clip = player.climbSound;
+            player.audioSource.loop = true;
+            player.audioSource.Play();
+        }
+
         if (startedFromTop)
         {
             player.currentSubState = PlayerController.SubState.ClimbDown;
@@ -93,5 +100,9 @@ public class PlayerClimbingState : PlayerState
         player.rb.gravityScale = defaultGravityScale;
         player.currentSubState = PlayerController.SubState.None;
         player.inventory.EquipType(previousEquipment, true);
+        if (player.audioSource != null && player.audioSource.isPlaying) 
+        {
+            player.audioSource.Stop();
+        }
     }
 }

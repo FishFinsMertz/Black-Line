@@ -12,6 +12,9 @@ public class StorageContainer : MonoBehaviour, IInteractible, ISaveable
     [SerializeField] private float closeDuration = 0f;
     [SerializeField] private bool startOpen = false;
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip openSound;
+
     [Header("References")]
     [SerializeField] private Animator doorAnimator;
     [SerializeField] private GameObject lootObject;
@@ -61,6 +64,9 @@ public class StorageContainer : MonoBehaviour, IInteractible, ISaveable
         isAnimating = true;
         interactible = false;
 
+        if (openSound != null && AudioManager.Instance != null)
+            AudioManager.Instance.PlayOneShot(openSound, transform.position);
+            
         if (doorAnimator != null)
             doorAnimator.SetTrigger("Open");
 

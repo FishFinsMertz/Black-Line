@@ -40,6 +40,8 @@ public class AudioManager : MonoBehaviour
         OnMasterVolumeChanged?.Invoke(masterVolume);
     }
 
+    // Best for one shot sounds
+
     public void PlayOneShot(AudioClip clip, Vector3 position, float volumeScale = 1f)
     {
         if (clip == null) return;

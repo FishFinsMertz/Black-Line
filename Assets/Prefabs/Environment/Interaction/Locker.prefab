@@ -87,6 +87,7 @@ MonoBehaviour:
   openDuration: 0.5
   closeDuration: 0
   startOpen: 0
+  openSound: {fileID: 8300000, guid: 25b95c8a7e0730347b0a0b4b0cb64764, type: 3}
   doorAnimator: {fileID: 8759280813282808519}
   lootObject: {fileID: 0}
 --- !u!61 &4362229858676470983

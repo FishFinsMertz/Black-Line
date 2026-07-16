@@ -12,6 +12,10 @@ public class SlidingDoor : MonoBehaviour, IInteractible
     private Coroutine pendingCollisionCoroutine = null;
     private bool interactionEnabled = true;
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip openSound;
+    [SerializeField] private AudioClip closeSound;
+
     private void Start()
     {
         detectionCollider = GetComponent<Collider2D>();
@@ -46,6 +50,9 @@ public class SlidingDoor : MonoBehaviour, IInteractible
         isOpen = true;
         animator.SetTrigger("Open");
 
+        if (openSound != null && AudioManager.Instance != null)
+            AudioManager.Instance.PlayOneShot(openSound, transform.position);
+
         if (pendingCollisionCoroutine != null)
             StopCoroutine(pendingCollisionCoroutine);
 
@@ -57,6 +64,9 @@ public class SlidingDoor : MonoBehaviour, IInteractible
         if (!isOpen) return;
         isOpen = false;
         animator.SetTrigger("Close");
+
+                if (closeSound != null && AudioManager.Instance != null)
+            AudioManager.Instance.PlayOneShot(closeSound, transform.position);
 
         if (pendingCollisionCoroutine != null)
             StopCoroutine(pendingCollisionCoroutine);

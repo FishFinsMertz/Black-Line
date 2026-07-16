@@ -7,6 +7,12 @@ public class PlayerRunState : PlayerState
     public override void Enter()
     {
         //Debug.Log("Entered Run State");
+        if (player.audioSource != null && player.runSound != null)
+        {
+            player.audioSource.clip = player.runSound;
+            player.audioSource.loop = true;
+            player.audioSource.Play();
+        }
     }
 
     public override void FixedUpdate()
@@ -45,5 +51,11 @@ public class PlayerRunState : PlayerState
         player.bodyAnimator.SetFloat("Mode", animSpeed);
     }
 
-    public override void Exit() { }
+    public override void Exit() 
+    {
+        if (player.audioSource != null && player.audioSource.isPlaying) 
+        {
+            player.audioSource.Stop();
+        } 
+    }
 }

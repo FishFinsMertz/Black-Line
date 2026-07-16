@@ -14,9 +14,10 @@ public class PlayerController : MonoBehaviour
     public bool isFacingRight = true;
 
     [Header("Audio")]
-    public AudioSource loopSource;
-    public AudioSource oneShotSource;
+    public AudioSource audioSource;
     public AudioClip walkSound;
+    public AudioClip runSound;
+    public AudioClip climbSound;
 
     [Header("Mouse Flip")]
     [SerializeField] private float flipThreshold = 0.5f;
@@ -63,10 +64,7 @@ public class PlayerController : MonoBehaviour
 
     private void UpdateAudioVolume(float masterVolume)
     {
-        if (loopSource != null)
-            loopSource.volume = masterVolume;
-        if (oneShotSource != null)
-            oneShotSource.volume = masterVolume;
+        audioSource.volume = masterVolume;
     }
 
     private void OnDestroy()

@@ -98,6 +98,8 @@ MonoBehaviour:
   doorCollider: {fileID: 9060175007156076761}
   animator: {fileID: 1196131749230552239}
   doorCollisionDelay: 0.3
+  openSound: {fileID: 8300000, guid: 57aae100fde32264a81db6da4f34f386, type: 3}
+  closeSound: {fileID: 8300000, guid: 649ae02ff86faf14ba41745cdd85c466, type: 3}
 --- !u!212 &5792351415619710682
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -199,7 +201,7 @@ MonoBehaviour:
   m_PreviousTrimEdge: 0
   m_PreviousEdgeProcessing: 1
   m_PreviousShadowCastingSource: 2
-  m_PreviousShadowShape2DSource: {fileID: 0}
+  m_PreviousShadowShape2DSource: {fileID: 5792351415619710682}
   references:
     version: 2
     RefIds:

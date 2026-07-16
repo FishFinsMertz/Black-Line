@@ -120,7 +120,7 @@ public class ArmGunController : ArmController
 
             if (AudioManager.Instance != null && gunshotClip != null)
             {
-                Debug.Log($"Playing gunshot sound: {gunshotClip.name} at volume {gunshotVolume}");
+                //Debug.Log($"Playing gunshot sound: {gunshotClip.name} at volume {gunshotVolume}");
                 AudioManager.Instance.PlayOneShot(gunshotClip, firePoint.position, gunshotVolume);
             }
 

@@ -6,11 +6,11 @@ public class PlayerWalkState : PlayerState
 
     public override void Enter()
     {
-        if (player.loopSource != null && player.walkSound != null)
+        if (player.audioSource != null && player.walkSound != null)
         {
-            player.loopSource.clip = player.walkSound;
-            player.loopSource.loop = true;
-            player.loopSource.Play();
+            player.audioSource.clip = player.walkSound;
+            player.audioSource.loop = true;
+            player.audioSource.Play();
         }
         player.currentSubState = PlayerController.SubState.WalkBack;
     }
@@ -41,9 +41,9 @@ public class PlayerWalkState : PlayerState
 
     public override void Exit()
     {
-        if (player.loopSource != null && player.loopSource.isPlaying) 
+        if (player.audioSource != null && player.audioSource.isPlaying) 
         {
-            player.loopSource.Stop();
+            player.audioSource.Stop();
         }
         player.currentSubState = PlayerController.SubState.None;
     }
