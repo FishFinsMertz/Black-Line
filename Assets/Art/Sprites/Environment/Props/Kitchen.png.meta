@@ -1,10 +1,22 @@
 fileFormatVersion: 2
-guid: 9bba26108967b184ab37740355fa0ea6
+guid: e5ac848952ac362498ca0c5fc01e2865
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3725837307968964462
-    second: BackgroundDoor_0
+      213: -7127815578132815392
+    second: Kitchen_0
+  - first:
+      213: 8364323908783094963
+    second: Kitchen_1
+  - first:
+      213: -7648311925588613280
+    second: Kitchen_2
+  - first:
+      213: -6297450191466595269
+    second: Kitchen_3
+  - first:
+      213: -5866344049869485233
+    second: Kitchen_4
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,7 +125,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: BackgroundDoor_0
+      name: Kitchen_0
       rect:
         serializedVersion: 2
         x: 0
@@ -128,14 +140,58 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 298bc9f65ba2b4cc0800000000000000
-      internalID: -3725837307968964462
+      spriteID: 0e1e5e81f79e41d90800000000000000
+      internalID: -7127815578132815392
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: BackgroundDoor_1
+      name: Kitchen_1
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 64
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3bcb259674c041470800000000000000
+      internalID: 8364323908783094963
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Kitchen_2
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 64
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 06728ef73dcbbd590800000000000000
+      internalID: -7648311925588613280
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Kitchen_3
       rect:
         serializedVersion: 2
         x: 0
@@ -148,10 +204,54 @@ TextureImporter:
       customData: 
       outline: []
       physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b3cfaea8a66fa98a0800000000000000
+      internalID: -6297450191466595269
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Kitchen_4
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f4b8d49fa2f869ea0800000000000000
+      internalID: -5866344049869485233
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Kitchen_5
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ac15d9741d64500449fe6b7badb8db71
-      internalID: 1878806109
+      spriteID: f8bdef10a87db8349837d7dc86b86c14
+      internalID: -1203645980
       vertices: []
       indices: 
       edges: []
@@ -160,7 +260,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 05401aeaff286c142affc729d551e4a2
+    spriteID: ebe6d8e6049472742a03c65555b48e07
     internalID: 0
     vertices: []
     indices: 
@@ -170,8 +270,12 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      BackgroundDoor_0: -3725837307968964462
-      BackgroundDoor_1: 1878806109
+      Kitchen_0: -7127815578132815392
+      Kitchen_1: 8364323908783094963
+      Kitchen_2: -7648311925588613280
+      Kitchen_3: -6297450191466595269
+      Kitchen_4: -5866344049869485233
+      Kitchen_5: -1203645980
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

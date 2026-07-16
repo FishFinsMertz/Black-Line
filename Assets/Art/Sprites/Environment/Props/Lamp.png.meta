@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 9bba26108967b184ab37740355fa0ea6
+guid: 585294c360635a54e835129770639cb9
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3725837307968964462
-    second: BackgroundDoor_0
+      213: -3535221090349844623
+    second: Lamp_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,29 +113,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: BackgroundDoor_0
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 64
-        width: 64
-        height: 64
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 298bc9f65ba2b4cc0800000000000000
-      internalID: -3725837307968964462
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: BackgroundDoor_1
+      name: Lamp_0
       rect:
         serializedVersion: 2
         x: 0
@@ -143,15 +121,15 @@ TextureImporter:
         width: 64
         height: 64
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
-      tessellationDetail: 0
+      tessellationDetail: -1
       bones: []
-      spriteID: ac15d9741d64500449fe6b7badb8db71
-      internalID: 1878806109
+      spriteID: 1777a33162f50fec0800000000000000
+      internalID: -3535221090349844623
       vertices: []
       indices: 
       edges: []
@@ -160,7 +138,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 05401aeaff286c142affc729d551e4a2
+    spriteID: 506a6469c9dbbe347a0d6c8ca4a22d61
     internalID: 0
     vertices: []
     indices: 
@@ -170,8 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      BackgroundDoor_0: -3725837307968964462
-      BackgroundDoor_1: 1878806109
+      Lamp_0: -3535221090349844623
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

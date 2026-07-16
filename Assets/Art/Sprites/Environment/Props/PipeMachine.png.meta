@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 9bba26108967b184ab37740355fa0ea6
+guid: 83ebb9d842ffa2b41ae4d97c02acf6cb
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3725837307968964462
-    second: BackgroundDoor_0
+      213: -4101248373243806135
+    second: PipeMachine_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,7 +113,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: BackgroundDoor_0
+      name: PipeMachine_0
       rect:
         serializedVersion: 2
         x: 0
@@ -128,14 +128,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 298bc9f65ba2b4cc0800000000000000
-      internalID: -3725837307968964462
+      spriteID: 94e772975507517c0800000000000000
+      internalID: -4101248373243806135
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: BackgroundDoor_1
+      name: PipeMachine_1
       rect:
         serializedVersion: 2
         x: 0
@@ -150,8 +150,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ac15d9741d64500449fe6b7badb8db71
-      internalID: 1878806109
+      spriteID: 58ae30dc62351814684b4508b333e88a
+      internalID: 726498210
       vertices: []
       indices: 
       edges: []
@@ -160,7 +160,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 05401aeaff286c142affc729d551e4a2
+    spriteID: 42c9bf415c0edf24c82788bf72c190a9
     internalID: 0
     vertices: []
     indices: 
@@ -170,8 +170,8 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      BackgroundDoor_0: -3725837307968964462
-      BackgroundDoor_1: 1878806109
+      PipeMachine_0: -4101248373243806135
+      PipeMachine_1: 726498210
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
