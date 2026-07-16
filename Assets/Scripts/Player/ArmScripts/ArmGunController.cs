@@ -7,6 +7,10 @@ public class ArmGunController : ArmController
     [SerializeField] private float minAngle = -20f;
     [SerializeField] private float maxAngle = 80f;
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip gunshotClip;
+    [SerializeField] private float gunshotVolume = 1f;
+
     [Header("Gun Details")]
     [SerializeField] private Transform firePoint;
     [SerializeField] private Transform directionIndicator;
@@ -113,6 +117,13 @@ public class ArmGunController : ArmController
         {
             if (camController != null)
                 camController.TriggerShake(0.5f, 0.3f, 1f);
+
+            if (AudioManager.Instance != null && gunshotClip != null)
+            {
+                Debug.Log($"Playing gunshot sound: {gunshotClip.name} at volume {gunshotVolume}");
+                AudioManager.Instance.PlayOneShot(gunshotClip, firePoint.position, gunshotVolume);
+            }
+
             bulletScript.Initialize(direction);
         }
 

@@ -13,6 +13,11 @@ public class PlayerController : MonoBehaviour
     public KeyCode runKey = KeyCode.LeftShift;
     public bool isFacingRight = true;
 
+    [Header("Audio")]
+    public AudioSource loopSource;
+    public AudioSource oneShotSource;
+    public AudioClip walkSound;
+
     [Header("Mouse Flip")]
     [SerializeField] private float flipThreshold = 0.5f;
 
@@ -48,6 +53,26 @@ public class PlayerController : MonoBehaviour
         currentState.Enter();
 
         if (dmgVolume != null) dmgVolume.weight = 0f;
+
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.OnMasterVolumeChanged += UpdateAudioVolume;
+            UpdateAudioVolume(AudioManager.Instance.GetMasterVolume());
+        }
+    }
+
+    private void UpdateAudioVolume(float masterVolume)
+    {
+        if (loopSource != null)
+            loopSource.volume = masterVolume;
+        if (oneShotSource != null)
+            oneShotSource.volume = masterVolume;
+    }
+
+    private void OnDestroy()
+    {
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.OnMasterVolumeChanged -= UpdateAudioVolume;
     }
 
     void Update()

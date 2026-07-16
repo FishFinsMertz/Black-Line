@@ -4,7 +4,16 @@ public class PlayerWalkState : PlayerState
 {
     public PlayerWalkState(PlayerController player) : base(player) { }
 
-    public override void Enter() { }
+    public override void Enter()
+    {
+        if (player.loopSource != null && player.walkSound != null)
+        {
+            player.loopSource.clip = player.walkSound;
+            player.loopSource.loop = true;
+            player.loopSource.Play();
+        }
+        player.currentSubState = PlayerController.SubState.WalkBack;
+    }
 
     public override void FixedUpdate()
     {
@@ -14,13 +23,10 @@ public class PlayerWalkState : PlayerState
         
         if (movingForward && Input.GetKey(player.runKey))
         {
-            player.currentSubState = PlayerController.SubState.None;
             player.ChangeState(new PlayerRunState(player));
             return;
         }
 
-        player.currentSubState = PlayerController.SubState.WalkBack;
-        
         Vector2 velocity = player.rb.linearVelocity;
         velocity.x = moveInput * player.walkSpeed;
         player.rb.linearVelocity = velocity;
@@ -35,6 +41,10 @@ public class PlayerWalkState : PlayerState
 
     public override void Exit()
     {
+        if (player.loopSource != null && player.loopSource.isPlaying) 
+        {
+            player.loopSource.Stop();
+        }
         player.currentSubState = PlayerController.SubState.None;
     }
 }

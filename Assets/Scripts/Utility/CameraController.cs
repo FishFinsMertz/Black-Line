@@ -4,7 +4,7 @@ public class CameraController : MonoBehaviour
 {       
     [Header("Follow Settings")]
     [SerializeField] private float smoothSpeed = 5f;     
-    [SerializeField] private Vector3 offset = new Vector3(0f, 0f, -10f); 
+    [SerializeField] private Vector3 offset = new Vector3(0f, 0f, -5f); 
 
     [Header("Look Ahead")]
     [SerializeField] private bool enableLookAhead = true;
