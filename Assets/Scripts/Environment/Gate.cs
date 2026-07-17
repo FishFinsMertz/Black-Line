@@ -67,7 +67,17 @@ public class Gate : MonoBehaviour, IInteractible, ISaveable
             AudioManager.Instance.PlayOneShot(openSound, transform.position);
         StartCoroutine(ColliderCoroutine(openDuration, false));
     }
-
+    /*
+    void Update()
+    {
+        // Input (for testing)
+        if (Input.GetKeyDown(KeyCode.C))
+            Open();
+        else if (Input.GetKeyDown(KeyCode.V))
+            Close();
+    }
+    */
+    
     public void Close()
     {
         if (!interactible) return;

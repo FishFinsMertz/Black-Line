@@ -133,6 +133,8 @@ MonoBehaviour:
   closeDuration: 2.3
   openDelay: 0
   gateState: 1
+  openSound: {fileID: 8300000, guid: af87857435ad6624d920656e2b43163b, type: 3}
+  closeSound: {fileID: 8300000, guid: 83ff6d936ebeeff40ac2859d5924c380, type: 3}
 --- !u!95 &4533115916808359047
 Animator:
   serializedVersion: 7
@@ -242,12 +244,12 @@ MonoBehaviour:
     m_TrimEdge: 0.05
     m_FlipX: 0
     m_FlipY: 0
-    m_InitialTrim: 0.05
+    m_InitialTrim: 0
   m_CastingOption: 1
   m_PreviousTrimEdge: 0.05
   m_PreviousEdgeProcessing: 1
   m_PreviousShadowCastingSource: 2
-  m_PreviousShadowShape2DSource: {fileID: 0}
+  m_PreviousShadowShape2DSource: {fileID: 6337877689313799494}
   references:
     version: 2
     RefIds:

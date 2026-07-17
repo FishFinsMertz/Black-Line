@@ -22,7 +22,6 @@ public class PlayerClimbingState : PlayerState
 
     public override void Enter()
     {
-        //Debug.Log("Entered Climbing State");
         previousEquipment = player.inventory.GetCurrentEquipment();
         player.inventory.EquipType(Inventory.EquipmentType.None, true);
         defaultGravityScale = player.rb.gravityScale;
@@ -34,7 +33,6 @@ public class PlayerClimbingState : PlayerState
         {
             player.audioSource.clip = player.climbSound;
             player.audioSource.loop = true;
-            player.audioSource.Play();
         }
 
         if (startedFromTop)
@@ -42,19 +40,22 @@ public class PlayerClimbingState : PlayerState
             player.currentSubState = PlayerController.SubState.ClimbDown;
             player.bodyAnimator.SetFloat("Mode", 4f);
             player.rb.linearVelocity = new Vector2(0f, -player.climbSpeed);
+            if (player.audioSource != null && !player.audioSource.isPlaying)
+                player.audioSource.Play();
         }
         else
         {
             player.currentSubState = PlayerController.SubState.None;
             player.bodyAnimator.SetFloat("Mode", 3f);
             player.rb.linearVelocity = new Vector2(0f, player.climbSpeed);
+            if (player.audioSource != null && !player.audioSource.isPlaying)
+                player.audioSource.Play();
         }
     }
 
     public override void Update()
     {
-        // Exit only if the player is at the top OR bottom entrance AND pressing horizontal
-        if ( (atTop || atBottom) && Input.GetAxisRaw("Horizontal") != 0f )
+        if ((atTop || atBottom) && Input.GetAxisRaw("Horizontal") != 0f)
         {
             player.ChangeState(new PlayerIdleState(player));
         }
@@ -68,13 +69,9 @@ public class PlayerClimbingState : PlayerState
         bool blockedDown = atBottom && verticalInput < 0f;
         bool blocked = blockedUp || blockedDown;
 
-        if (Mathf.Approximately(verticalInput, 0f) || blocked)
-        {
-            player.rb.linearVelocity = Vector2.zero;
-            player.currentSubState = PlayerController.SubState.ClimbPause;
-            player.bodyAnimator.speed = 0f;
-        }
-        else
+        bool moving = !Mathf.Approximately(verticalInput, 0f) && !blocked;
+
+        if (moving)
         {
             player.rb.linearVelocity = new Vector2(0f, verticalInput * player.climbSpeed);
             player.bodyAnimator.speed = 1f;
@@ -89,18 +86,29 @@ public class PlayerClimbingState : PlayerState
                 player.currentSubState = PlayerController.SubState.ClimbDown;
                 player.bodyAnimator.SetFloat("Mode", 4f);
             }
+
+            if (player.audioSource != null && !player.audioSource.isPlaying)
+                player.audioSource.Play();
+        }
+        else
+        {
+            player.rb.linearVelocity = Vector2.zero;
+            player.currentSubState = PlayerController.SubState.ClimbPause;
+            player.bodyAnimator.speed = 0f;
+
+            if (player.audioSource != null && player.audioSource.isPlaying)
+                player.audioSource.Stop();
         }
     }
 
     public override void Exit()
     {
-        //Debug.Log("Exited Climbing State");
         player.bodyAnimator.speed = 1f;
         player.bodyAnimator.SetFloat("Mode", 0f);
         player.rb.gravityScale = defaultGravityScale;
         player.currentSubState = PlayerController.SubState.None;
         player.inventory.EquipType(previousEquipment, true);
-        if (player.audioSource != null && player.audioSource.isPlaying) 
+        if (player.audioSource != null && player.audioSource.isPlaying)
         {
             player.audioSource.Stop();
         }
