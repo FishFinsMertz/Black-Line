@@ -15,6 +15,10 @@ public class ArmSprayController : ArmController
     [SerializeField] private float ammoPerSecond = 10f;
     [SerializeField] private float tempDrainPerSecond = 10f;
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip spraySound;
+
     [Header("Reload")]
     [SerializeField] private float reloadDuration = 1.5f;
 
@@ -64,6 +68,15 @@ public class ArmSprayController : ArmController
         }
     }
 
+    private void OnEnable()
+    {
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.OnMasterVolumeChanged += UpdateAudioVolume;
+            UpdateAudioVolume(AudioManager.Instance.GetMasterVolume());
+        }
+    }
+
     private void OnDisable()
     {
         StopSpray();
@@ -72,6 +85,15 @@ public class ArmSprayController : ArmController
         if (emissionModule.enabled)
             emissionModule.rateOverTime = 0f;
         isReloading = false;
+
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.OnMasterVolumeChanged -= UpdateAudioVolume;
+    }
+
+    private void OnDestroy()
+    {
+        if (AudioManager.Instance != null)
+            AudioManager.Instance.OnMasterVolumeChanged -= UpdateAudioVolume;
     }
 
     protected override void Update()
@@ -186,7 +208,8 @@ public class ArmSprayController : ArmController
             if (player != null && player.inventory != null)
             {
                 var ammo = player.inventory.GetAmmo("Spray");
-                if (ammo.reserve > 0 && ammo.magazine < 30 && !isReloading)
+                int capacity = player.inventory.GetCapacity("Spray");
+                if (ammo.reserve > 0 && ammo.magazine < capacity && !isReloading)
                 {
                     if (isSpraying) StopSpray();
                     isReloading = true;
@@ -256,6 +279,15 @@ public class ArmSprayController : ArmController
                 sprayEffect.Play();
         }
 
+        if (audioSource != null && spraySound != null)
+        {
+            audioSource.clip = spraySound;
+            audioSource.loop = true;
+            if (AudioManager.Instance != null)
+                audioSource.volume = AudioManager.Instance.GetMasterVolume();
+            audioSource.Play();
+        }
+
         transform.localPosition = recoilTargetPosition;
         shakeTimer = 0f;
     }
@@ -267,8 +299,17 @@ public class ArmSprayController : ArmController
         if (sprayEffect != null)
             emissionModule.rateOverTime = 0f;
 
+        if (audioSource != null && audioSource.isPlaying)
+            audioSource.Stop();
+        
         isReturning = true;
         returnT = 0f;
+    }
+
+    private void UpdateAudioVolume(float masterVolume)
+    {
+        if (audioSource != null)
+            audioSource.volume = masterVolume;
     }
 
     private Vector3 GetAimDirection()

@@ -15,6 +15,9 @@ public class Valve : MonoBehaviour, ISaveable
     [SerializeField] private float animationDuration = 0.5f;
     [SerializeField] private bool startOpen = false;
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip turnSound;
+
     public UnityEngine.Events.UnityEvent onOpen;
     public UnityEngine.Events.UnityEvent onClose;
     public UnityEngine.Events.UnityEvent onRotate;
@@ -65,6 +68,8 @@ public class Valve : MonoBehaviour, ISaveable
         {
             animator.SetBool(idleBool, false);
             animator.SetTrigger(openTrigger);
+            if (turnSound != null && AudioManager.Instance != null)
+                AudioManager.Instance.PlayOneShot(turnSound, transform.position);
         }
         onOpen.Invoke();
         idleCoroutine = StartCoroutine(ReturnToIdle());
@@ -79,6 +84,8 @@ public class Valve : MonoBehaviour, ISaveable
         {
             animator.SetBool(idleBool, false);
             animator.SetTrigger(closeTrigger);
+            if (turnSound != null && AudioManager.Instance != null)
+                AudioManager.Instance.PlayOneShot(turnSound, transform.position);
         }
         onClose.Invoke();
         idleCoroutine = StartCoroutine(ReturnToIdle());
@@ -92,6 +99,8 @@ public class Valve : MonoBehaviour, ISaveable
         {
             animator.SetBool(idleBool, false);
             animator.SetTrigger(openTrigger);
+            if (turnSound != null && AudioManager.Instance != null)
+                AudioManager.Instance.PlayOneShot(turnSound, transform.position, pitchVariation: 0.1f);
         }
         onRotate.Invoke();
         idleCoroutine = StartCoroutine(ReturnToIdle());

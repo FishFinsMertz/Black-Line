@@ -180,6 +180,11 @@ public class Inventory : MonoBehaviour, ISaveable
         return (0, 0);
     }
 
+    public int GetCapacity(string weaponID)
+    {
+        return GetWeaponCapacity(weaponID);
+    }
+
     public bool UseAmmo(string weaponID, int amount = 1)
     {
         if (!ammoData.ContainsKey(weaponID)) return false;

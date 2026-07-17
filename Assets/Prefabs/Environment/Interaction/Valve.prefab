@@ -188,6 +188,7 @@ MonoBehaviour:
   interactionKey: e
   cooldown: 3.3
   oneShot: 0
+  startInteractible: 1
   outline: {fileID: 3536629363053912400}
   onInteract:
     m_PersistentCalls:
@@ -224,6 +225,7 @@ MonoBehaviour:
   idleBool: isIdle
   animationDuration: 2
   startOpen: 1
+  turnSound: {fileID: 8300000, guid: 7d2a125aa0ac3e94b8c87f347c41d32f, type: 3}
   onOpen:
     m_PersistentCalls:
       m_Calls: []

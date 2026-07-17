@@ -40,16 +40,22 @@ public class AudioManager : MonoBehaviour
         OnMasterVolumeChanged?.Invoke(masterVolume);
     }
 
-    // Best for one shot sounds
-
-    public void PlayOneShot(AudioClip clip, Vector3 position, float volumeScale = 1f)
+    public void PlayOneShot(AudioClip clip, Vector3 position, float volumeScale = 1f, float pitchVariation = 0f)
     {
         if (clip == null) return;
-        float finalVolume = masterVolume * volumeScale;
-        AudioSource.PlayClipAtPoint(clip, position, finalVolume);
+        GameObject go = new GameObject("OneShot3D");
+        AudioSource source = go.AddComponent<AudioSource>();
+        source.clip = clip;
+        source.volume = Mathf.Clamp01(masterVolume * volumeScale);
+        source.spatialBlend = 1f;
+        source.transform.position = position;
+        if (pitchVariation > 0f)
+            source.pitch = 1f + Random.Range(-pitchVariation, pitchVariation);
+        source.Play();
+        Destroy(go, clip.length);
     }
 
-    public void PlayOneShot2D(AudioClip clip, float volumeScale = 1f)
+    public void PlayOneShot2D(AudioClip clip, float volumeScale = 1f, float pitchVariation = 0f)
     {
         if (clip == null) return;
         GameObject go = new GameObject("OneShot2D");
@@ -57,7 +63,19 @@ public class AudioManager : MonoBehaviour
         source.clip = clip;
         source.volume = Mathf.Clamp01(masterVolume * volumeScale);
         source.spatialBlend = 0f;
+        if (pitchVariation > 0f)
+            source.pitch = 1f + Random.Range(-pitchVariation, pitchVariation);
         source.Play();
         Destroy(go, clip.length);
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.I))
+            SetMasterVolume(0f);
+        else if (Input.GetKeyDown(KeyCode.O))
+            SetMasterVolume(0.5f);
+        else if (Input.GetKeyDown(KeyCode.P))
+            SetMasterVolume(1f);
     }
 }

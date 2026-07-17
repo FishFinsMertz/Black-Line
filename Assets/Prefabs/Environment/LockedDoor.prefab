@@ -155,6 +155,8 @@ MonoBehaviour:
   closeDuration: 0
   openDelay: 0
   gateState: 1
+  openSound: {fileID: 8300000, guid: 57aae100fde32264a81db6da4f34f386, type: 3}
+  closeSound: {fileID: 8300000, guid: 649ae02ff86faf14ba41745cdd85c466, type: 3}
 --- !u!61 &6378012585167047145
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -242,12 +244,12 @@ MonoBehaviour:
     m_TrimEdge: 0.05
     m_FlipX: 0
     m_FlipY: 0
-    m_InitialTrim: 0.05
+    m_InitialTrim: 0
   m_CastingOption: 1
   m_PreviousTrimEdge: 0.05
   m_PreviousEdgeProcessing: 1
   m_PreviousShadowCastingSource: 2
-  m_PreviousShadowShape2DSource: {fileID: 3096243654916112619}
+  m_PreviousShadowShape2DSource: {fileID: 6378012585167047145}
   references:
     version: 2
     RefIds:

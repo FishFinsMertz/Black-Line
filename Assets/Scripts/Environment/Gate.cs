@@ -18,6 +18,10 @@ public class Gate : MonoBehaviour, IInteractible, ISaveable
     [SerializeField] private float closeDuration = 0f;
     [SerializeField] private float openDelay = 0f;
     [SerializeField] private GateState gateState = GateState.Open;
+
+    [SerializeField] private AudioClip openSound;
+    [SerializeField] private AudioClip closeSound;
+
     private Animator animator;
     private BoxCollider2D gateCollider;
     private bool interactible = true;
@@ -59,6 +63,8 @@ public class Gate : MonoBehaviour, IInteractible, ISaveable
         if (openDelay > 0f)
             yield return new WaitForSeconds(openDelay);
         animator.SetTrigger("Open");
+        if (openSound != null && AudioManager.Instance != null)
+            AudioManager.Instance.PlayOneShot(openSound, transform.position);
         StartCoroutine(ColliderCoroutine(openDuration, false));
     }
 
@@ -67,6 +73,10 @@ public class Gate : MonoBehaviour, IInteractible, ISaveable
         if (!interactible) return;
         gateState = GateState.Closed;
         animator.SetTrigger("Close");
+        
+        if (closeSound != null && AudioManager.Instance != null)
+            AudioManager.Instance.PlayOneShot(closeSound, transform.position);
+
         StartCoroutine(ColliderCoroutine(closeDuration, true));
     }
 

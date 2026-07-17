@@ -9,7 +9,6 @@ public class ArmGunController : ArmController
 
     [Header("Audio")]
     [SerializeField] private AudioClip gunshotClip;
-    [SerializeField] private float gunshotVolume = 1f;
 
     [Header("Gun Details")]
     [SerializeField] private Transform firePoint;
@@ -121,7 +120,7 @@ public class ArmGunController : ArmController
             if (AudioManager.Instance != null && gunshotClip != null)
             {
                 //Debug.Log($"Playing gunshot sound: {gunshotClip.name} at volume {gunshotVolume}");
-                AudioManager.Instance.PlayOneShot(gunshotClip, firePoint.position, gunshotVolume);
+                AudioManager.Instance.PlayOneShot(gunshotClip, firePoint.position, pitchVariation: 0.1f);
             }
 
             bulletScript.Initialize(direction);
@@ -146,7 +145,8 @@ public class ArmGunController : ArmController
             if (player != null && player.inventory != null)
             {
                 var ammo = player.inventory.GetAmmo("Gun");
-                if (ammo.reserve > 0 && ammo.magazine < 12 && !isReloading)
+                int capacity = player.inventory.GetCapacity("Gun");
+                if (ammo.reserve > 0 && ammo.magazine < capacity && !isReloading)
                 {
                     isReloading = true;
                     reloadTimer = reloadDuration;

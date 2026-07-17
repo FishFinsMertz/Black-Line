@@ -65,7 +65,7 @@ public class SlidingDoor : MonoBehaviour, IInteractible
         isOpen = false;
         animator.SetTrigger("Close");
 
-                if (closeSound != null && AudioManager.Instance != null)
+        if (closeSound != null && AudioManager.Instance != null)
             AudioManager.Instance.PlayOneShot(closeSound, transform.position);
 
         if (pendingCollisionCoroutine != null)
