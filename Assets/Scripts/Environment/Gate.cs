@@ -64,7 +64,7 @@ public class Gate : MonoBehaviour, IInteractible, ISaveable
             yield return new WaitForSeconds(openDelay);
         animator.SetTrigger("Open");
         if (openSound != null && AudioManager.Instance != null)
-            AudioManager.Instance.PlayOneShot(openSound, transform.position);
+            AudioManager.Instance.PlayOneShot(openSound, transform.position, volumeScale: 0.4f);
         StartCoroutine(ColliderCoroutine(openDuration, false));
     }
     /*

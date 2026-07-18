@@ -100,7 +100,7 @@ public class Valve : MonoBehaviour, ISaveable
             animator.SetBool(idleBool, false);
             animator.SetTrigger(openTrigger);
             if (turnSound != null && AudioManager.Instance != null)
-                AudioManager.Instance.PlayOneShot(turnSound, transform.position, pitchVariation: 0.1f);
+                AudioManager.Instance.PlayOneShot(turnSound, transform.position, volumeScale: 0.3f, pitchVariation: 0.1f);
         }
         onRotate.Invoke();
         idleCoroutine = StartCoroutine(ReturnToIdle());

@@ -65,7 +65,7 @@ public class StorageContainer : MonoBehaviour, IInteractible, ISaveable
         interactible = false;
 
         if (openSound != null && AudioManager.Instance != null)
-            AudioManager.Instance.PlayOneShot(openSound, transform.position);
+            AudioManager.Instance.PlayOneShot(openSound, transform.position, volumeScale: 0.4f);
             
         if (doorAnimator != null)
             doorAnimator.SetTrigger("Open");
