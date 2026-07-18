@@ -18,6 +18,12 @@ public class SprayPipe : MonoBehaviour, ISaveable
     [SerializeField] private float inactiveFresnelRadius = 0f;
     [SerializeField] private float transitionDuration = 0.5f;
 
+    [Header("Audio")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip sprayAudioClip;
+    [SerializeField] private float audioFadeInDuration = 0.5f;
+    [SerializeField] private float audioFadeOutDuration = 0.5f;
+
     [Header("Heat Source (Optional)")]
     [SerializeField] private bool requireSource = false;
     [SerializeField] private List<TileMapThermal> sourceTilemaps = new List<TileMapThermal>();
@@ -42,6 +48,9 @@ public class SprayPipe : MonoBehaviour, ISaveable
     {
         if (sprayParticle != null)
             emissionModule = sprayParticle.emission;
+
+        if (audioSource == null)
+            audioSource = gameObject.AddComponent<AudioSource>();
     }
 
     private void Start()
@@ -84,6 +93,8 @@ public class SprayPipe : MonoBehaviour, ISaveable
     private void OnDestroy()
     {
         SaveManager.Instance?.Unregister(this);
+        if (audioSource != null && audioSource.isPlaying)
+            audioSource.Stop();
     }
 
     public void Activate()
@@ -121,6 +132,21 @@ public class SprayPipe : MonoBehaviour, ISaveable
         if (toActive && !canActivate)
         {
             yield break;
+        }
+
+        if (toActive && sprayAudioClip != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.ConfigureLoop(
+                audioSource,
+                sprayAudioClip,
+                volumeScale: 0.5f,
+                fadeInDuration: audioFadeInDuration,
+                maxDistance: 30f
+            );
+        }
+        else if (!toActive && audioSource != null && audioSource.isPlaying && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.FadeOut(audioSource, audioFadeOutDuration);
         }
 
         float targetEmission = toActive ? activeEmissionRate : inactiveEmissionRate;
@@ -170,6 +196,14 @@ public class SprayPipe : MonoBehaviour, ISaveable
         foreach (var tobj in thermalObjects)
             if (tobj != null)
                 tobj.SetFresnelRadius(targetRadius);
+
+        if (!toActive && audioSource != null && audioSource.isPlaying && AudioManager.Instance != null)
+        {
+            if (audioFadeOutDuration <= 0f)
+            {
+                audioSource.Stop();
+            }
+        }
     }
 
     private void ApplyStateInstant(bool active)
@@ -194,11 +228,31 @@ public class SprayPipe : MonoBehaviour, ISaveable
         foreach (var tobj in thermalObjects)
             if (tobj != null)
                 tobj.SetFresnelRadius(targetRadius);
+
+        if (AudioManager.Instance != null)
+        {
+            if (canActivate && sprayAudioClip != null)
+            {
+                AudioManager.Instance.ConfigureLoop(
+                    audioSource,
+                    sprayAudioClip,
+                    volumeScale: 0.5f,
+                    fadeInDuration: 0f,
+                    maxDistance: 30f
+                );
+            }
+            else
+            {
+                if (audioSource != null && audioSource.isPlaying)
+                {
+                    audioSource.Stop();
+                }
+            }
+        }
     }
 
     public bool IsActive() => isActive;
 
-    // --- ISaveable ---
     public void Save(GameData data)
     {
         if (string.IsNullOrEmpty(saveID)) return;
@@ -215,7 +269,7 @@ public class SprayPipe : MonoBehaviour, ISaveable
         {
             isActive = cs.state == "Active";
             isSourceActive = CheckSourceActive();
-            ApplyStateInstant(isActive);
+            ApplyStateInstant(isActive && (isSourceActive || !requireSource));
         }
     }
 }

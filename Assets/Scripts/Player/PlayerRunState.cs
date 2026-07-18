@@ -6,13 +6,7 @@ public class PlayerRunState : PlayerState
 
     public override void Enter()
     {
-        //Debug.Log("Entered Run State");
-        if (player.audioSource != null && player.runSound != null)
-        {
-            player.audioSource.clip = player.runSound;
-            player.audioSource.loop = true;
-            player.audioSource.Play();
-        }
+        player.PlayLoopSound(player.runSound);
     }
 
     public override void FixedUpdate()
@@ -22,7 +16,6 @@ public class PlayerRunState : PlayerState
         bool movingForward = (moveInput > 0 && isFacingRight) || (moveInput < 0 && !isFacingRight);
         float targetSpeed = movingForward && Input.GetKey(player.runKey) ? player.runSpeed : player.walkSpeed;
 
-        // Apply acceleration/deceleration
         float currentVelX = player.rb.linearVelocity.x;
         float targetVelX = moveInput * targetSpeed;
         float accel = (Mathf.Abs(targetVelX) > Mathf.Abs(currentVelX)) ? player.runAcceleration : player.runDeceleration;
@@ -51,11 +44,8 @@ public class PlayerRunState : PlayerState
         player.bodyAnimator.SetFloat("Mode", animSpeed);
     }
 
-    public override void Exit() 
+    public override void Exit()
     {
-        if (player.audioSource != null && player.audioSource.isPlaying) 
-        {
-            player.audioSource.Stop();
-        } 
+        player.StopLoopSound();
     }
 }

@@ -14,10 +14,10 @@ public class PlayerController : MonoBehaviour
     public bool isFacingRight = true;
 
     [Header("Audio")]
-    public AudioSource audioSource;
     public AudioClip walkSound;
     public AudioClip runSound;
     public AudioClip climbSound;
+    public AudioSource audioSource;
 
     [Header("Mouse Flip")]
     [SerializeField] private float flipThreshold = 0.5f;
@@ -25,6 +25,7 @@ public class PlayerController : MonoBehaviour
     [Header("Misc")]
     public Animator bodyAnimator;
     public Volume dmgVolume;
+
     [Header("Damage Flash")]
     public float damageFlashMaxWeight = 0.7f;
     public float damageFlashRiseDuration = 0.1f;
@@ -54,23 +55,11 @@ public class PlayerController : MonoBehaviour
         currentState.Enter();
 
         if (dmgVolume != null) dmgVolume.weight = 0f;
-
-        if (AudioManager.Instance != null)
-        {
-            AudioManager.Instance.OnMasterVolumeChanged += UpdateAudioVolume;
-            UpdateAudioVolume(AudioManager.Instance.GetMasterVolume());
-        }
     }
 
-    private void UpdateAudioVolume(float masterVolume)
+    private void OnDisable()
     {
-        audioSource.volume = masterVolume;
-    }
-
-    private void OnDestroy()
-    {
-        if (AudioManager.Instance != null)
-            AudioManager.Instance.OnMasterVolumeChanged -= UpdateAudioVolume;
+        StopLoopSound();
     }
 
     void Update()
@@ -153,5 +142,30 @@ public class PlayerController : MonoBehaviour
     public PlayerState GetPlayerCurrentState()
     {
         return currentState;
+    }
+
+    public void PlayLoopSound(AudioClip clip)
+    {
+        if (clip == null) return;
+
+        StopLoopSound();
+
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.ConfigureLoop(
+                audioSource,
+                clip,
+                minDistance: 5f,
+                maxDistance: 40f
+            );
+        }
+    }
+
+    public void StopLoopSound()
+    {
+        if (audioSource != null && audioSource.isPlaying)
+        {
+            AudioManager.Instance?.FadeOut(audioSource, 0f);
+        }
     }
 }

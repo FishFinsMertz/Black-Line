@@ -18,6 +18,8 @@ public class ArmSprayController : ArmController
     [Header("Audio")]
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip spraySound;
+    [SerializeField] private float audioFadeIn = 0.2f;
+    [SerializeField] private float audioFadeOut = 0.3f;
 
     [Header("Reload")]
     [SerializeField] private float reloadDuration = 1.5f;
@@ -68,15 +70,6 @@ public class ArmSprayController : ArmController
         }
     }
 
-    private void OnEnable()
-    {
-        if (AudioManager.Instance != null)
-        {
-            AudioManager.Instance.OnMasterVolumeChanged += UpdateAudioVolume;
-            UpdateAudioVolume(AudioManager.Instance.GetMasterVolume());
-        }
-    }
-
     private void OnDisable()
     {
         StopSpray();
@@ -86,14 +79,8 @@ public class ArmSprayController : ArmController
             emissionModule.rateOverTime = 0f;
         isReloading = false;
 
-        if (AudioManager.Instance != null)
-            AudioManager.Instance.OnMasterVolumeChanged -= UpdateAudioVolume;
-    }
-
-    private void OnDestroy()
-    {
-        if (AudioManager.Instance != null)
-            AudioManager.Instance.OnMasterVolumeChanged -= UpdateAudioVolume;
+        if (audioSource != null && audioSource.isPlaying)
+            audioSource.Stop();
     }
 
     protected override void Update()
@@ -279,13 +266,16 @@ public class ArmSprayController : ArmController
                 sprayEffect.Play();
         }
 
-        if (audioSource != null && spraySound != null)
+        if (spraySound != null && AudioManager.Instance != null)
         {
-            audioSource.clip = spraySound;
-            audioSource.loop = true;
-            if (AudioManager.Instance != null)
-                audioSource.volume = AudioManager.Instance.GetMasterVolume();
-            audioSource.Play();
+            AudioManager.Instance.ConfigureLoop(
+                audioSource,
+                spraySound,
+                fadeInDuration: audioFadeIn,
+                volumeScale: 0.5f,
+                minDistance: 3f,
+                maxDistance: 50f
+            );
         }
 
         transform.localPosition = recoilTargetPosition;
@@ -300,16 +290,12 @@ public class ArmSprayController : ArmController
             emissionModule.rateOverTime = 0f;
 
         if (audioSource != null && audioSource.isPlaying)
-            audioSource.Stop();
-        
+        {
+            AudioManager.Instance?.FadeOut(audioSource, audioFadeOut);
+        }
+
         isReturning = true;
         returnT = 0f;
-    }
-
-    private void UpdateAudioVolume(float masterVolume)
-    {
-        if (audioSource != null)
-            audioSource.volume = masterVolume;
     }
 
     private Vector3 GetAimDirection()

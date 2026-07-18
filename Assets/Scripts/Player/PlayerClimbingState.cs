@@ -29,27 +29,19 @@ public class PlayerClimbingState : PlayerState
         player.rb.linearVelocity = Vector2.zero;
         player.bodyAnimator.speed = 1f;
 
-        if (player.audioSource != null && player.climbSound != null)
-        {
-            player.audioSource.clip = player.climbSound;
-            player.audioSource.loop = true;
-        }
+        player.PlayLoopSound(player.climbSound);
 
         if (startedFromTop)
         {
             player.currentSubState = PlayerController.SubState.ClimbDown;
             player.bodyAnimator.SetFloat("Mode", 4f);
             player.rb.linearVelocity = new Vector2(0f, -player.climbSpeed);
-            if (player.audioSource != null && !player.audioSource.isPlaying)
-                player.audioSource.Play();
         }
         else
         {
             player.currentSubState = PlayerController.SubState.None;
             player.bodyAnimator.SetFloat("Mode", 3f);
             player.rb.linearVelocity = new Vector2(0f, player.climbSpeed);
-            if (player.audioSource != null && !player.audioSource.isPlaying)
-                player.audioSource.Play();
         }
     }
 
@@ -87,8 +79,8 @@ public class PlayerClimbingState : PlayerState
                 player.bodyAnimator.SetFloat("Mode", 4f);
             }
 
-            if (player.audioSource != null && !player.audioSource.isPlaying)
-                player.audioSource.Play();
+            if (player.audioSource == null || !player.audioSource.isPlaying)
+                player.PlayLoopSound(player.climbSound);
         }
         else
         {
@@ -96,8 +88,7 @@ public class PlayerClimbingState : PlayerState
             player.currentSubState = PlayerController.SubState.ClimbPause;
             player.bodyAnimator.speed = 0f;
 
-            if (player.audioSource != null && player.audioSource.isPlaying)
-                player.audioSource.Stop();
+            player.StopLoopSound();
         }
     }
 
@@ -108,9 +99,6 @@ public class PlayerClimbingState : PlayerState
         player.rb.gravityScale = defaultGravityScale;
         player.currentSubState = PlayerController.SubState.None;
         player.inventory.EquipType(previousEquipment, true);
-        if (player.audioSource != null && player.audioSource.isPlaying)
-        {
-            player.audioSource.Stop();
-        }
+        player.StopLoopSound();
     }
 }
