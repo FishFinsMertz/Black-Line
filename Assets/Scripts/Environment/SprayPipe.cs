@@ -139,7 +139,7 @@ public class SprayPipe : MonoBehaviour, ISaveable
             AudioManager.Instance.ConfigureLoop(
                 audioSource,
                 sprayAudioClip,
-                volumeScale: 0.5f,
+                volumeScale: 0.1f,
                 fadeInDuration: audioFadeInDuration,
                 maxDistance: 30f
             );

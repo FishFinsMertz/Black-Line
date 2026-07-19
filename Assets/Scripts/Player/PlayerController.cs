@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour
     public AudioClip walkSound;
     public AudioClip runSound;
     public AudioClip climbSound;
+    public AudioClip suitDamageSound;
     public AudioSource audioSource;
 
     [Header("Mouse Flip")]
@@ -113,6 +114,11 @@ public class PlayerController : MonoBehaviour
             if (damageFlashCoroutine != null)
                 StopCoroutine(damageFlashCoroutine);
             damageFlashCoroutine = StartCoroutine(DamageFlashRoutine());
+        }
+
+        if (suitDamageSound != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayOneShot(suitDamageSound, transform.position, volumeScale: 0.7f);
         }
     }
 

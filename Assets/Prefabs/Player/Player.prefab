@@ -1110,6 +1110,7 @@ MonoBehaviour:
   walkSound: {fileID: 8300000, guid: e9ec0081b4dfea24fa5e3102a3c48abc, type: 3}
   runSound: {fileID: 8300000, guid: 13eb6536b0d9e344f84e1a11f6a4616d, type: 3}
   climbSound: {fileID: 8300000, guid: 5e48c1a45fb83b44c921eb4c4c3cd309, type: 3}
+  suitDamageSound: {fileID: 8300000, guid: ec0a35f8174361f479ef9ffe9c26119c, type: 3}
   audioSource: {fileID: 1112517288252493001}
   flipThreshold: 0.2
   bodyAnimator: {fileID: 1050252505090677471}
