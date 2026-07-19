@@ -20,6 +20,18 @@ public class PlayerController : MonoBehaviour
     public AudioClip suitDamageSound;
     public AudioSource audioSource;
 
+    [Header("Critical Health Audio")]
+    public AudioSource heartbeatSource;
+    public AudioClip heartbeatClip;
+    public AudioSource maskBreathSource;
+    public AudioClip maskBreathClip;
+    public float healthAudioMinVolume = 0f;
+    public float healthAudioMaxVolume = 1f;
+    public float heartbeatMinPitch = 0.8f;
+    public float heartbeatMaxPitch = 1.5f;
+    public float coldThreshold = 30f;
+    public float hotThreshold = 70f;
+
     [Header("Mouse Flip")]
     [SerializeField] private float flipThreshold = 0.5f;
 
@@ -56,11 +68,20 @@ public class PlayerController : MonoBehaviour
         currentState.Enter();
 
         if (dmgVolume != null) dmgVolume.weight = 0f;
+
+        if (heartbeatSource != null && heartbeatClip != null)
+            heartbeatSource.clip = heartbeatClip;
+        if (maskBreathSource != null && maskBreathClip != null)
+            maskBreathSource.clip = maskBreathClip;
     }
 
     private void OnDisable()
     {
         StopLoopSound();
+        if (heartbeatSource != null && heartbeatSource.isPlaying)
+            heartbeatSource.Stop();
+        if (maskBreathSource != null && maskBreathSource.isPlaying)
+            maskBreathSource.Stop();
     }
 
     void Update()
@@ -173,5 +194,32 @@ public class PlayerController : MonoBehaviour
         {
             AudioManager.Instance?.FadeOut(audioSource, 0f);
         }
+    }
+
+    public void SetCriticalHealthIntensity(float intensity)
+    {
+        if (heartbeatSource == null || heartbeatClip == null) return;
+        if (maskBreathSource == null || maskBreathClip == null) return;
+
+        if (intensity <= 0f)
+        {
+            if (heartbeatSource.isPlaying)
+                heartbeatSource.Stop();
+            heartbeatSource.volume = 0f;
+            if (maskBreathSource.isPlaying)
+                maskBreathSource.Stop();
+            maskBreathSource.volume = 0f;
+            return;
+        }
+
+        float clamped = Mathf.Clamp01(intensity);
+        heartbeatSource.volume = Mathf.Lerp(healthAudioMinVolume, healthAudioMaxVolume, clamped);
+        heartbeatSource.pitch = Mathf.Lerp(heartbeatMinPitch, heartbeatMaxPitch, clamped);
+        maskBreathSource.volume = Mathf.Lerp(healthAudioMinVolume, healthAudioMaxVolume, clamped);
+
+        if (!heartbeatSource.isPlaying)
+            heartbeatSource.Play();
+        if (!maskBreathSource.isPlaying)
+            maskBreathSource.Play();
     }
 }

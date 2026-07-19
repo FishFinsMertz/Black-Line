@@ -51,7 +51,7 @@ public class SlidingDoor : MonoBehaviour, IInteractible
         animator.SetTrigger("Open");
 
         if (openSound != null && AudioManager.Instance != null)
-            AudioManager.Instance.PlayOneShot(openSound, transform.position);
+            AudioManager.Instance.PlayOneShot(openSound, transform.position, volumeScale: 0.4f);
 
         if (pendingCollisionCoroutine != null)
             StopCoroutine(pendingCollisionCoroutine);
@@ -66,7 +66,7 @@ public class SlidingDoor : MonoBehaviour, IInteractible
         animator.SetTrigger("Close");
 
         if (closeSound != null && AudioManager.Instance != null)
-            AudioManager.Instance.PlayOneShot(closeSound, transform.position, volumeScale: 0.3f);
+            AudioManager.Instance.PlayOneShot(closeSound, transform.position, volumeScale: 0.4f);
 
         if (pendingCollisionCoroutine != null)
             StopCoroutine(pendingCollisionCoroutine);

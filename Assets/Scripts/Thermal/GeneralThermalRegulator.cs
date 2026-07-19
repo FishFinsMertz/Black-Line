@@ -3,9 +3,9 @@ using UnityEngine;
 public class GeneralThermalRegulator : MonoBehaviour, ISaveable, ITemperatureChangeable
 {
     [Header("Thermal Settings")]
-    [SerializeField, Range(0f, 100f)] private float baseTemperature = 70f; 
+    [SerializeField, Range(0f, 100f)] private float baseTemperature = 70f;
     [SerializeField, Range(0f, 100f)] private float battery = 100f;
-    private float currentTemperature; 
+    private float currentTemperature;
     private float initialBaseTemperature;
 
     [Header("Smoothing")]
@@ -25,6 +25,7 @@ public class GeneralThermalRegulator : MonoBehaviour, ISaveable, ITemperatureCha
 
     private float currentBatterySmoothed;
     private bool isInSafeRoom = false;
+    private PlayerController playerController;
 
     private void Start()
     {
@@ -33,6 +34,7 @@ public class GeneralThermalRegulator : MonoBehaviour, ISaveable, ITemperatureCha
         currentTemperature = baseTemperature;
         currentBatterySmoothed = battery;
         ApplyToAllThermalObjects();
+        playerController = GetComponent<PlayerController>();
     }
 
     private void Update()
@@ -81,6 +83,25 @@ public class GeneralThermalRegulator : MonoBehaviour, ISaveable, ITemperatureCha
             AddBattery(-20f);
         if (Input.GetKeyDown(KeyCode.H))
             battery = 100f;
+
+        if (playerController != null)
+        {
+            float coldThreshold = playerController.coldThreshold;
+            float hotThreshold = playerController.hotThreshold;
+            float temp = baseTemperature;
+            float intensity = 0f;
+
+            if (temp < coldThreshold)
+            {
+                intensity = 1f - (temp / coldThreshold);
+            }
+            else if (temp > hotThreshold)
+            {
+                intensity = (temp - hotThreshold) / (100f - hotThreshold);
+            }
+
+            playerController.SetCriticalHealthIntensity(intensity);
+        }
     }
 
     public void ChangeBaseTemperature(float delta)
