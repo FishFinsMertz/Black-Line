@@ -12,11 +12,12 @@ public class NotificationManager : MonoBehaviour
     [SerializeField] private float fadeDuration = 0.3f;
     [SerializeField] private float textNotificationDuration = 4f;
 
-    [Header("Item Notification")]
+    [Header("Key Item Notification")]
     [SerializeField] private CanvasGroup itemNotificationGroup;
     [SerializeField] private TextMeshProUGUI itemNameText;
     [SerializeField] private Image itemIconImage;
     [SerializeField] private float itemNotificationDuration = 4f;
+    [SerializeField] private AudioClip keyItemNotificationSound;
 
     [Header("Top Notification")]
     [SerializeField] private TextMeshProUGUI topText;
@@ -100,6 +101,11 @@ public class NotificationManager : MonoBehaviour
         itemNotificationGroup.gameObject.SetActive(true);
         itemNotificationGroup.alpha = 0f;
 
+        if (keyItemNotificationSound != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayOneShot2D(keyItemNotificationSound, null, 1f);
+        }
+
         float duration = item.displayDuration > 0 ? item.displayDuration : itemNotificationDuration;
         itemFadeCoroutine = StartCoroutine(FadeSequence(itemNotificationGroup, duration, () =>
         {
@@ -130,7 +136,6 @@ public class NotificationManager : MonoBehaviour
 
         for (int i = 0; i < totalCycles; i++)
         {
-            // Fade in
             float elapsed = 0f;
             while (elapsed < halfCycle)
             {
@@ -140,7 +145,6 @@ public class NotificationManager : MonoBehaviour
             }
             topText.alpha = 1f;
 
-            // Fade out
             elapsed = 0f;
             while (elapsed < halfCycle)
             {
