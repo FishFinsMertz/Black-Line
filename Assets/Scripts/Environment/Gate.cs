@@ -85,7 +85,7 @@ public class Gate : MonoBehaviour, IInteractible, ISaveable
         animator.SetTrigger("Close");
         
         if (closeSound != null && AudioManager.Instance != null)
-            AudioManager.Instance.PlayOneShot(closeSound, transform.position);
+            AudioManager.Instance.PlayOneShot(closeSound, transform.position, volumeScale: 0.4f);
 
         StartCoroutine(ColliderCoroutine(closeDuration, true));
     }

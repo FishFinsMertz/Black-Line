@@ -9,12 +9,6 @@ public class SprayDamage : MonoBehaviour
     [SerializeField] private float playerTempChange = -5f;
     [SerializeField] private float hitCooldown = 0.5f;
 
-    [Header("Camera Shake (Player only)")]
-    [SerializeField] private bool shakeOnPlayerHit = true;
-    [SerializeField] private float shakeIntensity = 0.2f;
-    [SerializeField] private float shakeDuration = 0.2f;
-    [SerializeField] private float shakeSmoothness = 0.5f;
-
     [Header("Detection")]
     [SerializeField] private LayerMask affectedLayerMask;
     [SerializeField] private float detectionRadius = 0.1f;
@@ -25,13 +19,11 @@ public class SprayDamage : MonoBehaviour
     private ParticleSystem ps;
     private ParticleSystem.Particle[] particles;
     private Dictionary<GameObject, float> lastHitTime = new Dictionary<GameObject, float>();
-    private CameraController camController;
 
     private void Start()
     {
         ps = GetComponent<ParticleSystem>();
         particles = new ParticleSystem.Particle[maxParticles];
-        camController = Camera.main.GetComponent<CameraController>();
     }
 
     private void Update()
@@ -51,8 +43,6 @@ public class SprayDamage : MonoBehaviour
             Collider2D hit = Physics2D.OverlapCircle(pos, detectionRadius, affectedLayerMask);
             if (hit == null) continue;
 
-            //Debug.Log(hit.name);
-
             GameObject hitObject = hit.gameObject;
 
             if (lastHitTime.TryGetValue(hitObject, out float lastHit))
@@ -61,16 +51,20 @@ public class SprayDamage : MonoBehaviour
             ITemperatureChangeable tempChangeable = hitObject.GetComponent<ITemperatureChangeable>();
             if (tempChangeable == null) continue;
 
-            float changeAmount = enemyTempChange;
             bool isPlayer = hitObject.CompareTag("Player");
             if (isPlayer)
             {
-                changeAmount = playerTempChange;
-                if (shakeOnPlayerHit && camController != null)
-                    camController.TriggerShake(shakeIntensity, shakeDuration, shakeSmoothness);
+                PlayerController pc = hitObject.GetComponent<PlayerController>();
+                if (pc != null)
+                    pc.TakeDamage(playerTempChange);
+                else
+                    tempChangeable.ChangeBaseTemperature(playerTempChange);
+            }
+            else
+            {
+                tempChangeable.ChangeBaseTemperature(enemyTempChange);
             }
 
-            tempChangeable.ChangeBaseTemperature(changeAmount);
             lastHitTime[hitObject] = currentTime;
         }
     }

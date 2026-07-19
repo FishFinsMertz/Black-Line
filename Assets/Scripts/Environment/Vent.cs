@@ -12,6 +12,9 @@ public class Vent : MonoBehaviour, ISaveable
     [SerializeField] private PartsExploder partsExploder;
     [SerializeField] private EnemySpawner enemySpawner; //optional
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip ventExplodeAudio;
+
     [Header("Timing Settings")]
     [SerializeField] private float explosionDelayMin = 0f;
     [SerializeField] private float explosionDelayMax = 0f;
@@ -57,6 +60,11 @@ public class Vent : MonoBehaviour, ISaveable
 
         if (partsExploder != null)
             partsExploder.Explode();
+        
+        if (ventExplodeAudio != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayOneShot(ventExplodeAudio, transform.position, volumeScale: 0.35f);
+        }
     }
 
     // --- ISaveable implementation ---

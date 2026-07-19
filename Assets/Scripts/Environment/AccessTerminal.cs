@@ -11,6 +11,9 @@ public class AccessTerminal : MonoBehaviour
     [SerializeField] private string notificationGranted;
     [SerializeField] private string notificationDenied;
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip accessGrantedAudio;
+
     private bool hasGranted = false;
 
     public void CheckAccess()
@@ -25,6 +28,11 @@ public class AccessTerminal : MonoBehaviour
                 NotificationManager.Instance.NotifyBottom(notificationGranted);
 
             onAccessGranted.Invoke();
+
+            if (accessGrantedAudio != null && AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlayOneShot(accessGrantedAudio, transform.position, volumeScale: 0.2f);
+            }
         }
         else
         {

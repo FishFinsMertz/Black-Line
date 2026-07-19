@@ -132,6 +132,7 @@ MonoBehaviour:
   interactionKey: e
   cooldown: 4
   oneShot: 0
+  startInteractible: 1
   outline: {fileID: 629428858577308273}
   onInteract:
     m_PersistentCalls:
@@ -164,6 +165,7 @@ MonoBehaviour:
   onPress:
     m_PersistentCalls:
       m_Calls: []
+  clickAudio: {fileID: 8300000, guid: 7f04faecc505ef04996ebc2c575fd555, type: 3}
 --- !u!114 &1758422421929212910
 MonoBehaviour:
   m_ObjectHideFlags: 0

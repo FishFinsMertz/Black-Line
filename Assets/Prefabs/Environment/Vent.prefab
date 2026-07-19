@@ -189,10 +189,9 @@ MonoBehaviour:
   saveID: 
   partsExploder: {fileID: 5811569638945043398}
   enemySpawner: {fileID: 7237686989694033627}
+  ventExplodeAudio: {fileID: 8300000, guid: 92223cfbcc2ac6645a210681fe161cc1, type: 3}
   explosionDelayMin: 0.2
   explosionDelayMax: 0.5
-  spawnDelayAfterExplosionMin: 0.2
-  spawnDelayAfterExplosionMax: 0.5
   oneShot: 1
 --- !u!1001 &3004799587092387003
 PrefabInstance:

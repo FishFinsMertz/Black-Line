@@ -220,6 +220,7 @@ MonoBehaviour:
   interactionKey: e
   cooldown: 1
   oneShot: 1
+  startInteractible: 1
   outline: {fileID: 8615169385946199988}
   onInteract:
     m_PersistentCalls:
@@ -267,6 +268,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  notificationGranted: 
+  notificationDenied: 
+  accessGrantedAudio: {fileID: 8300000, guid: 3ff7988aa4836314ca0470c85646df99, type: 3}
 --- !u!61 &6693542178724338785
 BoxCollider2D:
   m_ObjectHideFlags: 0
