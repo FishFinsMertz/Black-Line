@@ -12,6 +12,14 @@ public class PowerDistributor : MonoBehaviour, ISaveable
     [SerializeField] private bool startOn = false;
     private bool isOn = false;
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip bootSound;
+    [SerializeField] private AudioClip humSound;
+    [SerializeField] private AudioSource humSource;
+    [SerializeField] private float humVolumeScale = 0.4f;
+    [SerializeField] private float humFadeIn = 2f;
+    [SerializeField] private float humFadeOut = 2f;
+
     [Header("Heat Source (Optional)")]
     [SerializeField] private bool requireHeatSource = false;
     [SerializeField] private TileMapThermal sourceTilemap;
@@ -41,6 +49,9 @@ public class PowerDistributor : MonoBehaviour, ISaveable
 
     private void Start()
     {
+        if (humSource == null)
+            humSource = gameObject.AddComponent<AudioSource>();
+
         SaveManager.Instance?.Register(this);
         isOn = startOn;
         if (isOn)
@@ -102,7 +113,6 @@ public class PowerDistributor : MonoBehaviour, ISaveable
         ApplyAffectedObjectsTemperature(targetTemp);
     }
 
-    // --- Public API ---
     public void TurnOn()
     {
         TurnOnInternal(true);
@@ -113,13 +123,11 @@ public class PowerDistributor : MonoBehaviour, ISaveable
         if (isOn) return;
         if (requireHeatSource && !IsHeatSourceValid())
         {
-            // Show notification
             if (!string.IsNullOrEmpty(failMessage) && NotificationManager.Instance != null)
                 NotificationManager.Instance.NotifyBottom(failMessage);
 
             Debug.Log($"PowerDistributor {name} cannot turn on – heat source not valid.");
 
-            // Fire fail event
             if (triggerEvents)
                 onFail.Invoke();
 
@@ -129,6 +137,22 @@ public class PowerDistributor : MonoBehaviour, ISaveable
         ApplyState();
         if (triggerEvents)
             onTurnOn.Invoke();
+
+        if (bootSound != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayOneShot(bootSound, transform.position, volumeScale: 0.7f);
+        }
+
+        if (humSound != null && AudioManager.Instance != null && humSource != null)
+        {
+            AudioManager.Instance.ConfigureLoop(
+                humSource,
+                humSound,
+                volumeScale: humVolumeScale,
+                fadeInDuration: humFadeIn,
+                maxDistance: 20f
+            );
+        }
     }
 
     public void TurnOff()
@@ -143,6 +167,11 @@ public class PowerDistributor : MonoBehaviour, ISaveable
         ApplyState();
         if (triggerEvents)
             onTurnOff.Invoke();
+
+        if (humSource != null && humSource.isPlaying && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.FadeOut(humSource, humFadeOut);
+        }
     }
 
     public void Toggle()
@@ -155,7 +184,6 @@ public class PowerDistributor : MonoBehaviour, ISaveable
 
     public bool IsOn() => isOn;
 
-    // --- ISaveable ---
     public void Save(GameData data)
     {
         if (string.IsNullOrEmpty(saveID)) return;
@@ -184,5 +212,7 @@ public class PowerDistributor : MonoBehaviour, ISaveable
     private void OnDestroy()
     {
         SaveManager.Instance?.Unregister(this);
+        if (humSource != null && humSource.isPlaying)
+            humSource.Stop();
     }
 }
