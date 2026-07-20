@@ -25,6 +25,19 @@ public class ScoutHoverState : EnemyState
         scout.animator.SetBool("isIdle", true);
         FindHoverTarget();
         GenerateOrbitOffset();
+
+        if (scout.hoverSound != null && scout.audioSource != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.ConfigureLoop(
+                scout.audioSource,
+                scout.hoverSound,
+                volumeScale: 0.3f,
+                fadeInDuration: 0f,
+                spatialBlend: 1f,
+                minDistance: 1f,
+                maxDistance: 10f
+            );
+        }
     }
 
     public override void Update()
@@ -62,6 +75,11 @@ public class ScoutHoverState : EnemyState
         scout.transform.rotation = Quaternion.identity;
         scout.rb.linearVelocity = Vector2.zero;
         scout.animator.SetBool("isIdle", false);
+
+        if (scout.audioSource != null && scout.audioSource.isPlaying)
+        {
+            AudioManager.Instance?.FadeOut(scout.audioSource, 0f);
+        }
     }
 
     private void FindHoverTarget()
@@ -189,7 +207,6 @@ public class ScoutHoverState : EnemyState
             maxDegreesPerSec * Time.deltaTime
         );
 
-        // Emergency reset if spinning too long
         spinTimer += Time.deltaTime;
         if (spinTimer > 2f)
         {
