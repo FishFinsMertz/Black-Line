@@ -234,6 +234,7 @@ MonoBehaviour:
   ammoAmount: 60
   consumableID: BatteryRecharger
   consumableAmount: 1
+  pickupSound: {fileID: 8300000, guid: a6ee0041b3e93aa428660d6e1763e671, type: 3}
 --- !u!61 &757204340372739065
 BoxCollider2D:
   m_ObjectHideFlags: 0

@@ -19,6 +19,8 @@ public class ItemGiver : MonoBehaviour, ISaveable, IInteractible
     [SerializeField] private string consumableID = "BatteryRecharger";
     [SerializeField] private int consumableAmount = 1;
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip pickupSound;
     private bool wasGiven = false;
     private bool interactible = false;
     private ButtonTrigger buttonTrigger;
@@ -132,6 +134,11 @@ public class ItemGiver : MonoBehaviour, ISaveable, IInteractible
             NotificationManager.Instance.NotifyBottom($"+{ammoAmount} {displayName} Ammo");
         }
 
+        if (pickupSound != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayOneShot(pickupSound, transform.position, volumeScale: 1f);
+        }
+
         wasGiven = true;
         if (hideAfterPickup) gameObject.SetActive(false);
     }
@@ -167,6 +174,11 @@ public class ItemGiver : MonoBehaviour, ISaveable, IInteractible
             {
                 string displayName = consumableID == "BatteryRecharger" ? "Battery Recharger" : consumableID;
                 NotificationManager.Instance.NotifyBottom($"+{consumableAmount} {displayName}");
+            }
+
+            if (pickupSound != null && AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlayOneShot(pickupSound, transform.position, volumeScale: 1f);
             }
 
             wasGiven = true;

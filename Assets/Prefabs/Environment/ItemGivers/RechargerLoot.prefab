@@ -304,3 +304,4 @@ MonoBehaviour:
   ammoAmount: 10
   consumableID: BatteryRecharger
   consumableAmount: 1
+  pickupSound: {fileID: 8300000, guid: 592657cc14efeb44dbc1c210d9ef82f2, type: 3}
