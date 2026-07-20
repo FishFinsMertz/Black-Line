@@ -20,6 +20,9 @@ public class PlayerController : MonoBehaviour
     public AudioClip suitDamageSound;
     public AudioSource audioSource;
 
+    // One shot
+    public AudioClip rechargeSound;
+
     [Header("Critical Health Audio")]
     public AudioSource heartbeatSource;
     public AudioClip heartbeatClip;
@@ -139,7 +142,7 @@ public class PlayerController : MonoBehaviour
 
         if (suitDamageSound != null && AudioManager.Instance != null)
         {
-            AudioManager.Instance.PlayOneShot(suitDamageSound, transform.position, volumeScale: 0.7f);
+            AudioManager.Instance.PlayOneShot2D(suitDamageSound, volumeScale: 0.5f);
         }
     }
 

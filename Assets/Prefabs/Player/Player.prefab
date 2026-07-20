@@ -1372,6 +1372,7 @@ MonoBehaviour:
   climbSound: {fileID: 8300000, guid: 5e48c1a45fb83b44c921eb4c4c3cd309, type: 3}
   suitDamageSound: {fileID: 8300000, guid: ec0a35f8174361f479ef9ffe9c26119c, type: 3}
   audioSource: {fileID: 1112517288252493001}
+  rechargeSound: {fileID: 8300000, guid: 38d16e57c2158e341851183aa0875b98, type: 3}
   heartbeatSource: {fileID: 5058849366614830305}
   heartbeatClip: {fileID: 8300000, guid: f03050497dc70344e9f071d0e97c2d47, type: 3}
   maskBreathSource: {fileID: 371185111444547366}

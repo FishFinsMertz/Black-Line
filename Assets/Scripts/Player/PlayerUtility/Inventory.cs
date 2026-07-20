@@ -156,6 +156,10 @@ public class Inventory : MonoBehaviour, ISaveable
         {
             thermalRegulator.AddBattery(rechargeAmount);
             NotificationManager.Instance?.NotifyBottom($"Battery +{rechargeAmount}%");
+            if (playerController.rechargeSound != null && AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlayOneShot2D(playerController.rechargeSound, volumeScale: 0.5f);
+            }
             return true;
         }
 
