@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class WorldAudio : MonoBehaviour, ISaveable
 {
@@ -21,7 +22,15 @@ public class WorldAudio : MonoBehaviour, ISaveable
     [Header("Doppler")]
     [SerializeField] private bool useDoppler = true;
 
+    [Header("Delays")]
+    [SerializeField] private float playDelay = 0f;
+    [SerializeField] private float stopDelay = 0f;
+
     private bool isPlaying = false;
+    private Coroutine playCoroutine;
+    private Coroutine stopCoroutine;
+    private bool isPlayDelaying = false;
+    private bool isStopDelaying = false;
 
     private void Start()
     {
@@ -37,6 +46,8 @@ public class WorldAudio : MonoBehaviour, ISaveable
     private void OnDestroy()
     {
         SaveManager.Instance?.Unregister(this);
+        if (playCoroutine != null) StopCoroutine(playCoroutine);
+        if (stopCoroutine != null) StopCoroutine(stopCoroutine);
     }
 
     public void Play()
@@ -46,8 +57,31 @@ public class WorldAudio : MonoBehaviour, ISaveable
 
     public void Play(float fadeDuration)
     {
-        if (isPlaying) return;
+        if (isPlaying || isPlayDelaying) return;
         if (worldAudioClip == null || AudioManager.Instance == null) return;
+
+        // If there's a stop delay running, cancel it
+        if (isStopDelaying && stopCoroutine != null)
+        {
+            StopCoroutine(stopCoroutine);
+            stopCoroutine = null;
+            isStopDelaying = false;
+        }
+
+        isPlayDelaying = true;
+        playCoroutine = StartCoroutine(PlayDelayed(fadeDuration));
+    }
+
+    private IEnumerator PlayDelayed(float fadeDuration)
+    {
+        if (playDelay > 0f)
+            yield return new WaitForSeconds(playDelay);
+
+        isPlayDelaying = false;
+        playCoroutine = null;
+
+        if (worldAudioClip == null || AudioManager.Instance == null)
+            yield break;
 
         isPlaying = true;
 
@@ -77,7 +111,7 @@ public class WorldAudio : MonoBehaviour, ISaveable
             {
                 AudioManager.Instance.PlayOneShot(worldAudioClip, transform.position, volumeScale: volumeScale, maxDistance: maxDistance);
             }
-            isPlaying = false;
+            isPlaying = false; // one-shot is done immediately
         }
     }
 
@@ -88,7 +122,34 @@ public class WorldAudio : MonoBehaviour, ISaveable
 
     public void Stop(float fadeDuration)
     {
-        if (!isPlaying) return;
+        if (!isPlaying && !isPlayDelaying) return;
+
+        // If there's a play delay running, cancel it
+        if (isPlayDelaying && playCoroutine != null)
+        {
+            StopCoroutine(playCoroutine);
+            playCoroutine = null;
+            isPlayDelaying = false;
+            // If we cancel a play delay, we should not start playing
+            return;
+        }
+
+        // If already stopping, ignore
+        if (isStopDelaying) return;
+
+        isStopDelaying = true;
+        stopCoroutine = StartCoroutine(StopDelayed(fadeDuration));
+    }
+
+    private IEnumerator StopDelayed(float fadeDuration)
+    {
+        if (stopDelay > 0f)
+            yield return new WaitForSeconds(stopDelay);
+
+        isStopDelaying = false;
+        stopCoroutine = null;
+
+        if (!isPlaying) yield break;
 
         if (isLooping)
         {
@@ -108,7 +169,7 @@ public class WorldAudio : MonoBehaviour, ISaveable
 
     public void Toggle()
     {
-        if (isPlaying)
+        if (isPlaying || isPlayDelaying)
             Stop();
         else
             Play();
@@ -128,8 +189,14 @@ public class WorldAudio : MonoBehaviour, ISaveable
         if (isLooping && worldAudioSource != null && worldAudioSource.isPlaying)
         {
             worldAudioSource.Stop();
-            isPlaying = false;
         }
+        isPlaying = false;
+        isPlayDelaying = false;
+        isStopDelaying = false;
+        if (playCoroutine != null) StopCoroutine(playCoroutine);
+        if (stopCoroutine != null) StopCoroutine(stopCoroutine);
+        playCoroutine = null;
+        stopCoroutine = null;
     }
 
     // --- ISaveable ---
@@ -153,6 +220,16 @@ public class WorldAudio : MonoBehaviour, ISaveable
         if (cs == null) return;
 
         bool shouldBePlaying = cs.state == "On";
+
+        if (isPlayDelaying || isStopDelaying)
+        {
+            if (playCoroutine != null) StopCoroutine(playCoroutine);
+            if (stopCoroutine != null) StopCoroutine(stopCoroutine);
+            playCoroutine = null;
+            stopCoroutine = null;
+            isPlayDelaying = false;
+            isStopDelaying = false;
+        }
 
         if (shouldBePlaying && !isPlaying)
         {
