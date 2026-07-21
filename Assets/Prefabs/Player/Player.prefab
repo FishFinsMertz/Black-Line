@@ -1124,6 +1124,8 @@ MonoBehaviour:
   recoilStrength: 0.05
   recoilDuration: 0.1
   muzzleFlashAnimator: {fileID: 4658165770266886540}
+  muzzleFlashObject: {fileID: 2197687649790961059}
+  muzzleFlashDuration: 0.5
   armThermalObject: {fileID: 2051003976633089647}
   bodyThermalObject: {fileID: 1826829146766602594}
 --- !u!1 &7433923514042709585

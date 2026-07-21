@@ -25,6 +25,8 @@ public class ArmGunController : ArmController
 
     [Header("Muzzle Flash")]
     [SerializeField] private Animator muzzleFlashAnimator;
+    [SerializeField] private GameObject muzzleFlashObject;
+    [SerializeField] private float muzzleFlashDuration = 0.1f;
 
     [Header("Thermal")]
     [SerializeField] private ThermalObject armThermalObject;
@@ -45,8 +47,17 @@ public class ArmGunController : ArmController
         idleRotation = Quaternion.identity;
     }
 
+    private void OnEnable()
+    {
+        if (muzzleFlashObject != null)
+            muzzleFlashObject.SetActive(false);
+    }
+
     private void OnDisable()
     {
+        if (muzzleFlashObject != null)
+            muzzleFlashObject.SetActive(false);
+
         if (isRecoiling)
         {
             StopAllCoroutines();
@@ -54,6 +65,7 @@ public class ArmGunController : ArmController
             isRecoiling = false;
         }
         isReloading = false;
+        StopAllCoroutines();
     }
 
     protected override void Update()
@@ -119,7 +131,6 @@ public class ArmGunController : ArmController
 
             if (AudioManager.Instance != null && gunshotClip != null)
             {
-                //Debug.Log($"Playing gunshot sound: {gunshotClip.name} at volume {gunshotVolume}");
                 AudioManager.Instance.PlayOneShot(gunshotClip, firePoint.position, volumeScale: 0.35f, pitchVariation: 0.1f);
             }
 
@@ -131,11 +142,24 @@ public class ArmGunController : ArmController
         if (bodyThermalObject != null)
             bodyThermalObject.ChangeCurrentTemperature(15f);
 
+        if (muzzleFlashObject != null)
+        {
+            muzzleFlashObject.SetActive(true);
+            StartCoroutine(DisableMuzzleFlash());
+        }
+
         if (muzzleFlashAnimator != null)
             muzzleFlashAnimator.SetTrigger("Shoot");
 
         if (!isRecoiling && recoilStrength > 0f)
             StartCoroutine(Recoil());
+    }
+
+    private IEnumerator DisableMuzzleFlash()
+    {
+        yield return new WaitForSeconds(muzzleFlashDuration);
+        if (muzzleFlashObject != null)
+            muzzleFlashObject.SetActive(false);
     }
 
     private void HandleReload()
