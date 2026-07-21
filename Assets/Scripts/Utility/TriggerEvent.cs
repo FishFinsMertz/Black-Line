@@ -11,16 +11,29 @@ public class TriggerEvent : MonoBehaviour, ISaveable, IInteractible
     [SerializeField] private bool oneShot = true;
     [SerializeField] private string requiredTag = "Player";
     [SerializeField] private bool interactible = true;
+    [SerializeField] private bool checkPlayerInsideOnEnable = true;
 
     [Header("Events")]
     public UnityEvent onTriggerEnter;
+    public UnityEvent onTriggerExit;
 
     private bool hasTriggered = false;
+    private Collider2D triggerCollider;
 
     private void Start()
     {
         if (oneShot && !string.IsNullOrEmpty(saveID))
             SaveManager.Instance?.Register(this);
+
+        triggerCollider = GetComponent<Collider2D>();
+    }
+
+    private void OnEnable()
+    {
+        if (checkPlayerInsideOnEnable && (!oneShot || (oneShot && !hasTriggered)))
+        {
+            CheckPlayerInside();
+        }
     }
 
     private void OnDestroy()
@@ -40,10 +53,68 @@ public class TriggerEvent : MonoBehaviour, ISaveable, IInteractible
             hasTriggered = true;
     }
 
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (!interactible) return;
+        if (oneShot && hasTriggered) return;
+        if (!other.CompareTag(requiredTag)) return;
+
+        onTriggerExit.Invoke();
+    }
+
+    private void CheckPlayerInside()
+    {
+        if (triggerCollider == null)
+        {
+            triggerCollider = GetComponent<Collider2D>();
+            if (triggerCollider == null) return;
+        }
+
+        if (!triggerCollider.enabled || !gameObject.activeInHierarchy)
+        {
+            return;
+        }
+
+        GameObject player = GameObject.FindGameObjectWithTag(requiredTag);
+        if (player == null) return;
+
+        Collider2D playerCollider = player.GetComponent<Collider2D>();
+        if (playerCollider == null) return;
+
+        // Method 1: Using Overlap (preferred)
+        ContactFilter2D filter = new ContactFilter2D();
+        filter.useTriggers = true;
+        filter.SetLayerMask(1 << player.layer);
+
+        Collider2D[] results = new Collider2D[1];
+        int count = triggerCollider.Overlap(filter, results);
+
+        bool playerInside = count > 0 && results[0].CompareTag(requiredTag);
+
+        if (!playerInside)
+        {
+            Vector2 playerCenter = playerCollider.bounds.center;
+            Vector2 closestPoint = triggerCollider.ClosestPoint(playerCenter);
+            float distance = Vector2.Distance(closestPoint, playerCenter);
+            if (distance < 0.01f)
+            {
+                playerInside = true;
+            }
+        }
+
+        if (playerInside)
+        {
+            onTriggerEnter.Invoke();
+            if (oneShot)
+                hasTriggered = true;
+        }
+    }
+
     // --- IInteractible ---
     public void EnableInteraction()
     {
         interactible = true;
+        CheckPlayerInside();
     }
 
     public void DisableInteraction()
@@ -56,7 +127,6 @@ public class TriggerEvent : MonoBehaviour, ISaveable, IInteractible
     {
         if (!oneShot || string.IsNullOrEmpty(saveID)) return;
         data.componentStates.RemoveAll(c => c.id == saveID);
-        // Save both triggered state and interactible state
         string state = $"{hasTriggered}:{interactible}";
         data.componentStates.Add(new ComponentState { id = saveID, state = state });
     }
@@ -75,7 +145,6 @@ public class TriggerEvent : MonoBehaviour, ISaveable, IInteractible
             }
             else
             {
-                // Fallback for older save format
                 hasTriggered = cs.state == "Triggered";
             }
         }

@@ -107,8 +107,6 @@ public class SprayPipe : MonoBehaviour, ISaveable
 
         if (isSourceActive || !requireSource)
             StartCoroutine(SmoothTransition(true));
-        else
-            Debug.Log($"SprayPipe '{name}' requires heat source but none is active.");
     }
 
     public void Deactivate()

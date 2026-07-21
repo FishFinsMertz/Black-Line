@@ -57,7 +57,7 @@ public class RiftController : EnemyController
 
     protected override void OnSmokingEnded()
     {
-        Debug.Log($"{name} (Rift) cooled down – bounce pattern normalised.");
+        //Debug.Log($"{name} (Rift) cooled down – bounce pattern normalised.");
         bounceSpeed = originalBounceSpeed;
         bounceDelayMin = originalBounceDelayMin;
         bounceDelayMax = originalBounceDelayMax;

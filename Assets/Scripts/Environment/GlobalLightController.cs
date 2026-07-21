@@ -19,7 +19,7 @@ public class GlobalLightController : MonoBehaviour
 
         if (globalLight == null)
         {
-            Debug.LogWarning("GlobalLightController: No Light2D found. Searching scene...");
+            //Debug.LogWarning("GlobalLightController: No Light2D found. Searching scene...");
             globalLight = FindFirstObjectByType<Light2D>();
         }
 

@@ -64,7 +64,7 @@ public class Gate : MonoBehaviour, IInteractible, ISaveable
             yield return new WaitForSeconds(openDelay);
         animator.SetTrigger("Open");
         if (openSound != null && AudioManager.Instance != null)
-            AudioManager.Instance.PlayOneShot(openSound, transform.position, volumeScale: 0.4f);
+            AudioManager.Instance.PlayOneShot(openSound, transform.position, volumeScale: 0.4f, maxDistance: 20f);
         StartCoroutine(ColliderCoroutine(openDuration, false));
     }
     /*
@@ -85,7 +85,7 @@ public class Gate : MonoBehaviour, IInteractible, ISaveable
         animator.SetTrigger("Close");
         
         if (closeSound != null && AudioManager.Instance != null)
-            AudioManager.Instance.PlayOneShot(closeSound, transform.position, volumeScale: 0.4f);
+            AudioManager.Instance.PlayOneShot(closeSound, transform.position, volumeScale: 0.4f, maxDistance: 20f);
 
         StartCoroutine(ColliderCoroutine(closeDuration, true));
     }

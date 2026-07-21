@@ -1,7 +1,11 @@
 using UnityEngine;
 
-public class WorldAudio : MonoBehaviour
+public class WorldAudio : MonoBehaviour, ISaveable
 {
+    [Header("Save ID (unique per component)")]
+    [SerializeField] private string saveID;
+
+    [Header("Audio Settings")]
     [SerializeField] private AudioSource worldAudioSource;
     [SerializeField] private AudioClip worldAudioClip;
     [SerializeField] private bool isLooping = true;
@@ -10,6 +14,13 @@ public class WorldAudio : MonoBehaviour
     [SerializeField] private float fadeOutDuration = 0.5f;
     [SerializeField] private bool playOnStart = false;
 
+    [Header("Spatial Settings")]
+    [SerializeField] private bool is2D = false;
+    [SerializeField] private float maxDistance = 100f;
+
+    [Header("Doppler")]
+    [SerializeField] private bool useDoppler = true;
+
     private bool isPlaying = false;
 
     private void Start()
@@ -17,8 +28,15 @@ public class WorldAudio : MonoBehaviour
         if (worldAudioSource == null)
             worldAudioSource = gameObject.AddComponent<AudioSource>();
 
+        SaveManager.Instance?.Register(this);
+
         if (playOnStart)
             Play();
+    }
+
+    private void OnDestroy()
+    {
+        SaveManager.Instance?.Unregister(this);
     }
 
     public void Play()
@@ -40,15 +58,25 @@ public class WorldAudio : MonoBehaviour
                 worldAudioClip,
                 volumeScale: volumeScale,
                 fadeInDuration: fadeDuration,
-                spatialBlend: 1f,
+                spatialBlend: is2D ? 0f : 1f,
                 minDistance: 1f,
-                maxDistance: 100f
+                maxDistance: maxDistance
             );
+
+            worldAudioSource.dopplerLevel = useDoppler ? 1f : 0f;
         }
         else
         {
-            worldAudioSource.volume = 0f;
-            worldAudioSource.PlayOneShot(worldAudioClip, volumeScale);
+            worldAudioSource.dopplerLevel = useDoppler ? 1f : 0f;
+
+            if (is2D)
+            {
+                AudioManager.Instance.PlayOneShot2D(worldAudioClip, volumeScale: volumeScale);
+            }
+            else
+            {
+                AudioManager.Instance.PlayOneShot(worldAudioClip, transform.position, volumeScale: volumeScale, maxDistance: maxDistance);
+            }
             isPlaying = false;
         }
     }
@@ -101,6 +129,38 @@ public class WorldAudio : MonoBehaviour
         {
             worldAudioSource.Stop();
             isPlaying = false;
+        }
+    }
+
+    // --- ISaveable ---
+    public void Save(GameData data)
+    {
+        if (string.IsNullOrEmpty(saveID)) return;
+
+        data.componentStates.RemoveAll(c => c.id == saveID);
+        data.componentStates.Add(new ComponentState
+        {
+            id = saveID,
+            state = isPlaying ? "On" : "Off"
+        });
+    }
+
+    public void Load(GameData data)
+    {
+        if (string.IsNullOrEmpty(saveID)) return;
+
+        ComponentState cs = data.componentStates.Find(c => c.id == saveID);
+        if (cs == null) return;
+
+        bool shouldBePlaying = cs.state == "On";
+
+        if (shouldBePlaying && !isPlaying)
+        {
+            Play();
+        }
+        else if (!shouldBePlaying && isPlaying)
+        {
+            Stop();
         }
     }
 }

@@ -44,7 +44,6 @@ public class EnemySpawner : MonoBehaviour, ISaveable
             if (enemy != null)
             {
                 enemy.SetActive(true);
-                Debug.Log($"Spawned {enemy.name}");
             }
             float delay = Random.Range(spawnDelayMin, spawnDelayMax);
             yield return new WaitForSeconds(delay);
