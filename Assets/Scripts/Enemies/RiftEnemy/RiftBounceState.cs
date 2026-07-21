@@ -51,7 +51,7 @@ public class RiftBounceState : EnemyState
             }
         }
 
-        Debug.LogWarning("[RiftBounceState] No valid bounce target found, returning to idle.");
+        //Debug.LogWarning("[RiftBounceState] No valid bounce target found, returning to idle.");
         enemy.ChangeState(new RiftIdleState(rift));
     }
 

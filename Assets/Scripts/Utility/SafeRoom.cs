@@ -18,7 +18,6 @@ public class SafeRoom : MonoBehaviour
 
         if (thermal == null)
         {
-            Debug.LogWarning("SafeRoom: No GeneralThermalRegulator found.");
             return;
         }
 

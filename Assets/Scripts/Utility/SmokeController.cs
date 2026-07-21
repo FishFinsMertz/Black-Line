@@ -27,9 +27,6 @@ public class SmokeController : MonoBehaviour
 
         if (thermalSource == null)
             thermalSource = GetComponentInParent<ThermalObject>();
-
-        if (thermalSource == null)
-            Debug.LogWarning("SmokeController: No ThermalObject found.", this);
     }
 
     private void Update()

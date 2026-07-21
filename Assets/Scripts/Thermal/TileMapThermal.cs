@@ -30,7 +30,6 @@ public class TileMapThermal : BaseThermalComponent
         tilemapRenderer = GetComponent<TilemapRenderer>();
         if (thermalMaterial == null)
         {
-            Debug.LogError("TileMapThermal: No thermal material assigned!", this);
             enabled = false;
             return;
         }

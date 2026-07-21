@@ -76,7 +76,6 @@ public class CameraController : MonoBehaviour
         GameObject playerObj = GameObject.FindGameObjectWithTag(defaultTargetTag);
         if (playerObj == null)
         {
-            Debug.LogWarning($"No GameObject with tag '{defaultTargetTag}' found.");
             return;
         }
         target = playerObj.transform;

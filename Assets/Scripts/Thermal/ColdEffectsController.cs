@@ -50,7 +50,6 @@ public class ColdEffectsController : MonoBehaviour
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj == null)
         {
-            Debug.LogWarning("No GameObject with tag 'Player' found. Temperature effects won't work.");
             playerThermal = null;
             return;
         }

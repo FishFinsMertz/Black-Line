@@ -126,7 +126,7 @@ public class PowerDistributor : MonoBehaviour, ISaveable
             if (!string.IsNullOrEmpty(failMessage) && NotificationManager.Instance != null)
                 NotificationManager.Instance.NotifyBottom(failMessage);
 
-            Debug.Log($"PowerDistributor {name} cannot turn on – heat source not valid.");
+            //Debug.Log($"PowerDistributor {name} cannot turn on – heat source not valid.");
 
             if (triggerEvents)
                 onFail.Invoke();

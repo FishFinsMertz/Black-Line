@@ -54,9 +54,6 @@ public class ArmSprayController : ArmController
         camController = Camera.main.GetComponent<CameraController>();
         thermalRegulator = GetComponentInParent<GeneralThermalRegulator>();
 
-        if (thermalRegulator == null)
-            Debug.LogWarning("ArmSprayController: No GeneralThermalRegulator found in parent.");
-
         sprayOriginalLocalPosition = transform.localPosition;
         recoilTargetPosition = sprayOriginalLocalPosition + Vector3.left * recoilOffset;
         idleRotation = Quaternion.identity;

@@ -24,8 +24,6 @@ public class SlidingDoor : MonoBehaviour, IInteractible
 
         if (doorCollider != null)
             doorCollider.enabled = true;
-        else
-            Debug.LogError("SlidingDoor: doorCollider not assigned!", this);
     }
 
     private void OnTriggerEnter2D(Collider2D other)

@@ -34,8 +34,6 @@ public class Lights : MonoBehaviour, ISaveable
         if (lights == null || lights.Length == 0)
         {
             lights = GetComponentsInChildren<Light2D>();
-            if (lights.Length == 0)
-                Debug.LogWarning($"{name}: No Light2D components found in children.");
         }
 
         // Register with save system
