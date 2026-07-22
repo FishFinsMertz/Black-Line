@@ -39,6 +39,9 @@ public class WorldAudio : MonoBehaviour, ISaveable
 
         SaveManager.Instance?.Register(this);
 
+        if (worldAudioClip != null)
+            worldAudioClip.LoadAudioData();
+
         if (playOnStart)
             Play();
     }
@@ -60,7 +63,6 @@ public class WorldAudio : MonoBehaviour, ISaveable
         if (isPlaying || isPlayDelaying) return;
         if (worldAudioClip == null || AudioManager.Instance == null) return;
 
-        // If there's a stop delay running, cancel it
         if (isStopDelaying && stopCoroutine != null)
         {
             StopCoroutine(stopCoroutine);
@@ -111,7 +113,7 @@ public class WorldAudio : MonoBehaviour, ISaveable
             {
                 AudioManager.Instance.PlayOneShot(worldAudioClip, transform.position, volumeScale: volumeScale, maxDistance: maxDistance);
             }
-            isPlaying = false; // one-shot is done immediately
+            isPlaying = false;
         }
     }
 
@@ -124,17 +126,14 @@ public class WorldAudio : MonoBehaviour, ISaveable
     {
         if (!isPlaying && !isPlayDelaying) return;
 
-        // If there's a play delay running, cancel it
         if (isPlayDelaying && playCoroutine != null)
         {
             StopCoroutine(playCoroutine);
             playCoroutine = null;
             isPlayDelaying = false;
-            // If we cancel a play delay, we should not start playing
             return;
         }
 
-        // If already stopping, ignore
         if (isStopDelaying) return;
 
         isStopDelaying = true;
@@ -199,7 +198,6 @@ public class WorldAudio : MonoBehaviour, ISaveable
         stopCoroutine = null;
     }
 
-    // --- ISaveable ---
     public void Save(GameData data)
     {
         if (string.IsNullOrEmpty(saveID)) return;
