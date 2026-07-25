@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -26,6 +27,8 @@ public class RotatePipe : MonoBehaviour, ISaveable
     private bool isActive = false;
     private float currentTemperature;
     private List<SprayPipe> currentlyActiveSprayPipes = new List<SprayPipe>();
+    private bool isQueued = false;
+    private int queuedIndex = -1;
 
     [System.Serializable]
     public class RotationState
@@ -108,25 +111,91 @@ public class RotatePipe : MonoBehaviour, ISaveable
 
     public void RotateNext()
     {
-        if (isRotating) return;
         if (rotations.Count <= 1) return;
 
         int nextIndex = (currentIndex + 1) % rotations.Count;
+
+        if (isRotating)
+        {
+            isQueued = true;
+            queuedIndex = nextIndex;
+            return;
+        }
+
         StartCoroutine(RotateToState(nextIndex));
     }
 
-    private System.Collections.IEnumerator RotateToState(int targetIndex)
+    private IEnumerator RotateToState(int targetIndex)
     {
         isRotating = true;
-
-        foreach (var spray in currentlyActiveSprayPipes)
-            if (spray != null) spray.Deactivate();
-        currentlyActiveSprayPipes.Clear();
+        isQueued = false;
+        queuedIndex = -1;
 
         RotationState currentState = rotations[currentIndex];
         RotationState targetState = rotations[targetIndex];
 
-        bool targetIsActive = IsSupplied() && targetState.sourceConnected;
+        bool fromConnected = currentState.sourceConnected && IsSupplied();
+        bool toConnected = targetState.sourceConnected && IsSupplied();
+
+        if (fromConnected && !toConnected)
+        {
+            ApplyUnconnectedState();
+
+            float elapsed = 0f;
+            Quaternion startRot = pipeVisual.localRotation;
+            Quaternion endRot = Quaternion.Euler(0, 0, targetState.angle);
+
+            while (elapsed < rotationDuration)
+            {
+                elapsed += Time.deltaTime;
+                float t = elapsed / rotationDuration;
+                pipeVisual.localRotation = Quaternion.Slerp(startRot, endRot, t);
+                yield return null;
+            }
+            pipeVisual.localRotation = endRot;
+
+            ApplyState(targetIndex);
+            isRotating = false;
+
+            if (isQueued && queuedIndex >= 0)
+            {
+                int nextQueued = queuedIndex;
+                isQueued = false;
+                queuedIndex = -1;
+                StartCoroutine(RotateToState(nextQueued));
+            }
+            yield break;
+        }
+
+        if (!fromConnected && toConnected)
+        {
+            float elapsed = 0f;
+            Quaternion startRot = pipeVisual.localRotation;
+            Quaternion endRot = Quaternion.Euler(0, 0, targetState.angle);
+
+            while (elapsed < rotationDuration)
+            {
+                elapsed += Time.deltaTime;
+                float t = elapsed / rotationDuration;
+                pipeVisual.localRotation = Quaternion.Slerp(startRot, endRot, t);
+                yield return null;
+            }
+            pipeVisual.localRotation = endRot;
+
+            ApplyState(targetIndex);
+            isRotating = false;
+
+            if (isQueued && queuedIndex >= 0)
+            {
+                int nextQueued = queuedIndex;
+                isQueued = false;
+                queuedIndex = -1;
+                StartCoroutine(RotateToState(nextQueued));
+            }
+            yield break;
+        }
+
+        bool targetIsActive = toConnected;
         float targetTemp = lowTemperature;
         if (targetIsActive)
         {
@@ -151,41 +220,66 @@ public class RotatePipe : MonoBehaviour, ISaveable
             }
         }
 
-        // Immediate cooling if temperature drops
-        if (targetTemp < currentTemperature)
+        float startTemp = currentTemperature;
+        float endTemp = targetTemp;
+
+        foreach (var spray in currentlyActiveSprayPipes)
+            if (spray != null) spray.Deactivate();
+        currentlyActiveSprayPipes.Clear();
+
+        float elapsedTime = 0f;
+        Quaternion startRotVisual = pipeVisual.localRotation;
+        Quaternion endRotVisual = Quaternion.Euler(0, 0, targetState.angle);
+
+        bool destActive = targetState.destinationActive && targetIsActive;
+
+        while (elapsedTime < rotationDuration)
         {
+            elapsedTime += Time.deltaTime;
+            float t = elapsedTime / rotationDuration;
+            float smoothT = t * t * (3f - 2f * t);
+
+            pipeVisual.localRotation = Quaternion.Slerp(startRotVisual, endRotVisual, smoothT);
+
+            float interpolatedTemp = Mathf.Lerp(startTemp, endTemp, smoothT);
+            currentTemperature = interpolatedTemp;
             if (pipeThermal != null)
-                pipeThermal.SetBaseTemperature(targetTemp);
-            currentTemperature = targetTemp;
+                pipeThermal.SetBaseTemperature(interpolatedTemp);
 
-            if (targetState.destinationActive)
-            {
-                foreach (var tm in destinationTilemaps)
-                    if (tm != null) tm.SetTemperature(targetTemp);
-            }
-            else
-            {
-                foreach (var tm in destinationTilemaps)
-                    if (tm != null) tm.SetTemperature(lowTemperature);
-            }
-        }
+            foreach (var tm in destinationTilemaps)
+                if (tm != null)
+                    tm.SetTemperature(destActive ? interpolatedTemp : lowTemperature);
 
-        // Rotate visual
-        float elapsed = 0f;
-        Quaternion startRot = pipeVisual.localRotation;
-        Quaternion endRot = Quaternion.Euler(0, 0, targetState.angle);
-
-        while (elapsed < rotationDuration)
-        {
-            elapsed += Time.deltaTime;
-            float t = elapsed / rotationDuration;
-            pipeVisual.localRotation = Quaternion.Slerp(startRot, endRot, t);
             yield return null;
         }
-        pipeVisual.localRotation = endRot;
 
+        pipeVisual.localRotation = endRotVisual;
         ApplyState(targetIndex);
         isRotating = false;
+
+        if (isQueued && queuedIndex >= 0)
+        {
+            int nextQueued = queuedIndex;
+            isQueued = false;
+            queuedIndex = -1;
+            StartCoroutine(RotateToState(nextQueued));
+        }
+    }
+
+    private void ApplyUnconnectedState()
+    {
+        currentTemperature = lowTemperature;
+        if (pipeThermal != null)
+            pipeThermal.SetBaseTemperature(lowTemperature);
+
+        foreach (var spray in currentlyActiveSprayPipes)
+            if (spray != null) spray.Deactivate();
+        currentlyActiveSprayPipes.Clear();
+
+        foreach (var tm in destinationTilemaps)
+            if (tm != null) tm.SetTemperature(lowTemperature);
+
+        isActive = false;
     }
 
     private void ApplyState(int index)
@@ -195,13 +289,11 @@ public class RotatePipe : MonoBehaviour, ISaveable
 
         isActive = IsSupplied() && state.sourceConnected;
 
-        // Update temperature
         float target = ComputeTargetTemperature();
         currentTemperature = target;
         if (pipeThermal != null)
             pipeThermal.SetBaseTemperature(target);
 
-        // Destination tilemaps (still controlled by destinationActive)
         if (state.destinationActive && isActive)
         {
             foreach (var tm in destinationTilemaps)
@@ -301,7 +393,6 @@ public class RotatePipe : MonoBehaviour, ISaveable
     public float GetCurrentTemperature() => currentTemperature;
     public float GetCurrentAngle() => rotations[currentIndex].angle;
 
-    // --- ISaveable ---
     public void Save(GameData data)
     {
         if (string.IsNullOrEmpty(saveID)) return;

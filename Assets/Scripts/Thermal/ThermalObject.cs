@@ -11,7 +11,7 @@ public class ThermalObject : BaseThermalComponent, ITemperatureChangeable
     [SerializeField, Range(0f, 1f)] private float brightnessInfluence = 0.08f;
     [SerializeField] private Vector2 fresnelCenter = new Vector2(0.5f, 0.5f);
     [SerializeField, Range(0f, 5f)] private float fresnelRadius = 1f;
-    [SerializeField, Range(0.5f, 20f)] private float temperatureLerpSpeed = 5f; 
+    [SerializeField, Range(0.5f, 50f)] private float temperatureLerpSpeed = 5f; 
 
     [Header("Temperature Pulse (Beating Heart)")]
     [SerializeField] private bool enablePulse = false;
