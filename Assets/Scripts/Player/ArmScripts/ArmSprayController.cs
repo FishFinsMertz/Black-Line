@@ -287,9 +287,7 @@ public class ArmSprayController : ArmController
             emissionModule.rateOverTime = 0f;
 
         if (audioSource != null && audioSource.isPlaying)
-        {
             AudioManager.Instance?.FadeOut(audioSource, audioFadeOut);
-        }
 
         isReturning = true;
         returnT = 0f;

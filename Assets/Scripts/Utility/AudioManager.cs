@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Audio;
 using System.Collections;
+using System.Collections.Generic;
 
 public class AudioManager : MonoBehaviour
 {
@@ -15,6 +16,8 @@ public class AudioManager : MonoBehaviour
     [SerializeField, Range(0f, 1f)] private float sfxVolume = 1f;
     [SerializeField, Range(0f, 1f)] private float musicVolume = 1f;
     [SerializeField, Range(0f, 1f)] private float uiVolume = 1f;
+
+    private Dictionary<AudioSource, Coroutine> activeFades = new Dictionary<AudioSource, Coroutine>();
 
     private void Awake()
     {
@@ -76,6 +79,17 @@ public class AudioManager : MonoBehaviour
     {
         float dB = volume > 0.0001f ? Mathf.Log10(volume) * 20f : -80f;
         audioMixer.SetFloat(parameter, dB);
+    }
+
+    private void CancelActiveFade(AudioSource source)
+    {
+        if (source == null) return;
+        if (activeFades.TryGetValue(source, out Coroutine coroutine))
+        {
+            if (coroutine != null)
+                StopCoroutine(coroutine);
+            activeFades.Remove(source);
+        }
     }
 
     public void PlayOneShot(
@@ -151,7 +165,11 @@ public class AudioManager : MonoBehaviour
         source.Play();
 
         if (fadeInDuration > 0f)
-            StartCoroutine(FadeIn(source, fadeInDuration, Mathf.Clamp01(volumeScale)));
+        {
+            CancelActiveFade(source);
+            Coroutine c = StartCoroutine(FadeIn(source, fadeInDuration, Mathf.Clamp01(volumeScale)));
+            activeFades[source] = c;
+        }
         else
             source.volume = Mathf.Clamp01(volumeScale);
 
@@ -162,9 +180,14 @@ public class AudioManager : MonoBehaviour
     {
         if (source == null) return;
         if (fadeOutDuration > 0f && source.isPlaying)
-            StartCoroutine(FadeOutAndDestroy(source, fadeOutDuration));
+        {
+            CancelActiveFade(source);
+            Coroutine c = StartCoroutine(FadeOutAndDestroy(source, fadeOutDuration));
+            activeFades[source] = c;
+        }
         else
         {
+            CancelActiveFade(source);
             source.Stop();
             Destroy(source.gameObject);
         }
@@ -183,6 +206,8 @@ public class AudioManager : MonoBehaviour
     {
         if (source == null || clip == null) return;
 
+        CancelActiveFade(source);
+
         source.clip = clip;
         source.loop = true;
         source.volume = 0f;
@@ -197,7 +222,10 @@ public class AudioManager : MonoBehaviour
         source.Play();
 
         if (fadeInDuration > 0f)
-            StartCoroutine(FadeIn(source, fadeInDuration, Mathf.Clamp01(volumeScale)));
+        {
+            Coroutine c = StartCoroutine(FadeIn(source, fadeInDuration, Mathf.Clamp01(volumeScale)));
+            activeFades[source] = c;
+        }
         else
             source.volume = Mathf.Clamp01(volumeScale);
     }
@@ -205,19 +233,23 @@ public class AudioManager : MonoBehaviour
     public void FadeOut(AudioSource source, float duration)
     {
         if (source == null || !source.isPlaying) return;
-        StartCoroutine(FadeOutRoutine(source, duration));
+        CancelActiveFade(source);
+        Coroutine c = StartCoroutine(FadeOutRoutine(source, duration));
+        activeFades[source] = c;
     }
 
     private IEnumerator FadeIn(AudioSource source, float duration, float targetVolume)
     {
         float elapsed = 0f;
+        float startVolume = source.volume;
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
-            source.volume = Mathf.Lerp(0f, targetVolume, elapsed / duration);
+            source.volume = Mathf.Lerp(startVolume, targetVolume, elapsed / duration);
             yield return null;
         }
         source.volume = targetVolume;
+        activeFades.Remove(source);
     }
 
     private IEnumerator FadeOutRoutine(AudioSource source, float duration)
@@ -232,6 +264,7 @@ public class AudioManager : MonoBehaviour
         }
         source.volume = 0f;
         source.Stop();
+        activeFades.Remove(source);
     }
 
     private IEnumerator FadeOutAndDestroy(AudioSource source, float duration)
@@ -245,6 +278,7 @@ public class AudioManager : MonoBehaviour
             yield return null;
         }
         source.Stop();
+        activeFades.Remove(source);
         Destroy(source.gameObject);
     }
 }
