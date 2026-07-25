@@ -59,8 +59,6 @@ public class TriggerEvent : MonoBehaviour, ISaveable, IInteractible
         if (oneShot && hasTriggered) return;
         if (!other.CompareTag(requiredTag)) return;
 
-        Debug.Log("Left");
-
         onTriggerExit.Invoke();
     }
 
