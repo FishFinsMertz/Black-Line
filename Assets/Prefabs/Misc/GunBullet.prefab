@@ -126,6 +126,7 @@ MonoBehaviour:
   speed: 35
   lifetime: 2
   damage: 20
+  hitSound: {fileID: 8300000, guid: 12b89e4bcd27fa44aa9685c12dee7a6b, type: 3}
   hitEffectPrefab: {fileID: 6032955814965413020, guid: 9c67ec2becf93b64f94e30c58fb9a4fa, type: 3}
   surfaceOffset: 0.05
   hitMask:

@@ -9,6 +9,8 @@ public class ArmGunController : ArmController
 
     [Header("Audio")]
     [SerializeField] private AudioClip gunshotClip;
+    [SerializeField] private AudioClip emptySound;
+    [SerializeField] private AudioClip reloadSound;
 
     [Header("Gun Details")]
     [SerializeField] private Transform firePoint;
@@ -116,7 +118,14 @@ public class ArmGunController : ArmController
         if (Time.time < nextFireTime) return;
 
         if (player == null || player.inventory == null) return;
-        if (!player.inventory.UseAmmo("Gun")) return;
+        if (!player.inventory.UseAmmo("Gun"))
+        {
+            if (emptySound != null && AudioManager.Instance != null)
+            {
+                AudioManager.Instance.PlayOneShot(emptySound, transform.position, volumeScale: 0.6f);
+            }
+            return;
+        }
 
         float fireDelay = fireRate > 0 ? 1f / fireRate : 0f;
         nextFireTime = Time.time + fireDelay;
@@ -174,6 +183,10 @@ public class ArmGunController : ArmController
                 {
                     isReloading = true;
                     reloadTimer = reloadDuration;
+                    if (reloadSound != null && AudioManager.Instance != null)
+                    {
+                        AudioManager.Instance.PlayOneShot2D(reloadSound, volumeScale: 0.65f);
+                    }
                     StartCoroutine(SmoothResetToIdle());
                 }
             }

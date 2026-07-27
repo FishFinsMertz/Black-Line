@@ -64,6 +64,7 @@ MonoBehaviour:
   audioFadeIn: 0.2
   audioFadeOut: 0.3
   reloadSound: {fileID: 8300000, guid: e68a08b2e988ed149bdd1cd8390a03c9, type: 3}
+  emptySound: {fileID: 8300000, guid: b8727dac650ca06409f8b00723803237, type: 3}
   reloadDuration: 1.5
   recoilOffset: 0.05
   recoilReturnSpeed: 20
@@ -1117,6 +1118,8 @@ MonoBehaviour:
   minAngle: -16
   maxAngle: 89
   gunshotClip: {fileID: 8300000, guid: 4477ccbd7d9078d43a98c828efcf7f79, type: 3}
+  emptySound: {fileID: 8300000, guid: b8727dac650ca06409f8b00723803237, type: 3}
+  reloadSound: {fileID: 8300000, guid: e85e0632bad585e47b1e09fbb4e0a3bd, type: 3}
   firePoint: {fileID: 1339711541712771895}
   directionIndicator: {fileID: 8106077944697287082}
   bulletPrefab: {fileID: 132753738356837407, guid: 4ffda103b120de64cba3cb8826825267, type: 3}

@@ -21,9 +21,10 @@ public class ArmSprayController : ArmController
     [SerializeField] private float audioFadeIn = 0.2f;
     [SerializeField] private float audioFadeOut = 0.3f;
     [SerializeField] private AudioClip reloadSound;
+    [SerializeField] private AudioClip emptySound;
 
     [Header("Reload")]
-    [SerializeField] private float reloadDuration = 1.5f;
+    [SerializeField] private float reloadDuration = 2f;
 
     [SerializeField] private float recoilOffset = 0.2f;
     [SerializeField] private float recoilReturnSpeed = 10f;
@@ -48,6 +49,8 @@ public class ArmSprayController : ArmController
     private bool isReloading = false;
     private float reloadTimer = 0f;
     private Quaternion idleRotation;
+
+    private bool hasPlayedEmpty = false;
 
     protected override void Start()
     {
@@ -172,18 +175,35 @@ public class ArmSprayController : ArmController
     {
         if (isReloading) return;
         bool wantsSpray = Input.GetMouseButton(0);
-        if (wantsSpray && !isSpraying)
+
+        if (!wantsSpray)
         {
-            if (player != null && player.inventory != null)
-            {
-                var ammo = player.inventory.GetAmmo("Spray");
-                if (ammo.magazine <= 0) return;
-                StartSpray();
-            }
-            else StartSpray();
+            hasPlayedEmpty = false;
+            if (isSpraying)
+                StopSpray();
+            return;
         }
-        else if (!wantsSpray && isSpraying)
-            StopSpray();
+
+        if (isSpraying) return;
+
+        if (player != null && player.inventory != null)
+        {
+            var ammo = player.inventory.GetAmmo("Spray");
+            if (ammo.magazine <= 0)
+            {
+                if (!hasPlayedEmpty && emptySound != null && AudioManager.Instance != null)
+                {
+                    AudioManager.Instance.PlayOneShot(emptySound, transform.position, volumeScale: 0.6f);
+                    hasPlayedEmpty = true;
+                }
+                return;
+            }
+            StartSpray();
+        }
+        else
+        {
+            StartSpray();
+        }
     }
 
     private void HandleReload()
@@ -201,7 +221,7 @@ public class ArmSprayController : ArmController
                     reloadTimer = reloadDuration;
                     if (reloadSound != null && AudioManager.Instance != null)
                     {
-                        AudioManager.Instance.PlayOneShot(reloadSound, transform.position, volumeScale: 0.7f);
+                        AudioManager.Instance.PlayOneShot2D(reloadSound, volumeScale: 0.65f);
                     }
                     StartCoroutine(SmoothResetToIdle());
                 }
@@ -256,6 +276,7 @@ public class ArmSprayController : ArmController
 
     private void StartSpray()
     {
+        hasPlayedEmpty = false;
         isSpraying = true;
         isReturning = false;
         ammoTimer = 0f;
@@ -286,6 +307,7 @@ public class ArmSprayController : ArmController
 
     private void StopSpray()
     {
+        hasPlayedEmpty = false;
         isSpraying = false;
 
         if (sprayEffect != null)

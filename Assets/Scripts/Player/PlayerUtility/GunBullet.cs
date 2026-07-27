@@ -7,6 +7,9 @@ public class GunBullet : MonoBehaviour
     [SerializeField] private float lifetime = 2f;
     [SerializeField] private float damage = 30f;
 
+    [Header("Audio")]
+    [SerializeField] private AudioClip hitSound;
+
     [Header("Hit Effect")]
     [SerializeField] private GameObject hitEffectPrefab;
     [SerializeField] private float surfaceOffset = 0.05f;
@@ -51,6 +54,11 @@ public class GunBullet : MonoBehaviour
     {
         if (((1 << other.gameObject.layer) & hitMask) == 0)
             return;
+
+        if (hitSound != null && AudioManager.Instance != null)
+        {
+            AudioManager.Instance.PlayOneShot(hitSound, transform.position, volumeScale: 0.4f, pitchVariation: 0.1f);
+        }
 
         EnemyController enemy = other.GetComponent<EnemyController>();
         if (enemy != null)
