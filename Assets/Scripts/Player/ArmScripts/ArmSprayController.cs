@@ -20,6 +20,7 @@ public class ArmSprayController : ArmController
     [SerializeField] private AudioClip spraySound;
     [SerializeField] private float audioFadeIn = 0.2f;
     [SerializeField] private float audioFadeOut = 0.3f;
+    [SerializeField] private AudioClip reloadSound;
 
     [Header("Reload")]
     [SerializeField] private float reloadDuration = 1.5f;
@@ -198,6 +199,10 @@ public class ArmSprayController : ArmController
                     if (isSpraying) StopSpray();
                     isReloading = true;
                     reloadTimer = reloadDuration;
+                    if (reloadSound != null && AudioManager.Instance != null)
+                    {
+                        AudioManager.Instance.PlayOneShot(reloadSound, transform.position, volumeScale: 0.7f);
+                    }
                     StartCoroutine(SmoothResetToIdle());
                 }
             }
@@ -269,7 +274,7 @@ public class ArmSprayController : ArmController
                 audioSource,
                 spraySound,
                 fadeInDuration: audioFadeIn,
-                volumeScale: 0.5f,
+                volumeScale: 0.7f,
                 minDistance: 3f,
                 maxDistance: 50f
             );

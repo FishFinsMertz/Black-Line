@@ -63,6 +63,7 @@ MonoBehaviour:
   spraySound: {fileID: 8300000, guid: 5cf07f758fb38d34a8710c42cd099d73, type: 3}
   audioFadeIn: 0.2
   audioFadeOut: 0.3
+  reloadSound: {fileID: 8300000, guid: e68a08b2e988ed149bdd1cd8390a03c9, type: 3}
   reloadDuration: 1.5
   recoilOffset: 0.05
   recoilReturnSpeed: 20
