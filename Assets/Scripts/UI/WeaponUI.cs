@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.UI;
 
@@ -34,8 +35,40 @@ public class WeaponUI : MonoBehaviour
     private bool lastSprayOwned = false;
     private bool lastGunOwned = false;
 
+    private void Awake()
+    {
+        BindReferences();
+    }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+        if (inventory != null)
+            inventory.OnEquipmentChanged -= OnEquipmentChanged;
+    }
+
     private void Start()
     {
+        ApplyOwnershipIcons();
+        UpdateSlots(inventory != null ? inventory.GetCurrentEquipment() : Inventory.EquipmentType.None);
+        UpdateAmmoDisplay(inventory != null ? inventory.GetCurrentEquipment() : Inventory.EquipmentType.None);
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        BindReferences();
+    }
+
+    private void BindReferences()
+    {
+        if (inventory != null)
+            inventory.OnEquipmentChanged -= OnEquipmentChanged;
+
         inventory = FindFirstObjectByType<Inventory>();
         player = FindFirstObjectByType<PlayerController>();
 
@@ -50,10 +83,6 @@ public class WeaponUI : MonoBehaviour
         parentGroup.alpha = 0f;
         inactivityTimer = 0f;
         targetAlpha = 0f;
-
-        ApplyOwnershipIcons();
-        UpdateSlots(inventory.GetCurrentEquipment());
-        UpdateAmmoDisplay(inventory.GetCurrentEquipment());
     }
 
     private void OnDestroy()

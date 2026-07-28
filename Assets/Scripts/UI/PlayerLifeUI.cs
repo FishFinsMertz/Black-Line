@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
 
@@ -41,36 +42,22 @@ public class PlayerLifeUI : MonoBehaviour
 
     private void Awake()
     {
-        thermal = FindFirstObjectByType<GeneralThermalRegulator>();
-        inventory = FindFirstObjectByType<Inventory>();
-        if (thermal == null)
-            Debug.LogWarning("PlayerLifeUI: No GeneralThermalRegulator found.");
-        if (inventory == null)
-            Debug.LogWarning("PlayerLifeUI: No Inventory found.");
-        else
-            rechargerID = inventory.RechargerID;
+        BindReferences();
     }
 
     private void OnEnable()
     {
+        SceneManager.sceneLoaded += OnSceneLoaded;
         PlayerController.OnPlayerDamaged += FlashDamage;
-        if (inventory != null)
-        {
-            rechargerID = inventory.RechargerID;
-            inventory.OnConsumablesChanged += UpdateRechargerUI;
-            inventory.OnConsumableUsed += OnConsumableUsed;
-            UpdateRechargerUI();
-        }
+        RegisterInventoryCallbacks();
+        UpdateRechargerUI();
     }
 
     private void OnDisable()
     {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
         PlayerController.OnPlayerDamaged -= FlashDamage;
-        if (inventory != null)
-        {
-            inventory.OnConsumablesChanged -= UpdateRechargerUI;
-            inventory.OnConsumableUsed -= OnConsumableUsed;
-        }
+        UnregisterInventoryCallbacks();
     }
 
     private void Start()
@@ -79,6 +66,43 @@ public class PlayerLifeUI : MonoBehaviour
             bodyImage.color = batteryColor;
         if (outlineImage != null)
             outlineImage.color = flashNormalColor;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        BindReferences();
+        UpdateRechargerUI();
+    }
+
+    private void BindReferences()
+    {
+        UnregisterInventoryCallbacks();
+
+        thermal = FindFirstObjectByType<GeneralThermalRegulator>();
+        inventory = FindFirstObjectByType<Inventory>();
+
+        if (thermal == null)
+            Debug.LogWarning("PlayerLifeUI: No GeneralThermalRegulator found.");
+        if (inventory == null)
+            Debug.LogWarning("PlayerLifeUI: No Inventory found.");
+        else
+            rechargerID = inventory.RechargerID;
+
+        RegisterInventoryCallbacks();
+    }
+
+    private void RegisterInventoryCallbacks()
+    {
+        if (inventory == null) return;
+        inventory.OnConsumablesChanged += UpdateRechargerUI;
+        inventory.OnConsumableUsed += OnConsumableUsed;
+    }
+
+    private void UnregisterInventoryCallbacks()
+    {
+        if (inventory == null) return;
+        inventory.OnConsumablesChanged -= UpdateRechargerUI;
+        inventory.OnConsumableUsed -= OnConsumableUsed;
     }
 
     private void Update()
