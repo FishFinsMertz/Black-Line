@@ -318,7 +318,7 @@ Transform:
   - {fileID: 669377343}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!43 &174819721
+--- !u!43 &235489285
 Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -491,6 +491,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1995363172350390632, guid: 05371d9cebdbff840bc7bd9c9d38c21a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -1.63
+      objectReference: {fileID: 0}
+    - target: {fileID: 2446580597551466470, guid: 05371d9cebdbff840bc7bd9c9d38c21a, type: 3}
+      propertyPath: spawnID
+      value: FirstRoom-LQA
+      objectReference: {fileID: 0}
     - target: {fileID: 2446580597551466470, guid: 05371d9cebdbff840bc7bd9c9d38c21a, type: 3}
       propertyPath: targetSceneName
       value: LivingQuarterA
@@ -1120,7 +1128,7 @@ MonoBehaviour:
     rid: 1889480164017700950
   m_ShadowCastingSource: 2
   m_ShadowMesh:
-    m_Mesh: {fileID: 174819721}
+    m_Mesh: {fileID: 235489285}
     m_LocalBounds:
       m_Center: {x: 0, y: -0.5, z: 0}
       m_Extent: {x: 1.800003, y: 0.30000305, z: 0}

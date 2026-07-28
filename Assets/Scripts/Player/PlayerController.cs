@@ -19,8 +19,6 @@ public class PlayerController : MonoBehaviour
     public AudioClip climbSound;
     public AudioClip suitDamageSound;
     public AudioSource audioSource;
-
-    // One shot
     public AudioClip rechargeSound;
 
     [Header("Critical Health Audio")]
@@ -78,6 +76,11 @@ public class PlayerController : MonoBehaviour
             maskBreathSource.clip = maskBreathClip;
     }
 
+    private void OnEnable()
+    {
+        GameSceneManager.OnSceneLoadedWithSpawnID += HandleSpawnPoint;
+    }
+
     private void OnDisable()
     {
         StopLoopSound();
@@ -85,6 +88,8 @@ public class PlayerController : MonoBehaviour
             heartbeatSource.Stop();
         if (maskBreathSource != null && maskBreathSource.isPlaying)
             maskBreathSource.Stop();
+
+        GameSceneManager.OnSceneLoadedWithSpawnID -= HandleSpawnPoint;
     }
 
     void Update()
@@ -224,5 +229,22 @@ public class PlayerController : MonoBehaviour
             heartbeatSource.Play();
         if (!maskBreathSource.isPlaying)
             maskBreathSource.Play();
+    }
+
+    // --- Scene spawn handling ---
+    private void HandleSpawnPoint(string spawnID)
+    {
+        if (string.IsNullOrEmpty(spawnID))
+            return;
+
+        SceneTeleporter[] teleporters = FindObjectsByType<SceneTeleporter>(FindObjectsSortMode.None);
+        foreach (SceneTeleporter tp in teleporters)
+        {
+            if (tp.SpawnID == spawnID)
+            {
+                transform.position = tp.GetSpawnPosition();
+                return;
+            }
+        }
     }
 }
