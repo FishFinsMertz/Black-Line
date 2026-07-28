@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -73,6 +75,15 @@ public class GameSceneManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        StartCoroutine(DispatchSceneLoadedNextFrame());
+    }
+
+    private IEnumerator DispatchSceneLoadedNextFrame()
+    {
+        yield return null;
+
+        SaveManager.Instance?.ReloadAndApplyToAll();
+
         if (!string.IsNullOrEmpty(pendingSpawnID))
         {
             OnSceneLoadedWithSpawnID?.Invoke(pendingSpawnID);

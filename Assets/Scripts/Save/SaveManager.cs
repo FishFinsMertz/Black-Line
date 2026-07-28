@@ -51,10 +51,11 @@ public class SaveManager : MonoBehaviour
         saveableObjects.RemoveAll(item => item == null);
 
         GameData data = new GameData();
-        
+
         if (cachedSaveData != null)
         {
             data.collectedAccessItems = new List<string>(cachedSaveData.collectedAccessItems);
+            data.componentStates = new List<ComponentState>(cachedSaveData.componentStates);
         }
 
         foreach (var saveable in saveableObjects)
