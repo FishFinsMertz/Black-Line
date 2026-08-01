@@ -19,7 +19,6 @@ public class SceneTeleporter : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            SaveManager.Instance?.SaveGame();
             GameSceneManager.Instance.LoadScene(targetSceneName, spawnID);
         }
     }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 [Serializable]
 public class ComponentState
@@ -38,6 +39,10 @@ public class GameData
     // Consumables
     public List<ConsumableEntry> consumables = new List<ConsumableEntry>();
 
+    // Position
+    public string currentScene;
+    public Vector2 playerPosition;
+
     // Collectibles
     public List<string> collectedAccessItems = new List<string>();
 
@@ -47,7 +52,4 @@ public class GameData
     // Environmental states
     public List<ComponentState> componentStates = new List<ComponentState>();
 
-    // Future expansions (uncomment as needed)
-    // public string currentScene;
-    // public Vector3 playerPosition;
 }

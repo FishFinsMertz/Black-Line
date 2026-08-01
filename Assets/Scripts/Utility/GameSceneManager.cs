@@ -1,8 +1,8 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
-public class GameSceneManager : MonoBehaviour
+public class GameSceneManager : MonoBehaviour, ISaveable
 {
     private static GameSceneManager _instance;
     public static GameSceneManager Instance
@@ -36,6 +36,13 @@ public class GameSceneManager : MonoBehaviour
         }
         _instance = this;
         DontDestroyOnLoad(gameObject);
+
+        SaveManager.Instance?.Register(this);
+    }
+
+    private void OnDestroy()
+    {
+        SaveManager.Instance?.Unregister(this);
     }
 
     private void OnEnable()
@@ -48,25 +55,25 @@ public class GameSceneManager : MonoBehaviour
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-    public void LoadScene(string sceneName)
-    {
-        LoadScene(sceneName, null);
-    }
+    public void LoadScene(string sceneName) => LoadScene(sceneName, null);
 
     public void LoadScene(string sceneName, string spawnID = null)
     {
+        SaveManager.Instance?.SaveGame();
         pendingSpawnID = spawnID;
         SceneManager.LoadScene(sceneName);
     }
 
     public void LoadScene(int sceneIndex, string spawnID = null)
     {
+        SaveManager.Instance?.SaveGame();
         pendingSpawnID = spawnID;
         SceneManager.LoadScene(sceneIndex);
     }
 
     public void ReloadCurrentScene(string spawnID = null)
     {
+        SaveManager.Instance?.SaveGame();
         int currentIndex = SceneManager.GetActiveScene().buildIndex;
         pendingSpawnID = spawnID;
         SceneManager.LoadScene(currentIndex);
@@ -87,6 +94,28 @@ public class GameSceneManager : MonoBehaviour
         {
             OnSceneLoadedWithSpawnID?.Invoke(pendingSpawnID);
             pendingSpawnID = null;
+        }
+    }
+
+    public void Save(GameData data)
+    {
+        data.currentScene = SceneManager.GetActiveScene().name;
+    }
+
+    public void Load(GameData data)
+    {
+        if (data == null || string.IsNullOrEmpty(data.currentScene)) return;
+
+        string targetScene = data.currentScene;
+        string currentScene = SceneManager.GetActiveScene().name;
+
+        if (targetScene != currentScene)
+        {
+            SceneManager.LoadScene(targetScene);
+        }
+        else
+        {
+            SaveManager.Instance?.ReloadAndApplyToAll();
         }
     }
 }

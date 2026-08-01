@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using System.Collections;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, ISaveable
 {
     [Header("Settings")]
     public float walkSpeed = 5f;
@@ -74,6 +74,13 @@ public class PlayerController : MonoBehaviour
             heartbeatSource.clip = heartbeatClip;
         if (maskBreathSource != null && maskBreathClip != null)
             maskBreathSource.clip = maskBreathClip;
+
+        SaveManager.Instance?.Register(this);
+    }
+
+    private void OnDestroy()
+    {
+        SaveManager.Instance?.Unregister(this);
     }
 
     private void OnEnable()
@@ -231,7 +238,6 @@ public class PlayerController : MonoBehaviour
             maskBreathSource.Play();
     }
 
-    // --- Scene spawn handling ---
     private void HandleSpawnPoint(string spawnID)
     {
         if (string.IsNullOrEmpty(spawnID))
@@ -246,5 +252,15 @@ public class PlayerController : MonoBehaviour
                 return;
             }
         }
+    }
+
+    public void Save(GameData data)
+    {
+        data.playerPosition = transform.position;
+    }
+
+    public void Load(GameData data)
+    {
+        transform.position = data.playerPosition;
     }
 }

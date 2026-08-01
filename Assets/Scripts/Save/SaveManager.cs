@@ -1,10 +1,13 @@
 using UnityEngine;
 using System.IO;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class SaveManager : MonoBehaviour
 {
     public static SaveManager Instance { get; private set; }
+
+    [SerializeField] private string defaultScene = "MainMenu";
 
     private List<ISaveable> saveableObjects = new List<ISaveable>();
     private GameData cachedSaveData;
@@ -28,7 +31,7 @@ public class SaveManager : MonoBehaviour
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.F5)) SaveGame();
-        if (Input.GetKeyDown(KeyCode.F9)) ReloadAndApplyToAll();
+        if (Input.GetKeyDown(KeyCode.F9)) LoadGame();
     }
 
     public void Register(ISaveable saveable)
@@ -61,6 +64,9 @@ public class SaveManager : MonoBehaviour
         foreach (var saveable in saveableObjects)
             saveable.Save(data);
 
+        if (string.IsNullOrEmpty(data.currentScene))
+            data.currentScene = SceneManager.GetActiveScene().name;
+
         string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(SavePath, json);
         cachedSaveData = data;
@@ -68,24 +74,54 @@ public class SaveManager : MonoBehaviour
         Debug.Log("Game saved.");
     }
 
-    public void RequestSave()
+    public void LoadGame()
     {
-        SaveGame();
-    }
-
-    private void LoadSaveFileIntoCache()
-    {
-        if (!File.Exists(SavePath))
+        if (cachedSaveData == null)
         {
-            cachedSaveData = new GameData();
-            hasLoadedSave = true;
-            Debug.Log("No save file found, starting fresh.");
+            LoadSaveFileIntoCache();
+        }
+
+        if (cachedSaveData == null)
+        {
+            Debug.Log("No save file to load.");
             return;
         }
 
-        string json = File.ReadAllText(SavePath);
-        cachedSaveData = JsonUtility.FromJson<GameData>(json);
-        hasLoadedSave = true;
+        if (string.IsNullOrEmpty(cachedSaveData.currentScene))
+        {
+            Debug.LogWarning("Save file found but saved scene is missing. Loading default scene instead.");
+            cachedSaveData.currentScene = defaultScene;
+        }
+
+        GameSceneManager sceneManager = FindFirstObjectByType<GameSceneManager>();
+        if (sceneManager != null)
+        {
+            sceneManager.Load(cachedSaveData);
+        }
+        else
+        {
+            ReloadAndApplyToAll();
+        }
+    }
+
+    public void NewGame()
+    {
+        if (File.Exists(SavePath))
+            File.Delete(SavePath);
+
+        cachedSaveData = null;
+        hasLoadedSave = false;
+
+        saveableObjects.RemoveAll(item => item == null);
+
+        SceneManager.LoadScene(defaultScene);
+
+        Debug.Log("New game started.");
+    }
+
+    public bool HasSaveFile()
+    {
+        return File.Exists(SavePath);
     }
 
     public void ReloadAndApplyToAll()
@@ -98,4 +134,20 @@ public class SaveManager : MonoBehaviour
     }
 
     public GameData GetCurrentData() => cachedSaveData;
+
+    private void LoadSaveFileIntoCache()
+    {
+        if (!File.Exists(SavePath))
+        {
+            cachedSaveData = null;
+            hasLoadedSave = false;
+            Debug.Log("No save file found, starting fresh.");
+            return;
+        }
+
+        string json = File.ReadAllText(SavePath);
+        cachedSaveData = JsonUtility.FromJson<GameData>(json);
+        hasLoadedSave = true;
+        Debug.Log("Save file loaded into cache.");
+    }
 }
