@@ -114,7 +114,15 @@ public class SaveManager : MonoBehaviour
 
         saveableObjects.RemoveAll(item => item == null);
 
-        SceneManager.LoadScene(defaultScene);
+        GameSceneManager sceneManager = GameSceneManager.Instance;
+        if (sceneManager != null)
+        {
+            sceneManager.LoadScene(defaultScene, null, false);
+        }
+        else
+        {
+            SceneManager.LoadScene(defaultScene);
+        }
 
         Debug.Log("New game started.");
     }

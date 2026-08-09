@@ -25,7 +25,12 @@ public class GameSceneManager : MonoBehaviour, ISaveable
 
     public static event System.Action<string> OnSceneLoadedWithSpawnID;
 
+    [Header("Scene Transition")]
+    [SerializeField] private CanvasGroup fadeCanvasGroup;
+    [SerializeField] private float fadeDuration = 0.5f;
+
     private string pendingSpawnID = null;
+    private bool isTransitioning = false;
 
     private void Awake()
     {
@@ -36,6 +41,31 @@ public class GameSceneManager : MonoBehaviour, ISaveable
         }
         _instance = this;
         DontDestroyOnLoad(gameObject);
+
+        if (fadeCanvasGroup == null)
+        {
+            GameObject canvasObj = new GameObject("FadeCanvas");
+            canvasObj.transform.SetParent(transform);
+            Canvas canvas = canvasObj.AddComponent<Canvas>();
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+            canvas.sortingOrder = 999;
+            canvasObj.AddComponent<UnityEngine.UI.CanvasScaler>();
+            canvasObj.AddComponent<UnityEngine.UI.GraphicRaycaster>();
+
+            GameObject panel = new GameObject("Panel");
+            panel.transform.SetParent(canvasObj.transform);
+            UnityEngine.UI.Image image = panel.AddComponent<UnityEngine.UI.Image>();
+            image.color = Color.black;
+            image.rectTransform.anchorMin = Vector2.zero;
+            image.rectTransform.anchorMax = Vector2.one;
+            image.rectTransform.sizeDelta = Vector2.zero;
+
+            fadeCanvasGroup = panel.AddComponent<CanvasGroup>();
+        }
+
+        fadeCanvasGroup.alpha = 0f;
+        fadeCanvasGroup.blocksRaycasts = false;
+        DontDestroyOnLoad(fadeCanvasGroup.gameObject);
 
         SaveManager.Instance?.Register(this);
     }
@@ -55,28 +85,64 @@ public class GameSceneManager : MonoBehaviour, ISaveable
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-    public void LoadScene(string sceneName) => LoadScene(sceneName, null);
+    public void LoadScene(string sceneName) => LoadScene(sceneName, null, true);
 
-    public void LoadScene(string sceneName, string spawnID = null)
+    public void LoadScene(string sceneName, string spawnID = null, bool saveBeforeLoad = true)
     {
-        SaveManager.Instance?.SaveGame();
+        if (isTransitioning) return;
+        if (saveBeforeLoad)
+            SaveManager.Instance?.SaveGame();
+        StartCoroutine(TransitionCoroutine(sceneName, spawnID));
+    }
+
+    public void LoadScene(int sceneIndex, string spawnID = null, bool saveBeforeLoad = true)
+    {
+        if (isTransitioning) return;
+        if (saveBeforeLoad)
+            SaveManager.Instance?.SaveGame();
+        StartCoroutine(TransitionCoroutine(sceneIndex, spawnID));
+    }
+
+    public void ReloadCurrentScene(string spawnID = null, bool saveBeforeLoad = true)
+    {
+        if (isTransitioning) return;
+        if (saveBeforeLoad)
+            SaveManager.Instance?.SaveGame();
+        int currentIndex = SceneManager.GetActiveScene().buildIndex;
+        StartCoroutine(TransitionCoroutine(currentIndex, spawnID));
+    }
+
+    private IEnumerator TransitionCoroutine(string sceneName, string spawnID)
+    {
+        isTransitioning = true;
         pendingSpawnID = spawnID;
+
+        yield return Fade(0f, 1f, fadeDuration);
+
         SceneManager.LoadScene(sceneName);
     }
 
-    public void LoadScene(int sceneIndex, string spawnID = null)
+    private IEnumerator TransitionCoroutine(int sceneIndex, string spawnID)
     {
-        SaveManager.Instance?.SaveGame();
+        isTransitioning = true;
         pendingSpawnID = spawnID;
+
+        yield return Fade(0f, 1f, fadeDuration);
+
         SceneManager.LoadScene(sceneIndex);
     }
 
-    public void ReloadCurrentScene(string spawnID = null)
+    private IEnumerator Fade(float from, float to, float duration)
     {
-        SaveManager.Instance?.SaveGame();
-        int currentIndex = SceneManager.GetActiveScene().buildIndex;
-        pendingSpawnID = spawnID;
-        SceneManager.LoadScene(currentIndex);
+        if (fadeCanvasGroup == null) yield break;
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            fadeCanvasGroup.alpha = Mathf.Lerp(from, to, elapsed / duration);
+            yield return null;
+        }
+        fadeCanvasGroup.alpha = to;
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -95,6 +161,13 @@ public class GameSceneManager : MonoBehaviour, ISaveable
             OnSceneLoadedWithSpawnID?.Invoke(pendingSpawnID);
             pendingSpawnID = null;
         }
+
+        if (isTransitioning)
+        {
+            yield return Fade(1f, 0f, fadeDuration);
+            fadeCanvasGroup.blocksRaycasts = false;
+            isTransitioning = false;
+        }
     }
 
     public void Save(GameData data)
@@ -111,7 +184,8 @@ public class GameSceneManager : MonoBehaviour, ISaveable
 
         if (targetScene != currentScene)
         {
-            SceneManager.LoadScene(targetScene);
+            if (isTransitioning) return;
+            StartCoroutine(TransitionCoroutine(targetScene, null));
         }
         else
         {
