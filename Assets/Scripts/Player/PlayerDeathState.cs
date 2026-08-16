@@ -11,6 +11,7 @@ public class PlayerDeathState : PlayerState
         player.rb.linearVelocity = Vector2.zero;
         player.bodyAnimator.SetTrigger("Die");
 
+        player.InvokeDeath();
         player.StartCoroutine(player.ReloadAfterDeath());
     }
 }

@@ -3,7 +3,7 @@ using UnityEngine.Events;
 using System.Collections;
 using System.Linq;
 
-public class ButtonTrigger : MonoBehaviour, ISaveable
+public class ButtonTrigger : MonoBehaviour, ISaveable, IInteractible
 {
     [Header("Save ID (unique per component)")]
     [SerializeField] private string saveID;
@@ -45,6 +45,7 @@ public class ButtonTrigger : MonoBehaviour, ISaveable
     {
         SaveManager.Instance?.Register(this);
         RefreshInteraction();
+        PlayerController.OnPlayerDeath += DisableInteraction;
     }
 
     private void OnEnable()
@@ -62,6 +63,7 @@ public class ButtonTrigger : MonoBehaviour, ISaveable
     private void OnDestroy()
     {
         SaveManager.Instance?.Unregister(this);
+        PlayerController.OnPlayerDeath -= DisableInteraction;
     }
 
     private void Update()

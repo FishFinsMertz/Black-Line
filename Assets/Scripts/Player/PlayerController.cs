@@ -58,6 +58,7 @@ public class PlayerController : MonoBehaviour, ISaveable
     public SubState currentSubState = SubState.None;
 
     public static event System.Action OnPlayerDamaged;
+    public static event System.Action OnPlayerDeath;
 
     void Start()
     {
@@ -258,6 +259,11 @@ public class PlayerController : MonoBehaviour, ISaveable
     public void Die()
     {
         ChangeState(new PlayerDeathState(this));
+    }
+
+    public void InvokeDeath()
+    {
+        OnPlayerDeath?.Invoke();
     }
 
     public IEnumerator ReloadAfterDeath()
