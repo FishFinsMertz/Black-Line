@@ -26,6 +26,7 @@ public class GeneralThermalRegulator : MonoBehaviour, ISaveable, ITemperatureCha
     private float currentBatterySmoothed;
     private bool isInSafeRoom = false;
     private PlayerController playerController;
+    private bool isDead = false;
 
     private void Start()
     {
@@ -69,6 +70,12 @@ public class GeneralThermalRegulator : MonoBehaviour, ISaveable, ITemperatureCha
                 {
                     float step = criticalDriftSpeed * Time.deltaTime;
                     baseTemperature = Mathf.MoveTowards(baseTemperature, 0f, step);
+                }
+
+                if (baseTemperature <= 0f && !isDead)
+                {
+                    playerController?.Die();
+                    isDead = true;
                 }
             }
         }

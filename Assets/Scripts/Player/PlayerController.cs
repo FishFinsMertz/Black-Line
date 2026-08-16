@@ -39,6 +39,7 @@ public class PlayerController : MonoBehaviour, ISaveable
     [Header("Misc")]
     public Animator bodyAnimator;
     public Volume dmgVolume;
+    public float deathDelay = 2f;
 
     [Header("Damage Flash")]
     public float damageFlashMaxWeight = 0.7f;
@@ -106,9 +107,9 @@ public class PlayerController : MonoBehaviour, ISaveable
             Vector3 mousePos = mainCam.ScreenToWorldPoint(Input.mousePosition);
             mousePos.z = 0f;
             float dx = mousePos.x - transform.position.x;
-            if (dx > flipThreshold && !isFacingRight)
+            if (dx > flipThreshold && !isFacingRight && currentState is not PlayerDeathState)
                 Flip();
-            else if (dx < -flipThreshold && isFacingRight)
+            else if (dx < -flipThreshold && isFacingRight && currentState is not PlayerDeathState)
                 Flip();
         }
 
@@ -252,6 +253,17 @@ public class PlayerController : MonoBehaviour, ISaveable
                 return;
             }
         }
+    }
+
+    public void Die()
+    {
+        ChangeState(new PlayerDeathState(this));
+    }
+
+    public IEnumerator ReloadAfterDeath()
+    {
+        yield return new WaitForSeconds(deathDelay);
+        GameSceneManager.Instance.ReloadCurrentScene(saveBeforeLoad: false);
     }
 
     public void Save(GameData data)

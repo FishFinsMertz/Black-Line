@@ -1438,7 +1438,7 @@ MonoBehaviour:
   batterySmoothSpeed: 5
   batteryDrainRate: 0.3
   baseTemperatureDriftSpeed: 5
-  criticalDriftSpeed: 2
+  criticalDriftSpeed: 3
   criticalDriftEnabled: 1
   safeRoomRecoverySpeed: 3
 --- !u!70 &3348807431190664019

@@ -277,9 +277,7 @@ public class Inventory : MonoBehaviour, ISaveable
 
         if (currentEquipment == type) return;
 
-        if (emptyHandArm) emptyHandArm.SetActive(false);
-        if (sprayArm) sprayArm.SetActive(false);
-        if (gunArm) gunArm.SetActive(false);
+        DisableAllEquipment();
 
         switch (type)
         {
@@ -297,6 +295,13 @@ public class Inventory : MonoBehaviour, ISaveable
         currentEquipment = type;
         playerController.bodyAnimator.Play(0);
         OnEquipmentChanged?.Invoke(currentEquipment);
+    }
+
+    public void DisableAllEquipment()
+    {
+        if (emptyHandArm) emptyHandArm.SetActive(false);
+        if (sprayArm) sprayArm.SetActive(false);
+        if (gunArm) gunArm.SetActive(false);
     }
 
     public void GiveGun()
