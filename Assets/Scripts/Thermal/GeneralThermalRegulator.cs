@@ -72,7 +72,7 @@ public class GeneralThermalRegulator : MonoBehaviour, ISaveable, ITemperatureCha
                     baseTemperature = Mathf.MoveTowards(baseTemperature, 0f, step);
                 }
 
-                if ((baseTemperature <= 0f || baseTemperature >= 100f) && !isDead)
+                if ((baseTemperature <= 0f || baseTemperature >= 99f) && !isDead)
                 {
                     playerController?.Die();
                     isDead = true;
