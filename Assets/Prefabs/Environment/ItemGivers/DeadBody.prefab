@@ -78,8 +78,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -621363449
+  m_SortingLayer: -1
   m_SortingOrder: 0
   m_Sprite: {fileID: -3566806843933835681, guid: 1990ce0a79ec32b4fb4c9d147b737468, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -109,6 +109,7 @@ MonoBehaviour:
   interactionKey: e
   cooldown: 0.5
   oneShot: 1
+  startInteractible: 1
   outline: {fileID: 3378421728807413250}
   onInteract:
     m_PersistentCalls:
@@ -137,7 +138,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d9a6d52b46bb974692f5e10b84e0116, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  saveID: 
   itemData: {fileID: 0}
+  itemType: 0
+  hideAfterPickup: 1
+  startInteractible: 1
+  weaponID: Gun
+  ammoAmount: 10
+  consumableID: BatteryRecharger
+  consumableAmount: 1
+  pickupSound: {fileID: 0}
 --- !u!61 &2628028383186122081
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -281,8 +291,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -621363449
+  m_SortingLayer: -1
   m_SortingOrder: 0
   m_Sprite: {fileID: -7956601648428838784, guid: b247236f70abb3945802e84fc36409b9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

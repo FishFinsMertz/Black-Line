@@ -27,7 +27,7 @@ public class GameSceneManager : MonoBehaviour, ISaveable
 
     [Header("Scene Transition")]
     [SerializeField] private CanvasGroup fadeCanvasGroup;
-    [SerializeField] private float fadeDuration = 0.5f;
+    [SerializeField] private float fadeDuration = 1f;
 
     private string pendingSpawnID = null;
     private bool isTransitioning = false;

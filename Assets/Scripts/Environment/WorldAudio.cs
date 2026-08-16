@@ -140,6 +140,29 @@ public class WorldAudio : MonoBehaviour, ISaveable
         stopCoroutine = StartCoroutine(StopDelayed(fadeDuration));
     }
 
+    public void StopImmediate()
+    {
+        if (playCoroutine != null)
+        {
+            StopCoroutine(playCoroutine);
+            playCoroutine = null;
+            isPlayDelaying = false;
+        }
+        if (stopCoroutine != null)
+        {
+            StopCoroutine(stopCoroutine);
+            stopCoroutine = null;
+            isStopDelaying = false;
+        }
+
+        if (worldAudioSource != null && worldAudioSource.isPlaying)
+            worldAudioSource.Stop();
+
+        isPlaying = false;
+        isStopDelaying = false;
+        isPlayDelaying = false;
+    }
+
     private IEnumerator StopDelayed(float fadeDuration)
     {
         if (stopDelay > 0f)
@@ -235,7 +258,7 @@ public class WorldAudio : MonoBehaviour, ISaveable
         }
         else if (!shouldBePlaying && isPlaying)
         {
-            Stop();
+            StopImmediate();
         }
     }
 }
