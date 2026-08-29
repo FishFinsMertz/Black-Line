@@ -10,6 +10,11 @@ public class SaveStation : MonoBehaviour
         StartCoroutine(DelayedSave());
     }
 
+    public void QuickLoad()
+    {
+        SaveManager.Instance.LoadGame();
+    }
+
     private IEnumerator DelayedSave()
     {
         yield return new WaitForSeconds(saveDelay);

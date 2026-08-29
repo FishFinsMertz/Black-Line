@@ -9,7 +9,6 @@ public class ScoutController : EnemyController
     [Header("Audio")]
     public AudioSource audioSource;
     public AudioClip hoverSound;
-
     [Header("Hover")]
     public float hoverRadiusMin = 1.5f;
     public float hoverRadiusMax = 3f;

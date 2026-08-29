@@ -17,7 +17,6 @@ public class FadingPiece : MonoBehaviour
 
         if (sr == null)
         {
-            Debug.LogWarning($"No SpriteRenderer found on {name}. Destroying in {delayBeforeFade} seconds.");
             Destroy(gameObject, delayBeforeFade);
             return;
         }

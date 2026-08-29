@@ -269,7 +269,7 @@ public class PlayerController : MonoBehaviour, ISaveable
     public IEnumerator ReloadAfterDeath()
     {
         yield return new WaitForSeconds(deathDelay);
-        GameSceneManager.Instance.ReloadCurrentScene(saveBeforeLoad: false);
+        GameSceneManager.Instance.LoadScene("DeathScreen", saveBeforeLoad: false);
     }
 
     public void Save(GameData data)
