@@ -31,6 +31,7 @@ public class GameSceneManager : MonoBehaviour, ISaveable
 
     private string pendingSpawnID = null;
     private bool isTransitioning = false;
+    private bool saveAfterSceneLoad = false;
 
     private void Awake()
     {
@@ -85,27 +86,30 @@ public class GameSceneManager : MonoBehaviour, ISaveable
         SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
-    public void LoadScene(string sceneName) => LoadScene(sceneName, null, true);
+    public void LoadScene(string sceneName) => LoadScene(sceneName, null, true, true);
 
-    public void LoadScene(string sceneName, string spawnID = null, bool saveBeforeLoad = true)
+    public void LoadScene(string sceneName, string spawnID = null, bool saveBeforeLoad = true, bool saveAfterLoad = true)
     {
         if (isTransitioning) return;
+        saveAfterSceneLoad = saveAfterLoad;
         if (saveBeforeLoad)
             SaveManager.Instance?.SaveGame();
         StartCoroutine(TransitionCoroutine(sceneName, spawnID));
     }
 
-    public void LoadScene(int sceneIndex, string spawnID = null, bool saveBeforeLoad = true)
+    public void LoadScene(int sceneIndex, string spawnID = null, bool saveBeforeLoad = true, bool saveAfterLoad = true)
     {
         if (isTransitioning) return;
+        saveAfterSceneLoad = saveAfterLoad;
         if (saveBeforeLoad)
             SaveManager.Instance?.SaveGame();
         StartCoroutine(TransitionCoroutine(sceneIndex, spawnID));
     }
 
-    public void ReloadCurrentScene(string spawnID = null, bool saveBeforeLoad = true)
+    public void ReloadCurrentScene(string spawnID = null, bool saveBeforeLoad = true, bool saveAfterLoad = true)
     {
         if (isTransitioning) return;
+        saveAfterSceneLoad = saveAfterLoad;
         if (saveBeforeLoad)
             SaveManager.Instance?.SaveGame();
         int currentIndex = SceneManager.GetActiveScene().buildIndex;
@@ -163,6 +167,12 @@ public class GameSceneManager : MonoBehaviour, ISaveable
         }
 
         CameraController.Instance?.SnapToPlayer();
+
+        if (saveAfterSceneLoad)
+        {
+            SaveManager.Instance?.SaveGame();
+            saveAfterSceneLoad = false;
+        }
 
         if (isTransitioning)
         {

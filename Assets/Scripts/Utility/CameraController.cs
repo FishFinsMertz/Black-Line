@@ -74,11 +74,13 @@ public class CameraController : MonoBehaviour
     private void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
+        PlayerController.OnPlayerDeath += HandlePlayerDeath;
     }
 
     private void OnDisable()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
+        PlayerController.OnPlayerDeath -= HandlePlayerDeath;
     }
 
     private void Start()
@@ -95,9 +97,12 @@ public class CameraController : MonoBehaviour
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         FindAndAssignPlayer();
-        if (target != null)
-            previousTargetPosition = target.position;
-        currentLookAheadOffset = Vector3.zero;
+        ResetCameraState();
+    }
+
+    private void HandlePlayerDeath()
+    {
+        ResetCameraState();
     }
 
     private void FindAndAssignPlayer()
@@ -251,6 +256,25 @@ public class CameraController : MonoBehaviour
         target = newTarget;
         if (newTarget != null)
             playerThermal = newTarget.GetComponentInChildren<GeneralThermalRegulator>();
+    }
+
+    public void ResetCameraState()
+    {
+        currentWobbleIntensity = 0f;
+        currentTiltIntensity = 0f;
+        currentShakeStrength = 0f;
+        shakeRemainingTime = 0f;
+        currentShakeRoughness = 0.5f;
+        currentMouseOffset = Vector3.zero;
+        targetMouseOffset = Vector3.zero;
+        currentLookAheadOffset = Vector3.zero;
+
+        if (target != null)
+            previousTargetPosition = target.position;
+
+        transform.rotation = initialRotation;
+        if (target != null)
+            transform.position = target.position + offset;
     }
 
     public void SnapToPlayer()

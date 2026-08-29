@@ -33,16 +33,24 @@ public class ColdEffectsController : MonoBehaviour
     private void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
+        PlayerController.OnPlayerDeath += HandlePlayerDeath;
     }
 
     private void OnDisable()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
+        PlayerController.OnPlayerDeath -= HandlePlayerDeath;
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         FindPlayerThermal();
+        ResetEffects();
+    }
+
+    private void HandlePlayerDeath()
+    {
+        ResetEffects();
     }
 
     private void FindPlayerThermal()
@@ -54,6 +62,17 @@ public class ColdEffectsController : MonoBehaviour
             return;
         }
         playerThermal = playerObj.GetComponent<GeneralThermalRegulator>();
+    }
+
+    private void ResetEffects()
+    {
+        smoothedColdWeight = 0f;
+        smoothedOverheatWeight = 0f;
+
+        if (coldVolume != null)
+            coldVolume.weight = 0f;
+        if (overheatVolume != null)
+            overheatVolume.weight = 0f;
     }
 
     private void Update()
