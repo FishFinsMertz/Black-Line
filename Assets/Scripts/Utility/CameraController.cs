@@ -1,16 +1,19 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class CameraController : MonoBehaviour
-{       
+{
+    public static CameraController Instance { get; private set; }
+
     [Header("Follow Settings")]
     [SerializeField] private float smoothSpeed = 5f;     
     [SerializeField] private Vector3 offset = new Vector3(0f, 0f, -5f); 
 
     [Header("Look Ahead")]
     [SerializeField] private bool enableLookAhead = true;
-    [SerializeField] private float lookAheadDistance = 3f;    // how far ahead the camera pushes
-    [SerializeField] private float lookAheadSpeed = 3f;       // how quickly it pushes ahead
-    [SerializeField] private float lookAheadReturnSpeed = 1f; // how slowly it returns when idle
+    [SerializeField] private float lookAheadDistance = 3f;
+    [SerializeField] private float lookAheadSpeed = 3f;
+    [SerializeField] private float lookAheadReturnSpeed = 1f;
 
     [Header("Mouse Follow (Cursor) – Right Click Only")]
     [SerializeField] private bool enableMouseFollow = true;
@@ -45,20 +48,38 @@ public class CameraController : MonoBehaviour
     private float currentTiltIntensity = 0f;
     private Quaternion initialRotation;
 
-    // Shake state
     private float currentShakeStrength = 0f;
     private float shakeRemainingTime = 0f;
     private float currentShakeRoughness = 0.5f;
 
-    // Mouse follow offset (smoothed)
     private Vector3 currentMouseOffset = Vector3.zero;
     private Vector3 targetMouseOffset = Vector3.zero;
 
-    // Look ahead
     private Vector3 currentLookAheadOffset = Vector3.zero;
     private Vector3 previousTargetPosition = Vector3.zero;
 
     private float randomSeedX, randomSeedY;
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
 
     private void Start()
     {
@@ -69,6 +90,14 @@ public class CameraController : MonoBehaviour
 
         if (target != null)
             previousTargetPosition = target.position;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        FindAndAssignPlayer();
+        if (target != null)
+            previousTargetPosition = target.position;
+        currentLookAheadOffset = Vector3.zero;
     }
 
     private void FindAndAssignPlayer()
@@ -86,7 +115,6 @@ public class CameraController : MonoBehaviour
     {
         if (target == null) return;
         
-        // Update shake
         if (shakeRemainingTime > 0f)
         {
             shakeRemainingTime -= Time.deltaTime;
@@ -95,7 +123,6 @@ public class CameraController : MonoBehaviour
         }
         else currentShakeStrength = 0f;
 
-        // Base desired position
         Vector3 desiredPosition = target.position + offset;
 
         if (enableLookAhead)
@@ -145,7 +172,6 @@ public class CameraController : MonoBehaviour
         currentMouseOffset = Vector3.Lerp(currentMouseOffset, targetMouseOffset, mouseFollowSmoothing * Time.deltaTime);
         desiredPosition += currentMouseOffset;
         
-        // Temperature intensity for wobble/tilt
         float targetIntensity = 0f;
         if (playerThermal != null)
         {

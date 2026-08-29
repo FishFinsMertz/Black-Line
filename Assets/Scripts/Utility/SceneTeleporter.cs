@@ -26,7 +26,6 @@ public class SceneTeleporter : MonoBehaviour
             GameSceneManager.Instance.LoadScene(targetSceneName, spawnID);
             if (!string.IsNullOrEmpty(locationName) && !string.IsNullOrEmpty(temperature))
             {
-                Debug.Log("Notified");
                 NotificationManager.Instance.NotifyLocation(locationName, temperature);
             }
         }
