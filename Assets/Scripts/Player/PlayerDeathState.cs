@@ -7,7 +7,7 @@ public class PlayerDeathState : PlayerState
 
     public override void Enter()
     {
-        player.inventory.DisableAllEquipment();
+        player.inventory.ForceDisableAllEquipment();
         player.rb.linearVelocity = Vector2.zero;
         player.bodyAnimator.SetTrigger("Die");
 

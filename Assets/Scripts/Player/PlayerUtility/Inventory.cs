@@ -233,7 +233,12 @@ public class Inventory : MonoBehaviour, ISaveable
 
     private void Update()
     {
+        bool isDead = playerController != null && playerController.GetCurrentState() is PlayerDeathState;
         bool isClimbing = playerController != null && playerController.GetCurrentState() is PlayerClimbingState;
+
+        if (isDead)
+            return;
+
         if (isClimbing)
         {
             if (Input.GetKeyDown(useRechargerKey))
@@ -302,6 +307,12 @@ public class Inventory : MonoBehaviour, ISaveable
         if (emptyHandArm) emptyHandArm.SetActive(false);
         if (sprayArm) sprayArm.SetActive(false);
         if (gunArm) gunArm.SetActive(false);
+    }
+
+    public void ForceDisableAllEquipment()
+    {
+        DisableAllEquipment();
+        currentEquipment = EquipmentType.None;
     }
 
     public void GiveGun()

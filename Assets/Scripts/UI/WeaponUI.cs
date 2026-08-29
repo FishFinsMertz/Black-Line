@@ -62,6 +62,7 @@ public class WeaponUI : MonoBehaviour
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         BindReferences();
+        RefreshFromInventory();
     }
 
     private void BindReferences()
@@ -83,6 +84,16 @@ public class WeaponUI : MonoBehaviour
         parentGroup.alpha = 0f;
         inactivityTimer = 0f;
         targetAlpha = 0f;
+    }
+
+    private void RefreshFromInventory()
+    {
+        if (inventory == null)
+            return;
+
+        ApplyOwnershipIcons();
+        UpdateSlots(inventory.GetCurrentEquipment());
+        UpdateAmmoDisplay(inventory.GetCurrentEquipment());
     }
 
     private void OnDestroy()
