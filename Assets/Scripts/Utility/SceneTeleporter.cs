@@ -8,6 +8,10 @@ public class SceneTeleporter : MonoBehaviour
     [Header("Spawn Position")]
     [SerializeField] private Transform exitPoint;
 
+    [Header("Optional: Location Notification")]
+    [SerializeField] private string locationName;
+    [SerializeField] private string temperature;
+
     public string SpawnID => spawnID;
 
     public Vector3 GetSpawnPosition()
@@ -20,6 +24,11 @@ public class SceneTeleporter : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             GameSceneManager.Instance.LoadScene(targetSceneName, spawnID);
+            if (!string.IsNullOrEmpty(locationName) && !string.IsNullOrEmpty(temperature))
+            {
+                Debug.Log("Notified");
+                NotificationManager.Instance.NotifyLocation(locationName, temperature);
+            }
         }
     }
 }

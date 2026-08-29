@@ -26,10 +26,18 @@ public class NotificationManager : MonoBehaviour
     [SerializeField] private float flashCycleDuration = 0.5f;
     [SerializeField] private int defaultFlashCycles = 6;
 
+    [Header("Location Notification")]
+    [SerializeField] private AudioClip locationNotificationSound;
+    [SerializeField] private float locationNotificationDelay = 1f;
+    [SerializeField] private CanvasGroup locationNotificationGroup;
+    [SerializeField] private TextMeshProUGUI locationText;
+    [SerializeField] private TextMeshProUGUI temperatureText;
+
     private CanvasGroup bottomCanvasGroup;
     private Coroutine bottomFadeCoroutine;
     private Coroutine itemFadeCoroutine;
     private Coroutine topFlashCoroutine;
+    private Coroutine locationFadeCoroutine;
 
     private void Awake()
     {
@@ -66,6 +74,45 @@ public class NotificationManager : MonoBehaviour
             topText.gameObject.SetActive(false);
             topText.alpha = 0f;
         }
+
+        if (locationText != null && temperatureText != null)
+        {
+            locationText.gameObject.SetActive(false);
+            locationText.alpha = 0f;
+            temperatureText.gameObject.SetActive(false);
+            temperatureText.alpha = 0f;
+        }
+    }
+
+    public void NotifyLocation(string location, string temperature)
+    {
+        if (locationText == null || temperatureText == null) return;
+
+        if (locationFadeCoroutine != null)
+            StopCoroutine(locationFadeCoroutine);
+
+        locationFadeCoroutine = StartCoroutine(DelayedLocationNotification(location, temperature));
+    }
+
+    private IEnumerator DelayedLocationNotification(string location, string temperature)
+    {
+        yield return new WaitForSeconds(locationNotificationDelay);
+
+        AudioManager.Instance?.PlayOneShot2D(keyItemNotificationSound, null, 1f);
+
+        locationText.text = location;
+        temperatureText.text = $"Ambient Temperature: {temperature}C";
+        locationText.gameObject.SetActive(true);
+        temperatureText.gameObject.SetActive(true);
+        locationText.alpha = 1f;
+        temperatureText.alpha = 1f;
+
+        yield return FadeSequence(locationNotificationGroup, textNotificationDuration, () =>
+        {
+            locationText.gameObject.SetActive(false);
+            temperatureText.gameObject.SetActive(false);
+            locationFadeCoroutine = null;
+        });
     }
 
     public void NotifyBottom(string msg)
