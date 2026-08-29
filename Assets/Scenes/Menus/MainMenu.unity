@@ -333,10 +333,6 @@ PrefabInstance:
       propertyPath: defaultScene
       value: FirstRoom
       objectReference: {fileID: 0}
-    - target: {fileID: 7598964426928843062, guid: ed63d7cbff1f08941a1addab0e4dde5e, type: 3}
-      propertyPath: fadeOutDuration
-      value: 10
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

@@ -252,6 +252,19 @@ public class CameraController : MonoBehaviour
         if (newTarget != null)
             playerThermal = newTarget.GetComponentInChildren<GeneralThermalRegulator>();
     }
+
+    public void SnapToPlayer()
+    {
+        if (target == null)
+            return;
+
+        previousTargetPosition = target.position;
+        currentLookAheadOffset = Vector3.zero;
+        currentMouseOffset = Vector3.zero;
+        targetMouseOffset = Vector3.zero;
+        transform.position = target.position + offset;
+        transform.rotation = initialRotation;
+    }
     
     public void ResetToPlayer()
     {

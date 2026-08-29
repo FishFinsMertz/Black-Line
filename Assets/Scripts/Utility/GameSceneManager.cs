@@ -162,6 +162,8 @@ public class GameSceneManager : MonoBehaviour, ISaveable
             pendingSpawnID = null;
         }
 
+        CameraController.Instance?.SnapToPlayer();
+
         if (isTransitioning)
         {
             yield return Fade(1f, 0f, fadeDuration);
