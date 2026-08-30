@@ -11797,6 +11797,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Gate
       objectReference: {fileID: 0}
+    - target: {fileID: 7977659326147608686, guid: b197d2daabda0f4498a92eadc53e9043, type: 3}
+      propertyPath: saveID
+      value: FR-Gate
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
