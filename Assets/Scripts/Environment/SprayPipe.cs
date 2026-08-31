@@ -16,7 +16,12 @@ public class SprayPipe : MonoBehaviour, ISaveable
     [SerializeField] private float inactiveLightIntensity = 0f;
     [SerializeField] private float activeFresnelRadius = 1f;
     [SerializeField] private float inactiveFresnelRadius = 0f;
+    [SerializeField] private float activeTemperature = 100f;
+    [SerializeField] private float inactiveTemperature = 50f;
     [SerializeField] private float transitionDuration = 0.5f;
+
+    [Header("Temperature Settings")]
+    [SerializeField] private bool changeTemperature = false;
 
     [Header("Audio")]
     [SerializeField] private AudioSource audioSource;
@@ -43,6 +48,7 @@ public class SprayPipe : MonoBehaviour, ISaveable
     private float currentEmissionRate;
     private float currentLightIntensity;
     private float currentFresnelRadius;
+    private float currentTemperature;
 
     private void Awake()
     {
@@ -60,6 +66,8 @@ public class SprayPipe : MonoBehaviour, ISaveable
         currentEmissionRate = isActive ? activeEmissionRate : inactiveEmissionRate;
         currentLightIntensity = isActive ? activeLightIntensity : inactiveLightIntensity;
         currentFresnelRadius = isActive ? activeFresnelRadius : inactiveFresnelRadius;
+        if (changeTemperature)
+            currentTemperature = isActive ? activeTemperature : inactiveTemperature;
 
         ApplyStateInstant(isActive);
     }
@@ -150,10 +158,12 @@ public class SprayPipe : MonoBehaviour, ISaveable
         float targetEmission = toActive ? activeEmissionRate : inactiveEmissionRate;
         float targetLight = toActive ? activeLightIntensity : inactiveLightIntensity;
         float targetRadius = toActive ? activeFresnelRadius : inactiveFresnelRadius;
+        float targetTemperature = toActive ? activeTemperature : inactiveTemperature;
 
         float startEmission = currentEmissionRate;
         float startLight = currentLightIntensity;
         float startRadius = currentFresnelRadius;
+        float startTemp = currentTemperature;
 
         float elapsed = 0f;
         while (elapsed < transitionDuration)
@@ -163,6 +173,7 @@ public class SprayPipe : MonoBehaviour, ISaveable
             float lerpedEmission = Mathf.Lerp(startEmission, targetEmission, t);
             float lerpedLight = Mathf.Lerp(startLight, targetLight, t);
             float lerpedRadius = Mathf.Lerp(startRadius, targetRadius, t);
+            float lerpedTemp = Mathf.Lerp(startTemp, targetTemperature, t);
 
             if (sprayParticle != null)
                 emissionModule.rateOverTime = lerpedEmission;
@@ -171,11 +182,19 @@ public class SprayPipe : MonoBehaviour, ISaveable
 
             foreach (var tm in tilemapThermals)
                 if (tm != null)
+                {
                     tm.SetFresnelRadius(lerpedRadius);
+                    if (changeTemperature)
+                        tm.SetTemperature(lerpedTemp);
+                }
 
             foreach (var tobj in thermalObjects)
                 if (tobj != null)
+                {
                     tobj.SetFresnelRadius(lerpedRadius);
+                    if (changeTemperature)
+                        tobj.SetBaseTemperature(lerpedTemp);
+                }
 
             yield return null;
         }
@@ -183,6 +202,8 @@ public class SprayPipe : MonoBehaviour, ISaveable
         currentEmissionRate = targetEmission;
         currentLightIntensity = targetLight;
         currentFresnelRadius = targetRadius;
+        if (changeTemperature)
+            currentTemperature = targetTemperature;
 
         if (sprayParticle != null)
             emissionModule.rateOverTime = targetEmission;
@@ -190,10 +211,18 @@ public class SprayPipe : MonoBehaviour, ISaveable
             sprayLight.intensity = targetLight;
         foreach (var tm in tilemapThermals)
             if (tm != null)
+            {
                 tm.SetFresnelRadius(targetRadius);
+                if (changeTemperature)
+                    tm.SetTemperature(targetTemperature);
+            }
         foreach (var tobj in thermalObjects)
             if (tobj != null)
+            {
                 tobj.SetFresnelRadius(targetRadius);
+                if (changeTemperature)
+                    tobj.SetBaseTemperature(targetTemperature);
+            }
 
         if (!toActive && audioSource != null && audioSource.isPlaying && AudioManager.Instance != null)
         {
@@ -211,10 +240,13 @@ public class SprayPipe : MonoBehaviour, ISaveable
         float targetEmission = canActivate ? activeEmissionRate : inactiveEmissionRate;
         float targetLight = canActivate ? activeLightIntensity : inactiveLightIntensity;
         float targetRadius = canActivate ? activeFresnelRadius : inactiveFresnelRadius;
+        float targetTemperature = canActivate ? activeTemperature : inactiveTemperature;
 
         currentEmissionRate = targetEmission;
         currentLightIntensity = targetLight;
         currentFresnelRadius = targetRadius;
+        if (changeTemperature)
+            currentTemperature = targetTemperature;
 
         if (sprayParticle != null)
             emissionModule.rateOverTime = targetEmission;
@@ -222,10 +254,18 @@ public class SprayPipe : MonoBehaviour, ISaveable
             sprayLight.intensity = targetLight;
         foreach (var tm in tilemapThermals)
             if (tm != null)
+            {
                 tm.SetFresnelRadius(targetRadius);
+                if (changeTemperature)
+                    tm.SetTemperature(targetTemperature);
+            }
         foreach (var tobj in thermalObjects)
             if (tobj != null)
+            {
                 tobj.SetFresnelRadius(targetRadius);
+                if (changeTemperature)
+                    tobj.SetBaseTemperature(targetTemperature);
+            }
 
         if (AudioManager.Instance != null)
         {
