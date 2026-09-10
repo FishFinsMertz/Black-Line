@@ -73,7 +73,7 @@ public class RiftBounceState : EnemyState
                 rift.animator.SetTrigger("Bounce");
                 if (AudioManager.Instance != null && rift.bounceSound != null)
                 {
-                    AudioManager.Instance.PlayOneShot(rift.bounceSound, rift.transform.position, volumeScale: 0.35f, pitchVariation: 0.1f);
+                    AudioManager.Instance.PlayOneShot(rift.bounceSound, rift.transform.position, volumeScale: 0.35f, pitchVariation: 0.05f);
                 }
                 bounceTriggered = true;
             }
