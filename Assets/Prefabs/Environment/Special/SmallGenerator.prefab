@@ -230,10 +230,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   temperature: 100
-  currentTemperature: 100
+  currentTemperature: 50
   fresnelPower: 1
   brightnessInfluence: 1
-  fresnelCenter: {x: 1.7, y: 0.41}
+  fresnelCenter: {x: 0.56, y: 0.41}
   fresnelRadius: 5
   temperatureLerpSpeed: 5
   enablePulse: 0
@@ -289,7 +289,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   saveID: FR-SmallGenerator
   startOn: 0
-  bootSound: {fileID: 8300000, guid: 3c65fbf05e6a9e24bbe8709823004de8, type: 3}
+  bootSound: {fileID: 0}
   humSound: {fileID: 8300000, guid: 4f5b159dd76c2df45ab4ae53ebadf978, type: 3}
   humSource: {fileID: 234063259923746327}
   humVolumeScale: 0.4
