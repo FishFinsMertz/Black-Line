@@ -16,7 +16,7 @@ public class RiftFreezeState : EnemyState
     {
         // Stop movement
         rift.rb.linearVelocity = Vector2.zero;
-        rift.rb.gravityScale = 1f;
+        rift.rb.gravityScale = 0f;
 
         freezeEndTime = Time.time + rift.frozenTime;
 
