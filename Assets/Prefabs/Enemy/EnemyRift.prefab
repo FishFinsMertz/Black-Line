@@ -373,6 +373,7 @@ MonoBehaviour:
   surfaceLayer:
     serializedVersion: 2
     m_Bits: 64
+  bounceSound: {fileID: 8300000, guid: fb4f2251c4d887c4b8ec7a2d5b36a445, type: 3}
 --- !u!114 &8425622741938610769
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -398,6 +399,7 @@ MonoBehaviour:
   pieceTorqueMax: 60
   enableBloodSplatter: 1
   bloodBurstPrefab: {fileID: 588043819693885274, guid: 555ecd0420cbfc246abbd90b7d981c43, type: 3}
+  bloodBurstSound: {fileID: 8300000, guid: ed1a092d96ed8a544adeeeb3bee6cf65, type: 3}
   enableHeatDissipation: 1
   shakePower: 2
   delayMin: 0

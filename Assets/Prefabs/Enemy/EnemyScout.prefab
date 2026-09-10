@@ -448,6 +448,7 @@ MonoBehaviour:
   pieceTorqueMax: 30
   enableBloodSplatter: 1
   bloodBurstPrefab: {fileID: 588043819693885274, guid: 8680d34d833d1d143a9d092474de0250, type: 3}
+  bloodBurstSound: {fileID: 8300000, guid: ed1a092d96ed8a544adeeeb3bee6cf65, type: 3}
   enableHeatDissipation: 1
   shakePower: 2
   delayMin: 0

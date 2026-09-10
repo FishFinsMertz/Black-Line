@@ -14,6 +14,9 @@ public class PartsExploder : MonoBehaviour
     public bool enableBloodSplatter = true;
     public ParticleSystem bloodBurstPrefab;
 
+    [Header("Gore Audio")]
+    public AudioClip bloodBurstSound;
+
     [Header("Heat Dissipation")]
     public bool enableHeatDissipation = true;
 
@@ -61,6 +64,11 @@ public class PartsExploder : MonoBehaviour
     private void PerformExplosion()
     {
         float currentTemp = 50f;
+        if (AudioManager.Instance != null && bloodBurstSound != null)
+        {
+            AudioManager.Instance.PlayOneShot(bloodBurstSound, transform.position, volumeScale: 0.35f, pitchVariation: 0.1f);
+        }
+
         if (enableHeatDissipation && currentThermal != null)
             currentTemp = currentThermal.GetTemperature();
 

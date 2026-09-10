@@ -20,6 +20,9 @@ public class RiftController : EnemyController
     [Header("Raycast")]
     public LayerMask surfaceLayer;
 
+    [Header("Audio")]
+    public AudioClip bounceSound;
+
     public bool IsOnCeiling { get; private set; } = false;
 
     // Original values for smoking state
